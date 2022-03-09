@@ -1,20 +1,13 @@
 import { VFC } from 'react';
-import Text from 'components/atoms/Text';
-import Button from 'components/atoms/Button';
-import { colors, text_style } from 'app_design';
+import SignupTemp from 'components/templates/Signup';
 
 const Signup: VFC = () => {
-  return (
-    <>
-      <Text
-        text="新規登録"
-        font_style={text_style.Title_M}
-        underline={true}
-        color={colors.Text.Black}
-      />
-      <Button text="ikko" />
-    </>
-  );
+  const onFinish = (values: any) => {
+    console.log(values);
+    console.log(process.env.REACT_APP_API_HOST);
+  };
+  const onFinishFailed = () => {};
+  return <SignupTemp onFinish={onFinish} onFinishFailed={onFinishFailed} />;
 };
 
 export default Signup;

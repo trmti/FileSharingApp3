@@ -1,1 +1,0 @@
-import { VFC } from 'react';
