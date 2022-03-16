@@ -1,5 +1,5 @@
 import { VFC } from 'react';
-import { Link } from 'react-location';
+import { Link } from 'react-router-dom';
 import styles from './style.module.css';
 
 const Header: VFC = () => {

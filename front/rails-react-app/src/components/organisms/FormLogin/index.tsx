@@ -7,12 +7,12 @@ type Props = {
   onFinishFailed: () => void;
 } & FormProps;
 
-const FormSignup: VFC<Props> = (props) => {
+const FormLogin: VFC<Props> = (props) => {
   const { onFinish, onFinishFailed, ...other } = props;
   return (
     <>
       <Form
-        name="formSignup"
+        name="formLogin"
         wrapperCol={{ span: 30 }}
         initialValues={{ remember: true }}
         layout="horizontal"
@@ -21,15 +21,6 @@ const FormSignup: VFC<Props> = (props) => {
         {...other}
       >
         <Space direction="vertical" size="large">
-          <Form.Item
-            label="ユーザー名"
-            name="name"
-            rules={[
-              { required: true, message: 'ユーザー名を入力してください' },
-            ]}
-          >
-            <Input placeholder="田中太郎" />
-          </Form.Item>
           <Form.Item
             label="メールアドレス"
             name="email"
@@ -40,15 +31,6 @@ const FormSignup: VFC<Props> = (props) => {
           <Form.Item
             label="パスワード"
             name="password"
-            rules={[
-              { required: true, message: 'パスワードを入力してください' },
-            ]}
-          >
-            <Input.Password />
-          </Form.Item>
-          <Form.Item
-            label="パスワード(確認)"
-            name="password_confirmation"
             rules={[
               { required: true, message: 'パスワードを入力してください' },
             ]}
@@ -80,4 +62,4 @@ const FormSignup: VFC<Props> = (props) => {
   );
 };
 
-export default FormSignup;
+export default FormLogin;

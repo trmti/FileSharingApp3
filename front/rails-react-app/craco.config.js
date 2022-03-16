@@ -1,6 +1,12 @@
 const CracoLessPlugin = require('craco-less');
 
 module.exports = {
+  devServer: (devServerConfig) => {
+    devServerConfig.webSocketServer = {
+      options: { path: 'ws' },
+    };
+    return devServerConfig;
+  },
   plugins: [
     {
       plugin: CracoLessPlugin,

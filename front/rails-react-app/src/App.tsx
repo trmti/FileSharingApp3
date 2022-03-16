@@ -1,12 +1,27 @@
-import { VFC } from 'react';
-import { Router, Outlet } from 'react-location';
-import { routes, location } from './Router';
+import { VFC, FC, useEffect } from 'react';
 import { createGlobalStyle } from 'styled-components';
+import {
+  BrowserRouter,
+  Routes,
+  Navigate,
+  Outlet,
+  Route,
+  RouteProps,
+} from 'react-router-dom';
 import { Layout } from 'antd';
+import AuthUserProvider, {
+  useLoading,
+  useAuthUser,
+  useUpdateUser,
+} from 'auth/AuthUserContext';
 import AppHeader from 'components/organisms/Header';
+import Home from 'pages/Home';
+import Signup from 'pages/Signup';
+import Login from 'pages/Login';
+import Logout from 'pages/Logout';
 import { colors } from 'app_design';
 
-const { Header, Footer, Sider, Content } = Layout;
+const { Header, Content } = Layout;
 
 const GlobalStyles = createGlobalStyle`
   body {
@@ -15,21 +30,45 @@ const GlobalStyles = createGlobalStyle`
   }
 `;
 
+const PrivateRoute: FC<RouteProps> = () => {
+  const updateUser = useUpdateUser();
+  const loading = useLoading();
+  const user = useAuthUser();
+  useEffect(() => {
+    (async () => {
+      await updateUser();
+    })();
+  }, []);
+  if (!loading) {
+    return user !== null ? <Outlet /> : <Navigate to="/login" />;
+  } else {
+    return <></>;
+  }
+};
+
 export const App: VFC = () => {
   return (
     <>
-      <Router routes={routes} location={location}>
-        <Layout style={{ backgroundColor: colors.BG }}>
+      <AuthUserProvider>
+        <BrowserRouter>
           <Header>
             <AppHeader />
           </Header>
           <Content>
-            <Outlet />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/logout" element={<Logout />} />
+
+              <Route path="/user" element={<PrivateRoute />}>
+                <Route path="/user" element={<Home />} />
+              </Route>
+            </Routes>
           </Content>
-        </Layout>
-        {/* パスが一致した際にレンダリングされるコンポーネント */}
-      </Router>
-      <GlobalStyles />
+        </BrowserRouter>
+        <GlobalStyles />
+      </AuthUserProvider>
     </>
   );
 };

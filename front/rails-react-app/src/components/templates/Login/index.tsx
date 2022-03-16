@@ -1,7 +1,7 @@
 import { VFC } from 'react';
 import { Typography, Space } from 'antd';
 import { Link } from 'react-router-dom';
-import FormSignup from 'components/organisms/FormSignup';
+import FormLogin from 'components/organisms/FormLogin';
 import styles from './style.module.css';
 
 type Props = {
@@ -17,14 +17,14 @@ const Signup: VFC<Props> = ({ onFinish, onFinishFailed }) => {
       style={{ width: '100%' }}
       size="large"
     >
-      <Typography.Title className={styles.titleText}>新規登録</Typography.Title>
-      <FormSignup
+      <Typography.Title className={styles.titleText}>ログイン</Typography.Title>
+      <FormLogin
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         className={styles.Form}
       />
       <Typography.Link>
-        <Link to="/login">ログインページ</Link>
+        <Link to="/signup">サインアップページ</Link>
       </Typography.Link>
     </Space>
   );
