@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { loginUser, logOutUser, signUpUser, getCurrentUser } from 'db/user';
 import { User, SignInParams, SignUpParams } from 'type';
 
