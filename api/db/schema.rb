@@ -10,10 +10,68 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_11_054214) do
+ActiveRecord::Schema.define(version: 2022_03_16_120007) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "comments", force: :cascade do |t|
+    t.string "text"
+    t.bigint "user_id"
+    t.bigint "file_content_id"
+    t.index ["file_content_id"], name: "index_comments_on_file_content_id"
+    t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "file_contents", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.bigint "post_id"
+    t.index ["post_id"], name: "index_file_contents_on_post_id"
+  end
+
+  create_table "folders", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.bigint "post_id"
+    t.bigint "team_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_folders_on_post_id"
+    t.index ["team_id"], name: "index_folders_on_team_id"
+  end
+
+  create_table "posts", force: :cascade do |t|
+    t.string "image"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "team_editors", force: :cascade do |t|
+    t.bigint "editor_id"
+    t.bigint "edit_team_id"
+    t.index ["edit_team_id"], name: "index_team_editors_on_edit_team_id"
+    t.index ["editor_id"], name: "index_team_editors_on_editor_id"
+  end
+
+  create_table "teams", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.bigint "post_id"
+    t.string "publish_range"
+    t.bigint "leader_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["leader_id"], name: "index_teams_on_leader_id"
+    t.index ["post_id"], name: "index_teams_on_post_id"
+  end
+
+  create_table "teams_users", id: false, force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "team_id"
+    t.index ["team_id"], name: "index_teams_users_on_team_id"
+    t.index ["user_id"], name: "index_teams_users_on_user_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "provider", default: "email", null: false
@@ -31,13 +89,18 @@ ActiveRecord::Schema.define(version: 2022_03_11_054214) do
     t.string "nickname"
     t.string "image"
     t.string "email"
+    t.bigint "post_id"
     t.json "tokens"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["post_id"], name: "index_users_on_post_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
+  add_foreign_key "team_editors", "teams", column: "edit_team_id"
+  add_foreign_key "team_editors", "users", column: "editor_id"
+  add_foreign_key "teams", "users", column: "leader_id"
 end
