@@ -1,5 +1,4 @@
 FROM node:17-alpine3.14
-WORKDIR /usr/src/app
+WORKDIR /usr/src/app/rails-react-app
 
-COPY rails-react-app/package.json /usr/src/app/package.json
-COPY rails-react-app/package-lock.json /usr/src/app/package-lock.json
+COPY ./rails-react-app/package*.json /usr/src/app/rails-react-app/
