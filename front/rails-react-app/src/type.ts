@@ -30,6 +30,7 @@ export interface User {
   name: string;
   nickname?: string;
   image?: string;
+  post_id?: number;
   allowPasswordChange: boolean;
   created_at?: Date;
   updated_at?: Date;
@@ -39,14 +40,32 @@ export type UserData = {
   data: User;
 };
 
-export type FetchUserSuccess = {
-  status: 'success';
-  data: User;
-};
-
 export type FetchFailed = {
   status: 'error';
   message: string;
 };
 
+export type FetchUserSuccess = {
+  status: 'success';
+  data: User;
+};
+
+export type FetchPostSuccess = {
+  status: 'success';
+  data: Post;
+};
+
 export type FetchUser = FetchUserSuccess | FetchFailed;
+
+export interface Post {
+  id: string;
+  image: {
+    url: string;
+  };
+  created_at?: Date;
+  updated_at?: Date;
+}
+
+export interface PostApiJson {
+  posts: Post[];
+}

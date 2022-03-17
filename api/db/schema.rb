@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(version: 2022_03_16_120007) do
   enable_extension "plpgsql"
 
   create_table "comments", force: :cascade do |t|
-    t.string "text"
+    t.string "text", null: false
     t.bigint "user_id"
     t.bigint "file_content_id"
     t.index ["file_content_id"], name: "index_comments_on_file_content_id"
@@ -24,14 +24,14 @@ ActiveRecord::Schema.define(version: 2022_03_16_120007) do
   end
 
   create_table "file_contents", force: :cascade do |t|
-    t.string "title"
+    t.string "title", null: false
     t.text "description"
     t.bigint "post_id"
     t.index ["post_id"], name: "index_file_contents_on_post_id"
   end
 
   create_table "folders", force: :cascade do |t|
-    t.string "title"
+    t.string "title", null: false
     t.text "description"
     t.bigint "post_id"
     t.bigint "team_id"
@@ -42,9 +42,10 @@ ActiveRecord::Schema.define(version: 2022_03_16_120007) do
   end
 
   create_table "posts", force: :cascade do |t|
-    t.string "image"
+    t.string "image", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["image"], name: "index_posts_on_image", unique: true
   end
 
   create_table "team_editors", force: :cascade do |t|
@@ -55,10 +56,10 @@ ActiveRecord::Schema.define(version: 2022_03_16_120007) do
   end
 
   create_table "teams", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.text "description"
+    t.string "publish_range", null: false
     t.bigint "post_id"
-    t.string "publish_range"
     t.bigint "leader_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -85,10 +86,10 @@ ActiveRecord::Schema.define(version: 2022_03_16_120007) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
-    t.string "name"
+    t.string "name", null: false
     t.string "nickname"
     t.string "image"
-    t.string "email"
+    t.string "email", null: false
     t.bigint "post_id"
     t.json "tokens"
     t.datetime "created_at", null: false

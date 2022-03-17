@@ -17,12 +17,12 @@ const AuthUserContext = createContext<Props>({
   signup: async () => console.error('Providerが設定されていません'),
   updateUser: async () => console.error('Providerが設定されていません'),
   authUser: null,
-  loading: false,
+  loading: true,
 });
 
 const AuthUserProvider: React.FC = ({ children }) => {
   const [authUser, setAuthUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const login = async (props: SignInParams) => {
     setLoading(true);
@@ -30,11 +30,12 @@ const AuthUserProvider: React.FC = ({ children }) => {
     if (res.status === 'success') {
       const data = res.data;
       setAuthUser(data);
+      setLoading(false);
     } else {
       console.error(res.message);
+      setLoading(false);
       throw new Error();
     }
-    setLoading(false);
   };
 
   const logout = async () => {
@@ -42,11 +43,12 @@ const AuthUserProvider: React.FC = ({ children }) => {
     const res = await logOutUser();
     if (res.status === 'success') {
       setAuthUser(null);
+      setLoading(false);
     } else {
       console.error(res.message);
+      setLoading(false);
       throw new Error();
     }
-    setLoading(false);
   };
 
   const signup = async (data: SignUpParams) => {
@@ -54,11 +56,12 @@ const AuthUserProvider: React.FC = ({ children }) => {
     const res = await signUpUser(data);
     if (res.status === 'success') {
       setAuthUser(res.data);
+      setLoading(false);
     } else {
       console.error(res.message);
+      setLoading(false);
       throw new Error();
     }
-    setLoading(false);
   };
 
   const updateUser = async () => {
@@ -66,12 +69,13 @@ const AuthUserProvider: React.FC = ({ children }) => {
     const res = await getCurrentUser();
     if (res.status === 'success') {
       setAuthUser(res.data);
+      setLoading(false);
     } else {
       console.error(res.message);
       setAuthUser(null);
+      setLoading(false);
       throw new Error();
     }
-    setLoading(false);
   };
 
   return (

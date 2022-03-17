@@ -10,6 +10,7 @@ const Home: VFC = () => {
       <Link to="/signup">新規登録</Link>
       <Link to="/login">ログイン</Link>
       <Link to="/logout">ログアウト</Link>
+      <Link to="/user/post">ポスト</Link>
       <div>{user?.id}</div>
     </>
   );

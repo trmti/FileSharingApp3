@@ -15,10 +15,7 @@ import AuthUserProvider, {
   useUpdateUser,
 } from 'auth/AuthUserContext';
 import AppHeader from 'components/organisms/Header';
-import Home from 'pages/Home';
-import Signup from 'pages/Signup';
-import Login from 'pages/Login';
-import Logout from 'pages/Logout';
+import * as Pages from 'pages';
 import { colors } from 'app_design';
 
 const { Header, Content } = Layout;
@@ -35,9 +32,7 @@ const PrivateRoute: FC<RouteProps> = () => {
   const loading = useLoading();
   const user = useAuthUser();
   useEffect(() => {
-    (async () => {
-      await updateUser();
-    })();
+    updateUser();
   }, []);
   if (!loading) {
     return user !== null ? <Outlet /> : <Navigate to="/login" />;
@@ -51,18 +46,22 @@ export const App: VFC = () => {
     <>
       <AuthUserProvider>
         <BrowserRouter>
-          <Header>
-            <AppHeader />
-          </Header>
-          <Content>
+          <AppHeader />
+          <Content style={{ marginTop: '80px' }}>
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/logout" element={<Logout />} />
+              <Route path="/" element={<Pages.Home />} />
+              <Route path="/signup" element={<Pages.Signup />} />
+              <Route path="/login" element={<Pages.Login />} />
+              <Route path="/logout" element={<Pages.Logout />} />
 
               <Route path="/user" element={<PrivateRoute />}>
-                <Route path="/user" element={<Home />} />
+                <Route path="/user" element={<Pages.Home />} />
+                <Route path="/user/search" element={<Pages.Search />} />
+                <Route path="/user/build" element={<Pages.Build />} />
+                <Route
+                  path="/user/Notification"
+                  element={<Pages.Notification />}
+                />
               </Route>
             </Routes>
           </Content>
