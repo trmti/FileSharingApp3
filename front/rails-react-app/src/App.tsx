@@ -8,17 +8,18 @@ import {
   Route,
   RouteProps,
 } from 'react-router-dom';
-import { Layout } from 'antd';
+import { Layout, Avatar } from 'antd';
 import AuthUserProvider, {
   useLoading,
   useAuthUser,
   useUpdateUser,
 } from 'auth/AuthUserContext';
-import AppHeader from 'components/organisms/Header';
+import Header from 'components/organisms/Header';
+import Sider from 'components/organisms/Sider';
 import * as Pages from 'pages';
 import { colors } from 'app_design';
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 
 const GlobalStyles = createGlobalStyle`
   body {
@@ -26,6 +27,37 @@ const GlobalStyles = createGlobalStyle`
     background-color: ${colors.BG};
   }
 `;
+
+const siderProps = [
+  {
+    icon: (
+      <Avatar src={process.env.PUBLIC_URL + '/icon/Home.png'} size="small" />
+    ),
+    text: 'ホーム',
+    to: '/user',
+  },
+  {
+    icon: (
+      <Avatar src={process.env.PUBLIC_URL + '/icon/Search.png'} size="small" />
+    ),
+    text: '探す',
+    to: '/user/search',
+  },
+  {
+    icon: (
+      <Avatar src={process.env.PUBLIC_URL + '/icon/Build.png'} size="small" />
+    ),
+    text: '作る',
+    to: '/user/build',
+  },
+  {
+    icon: (
+      <Avatar src={process.env.PUBLIC_URL + '/icon/Bell.png'} size="small" />
+    ),
+    text: 'お知らせ',
+    to: '/user/Notification',
+  },
+];
 
 const PrivateRoute: FC<RouteProps> = () => {
   const updateUser = useUpdateUser();
@@ -46,8 +78,15 @@ export const App: VFC = () => {
     <>
       <AuthUserProvider>
         <BrowserRouter>
-          <AppHeader />
-          <Content style={{ marginTop: '80px' }}>
+          <Sider props={siderProps} />
+          <Header />
+          <Content
+            style={{
+              marginTop: '80px',
+              marginLeft: '200px',
+              backgroundColor: '#F9FCFF',
+            }}
+          >
             <Routes>
               <Route path="/" element={<Pages.Home />} />
               <Route path="/signup" element={<Pages.Signup />} />
