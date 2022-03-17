@@ -27,6 +27,8 @@ ActiveRecord::Schema.define(version: 2022_03_16_120007) do
     t.string "title", null: false
     t.text "description"
     t.bigint "post_id"
+    t.bigint "folder_id"
+    t.index ["folder_id"], name: "index_file_contents_on_folder_id"
     t.index ["post_id"], name: "index_file_contents_on_post_id"
   end
 
@@ -48,11 +50,11 @@ ActiveRecord::Schema.define(version: 2022_03_16_120007) do
     t.index ["image"], name: "index_posts_on_image", unique: true
   end
 
-  create_table "team_editors", force: :cascade do |t|
-    t.bigint "editor_id"
-    t.bigint "edit_team_id"
-    t.index ["edit_team_id"], name: "index_team_editors_on_edit_team_id"
-    t.index ["editor_id"], name: "index_team_editors_on_editor_id"
+  create_table "team_editors", id: false, force: :cascade do |t|
+    t.bigint "team_id"
+    t.bigint "user_id"
+    t.index ["team_id"], name: "index_team_editors_on_team_id"
+    t.index ["user_id"], name: "index_team_editors_on_user_id"
   end
 
   create_table "teams", force: :cascade do |t|
@@ -88,7 +90,6 @@ ActiveRecord::Schema.define(version: 2022_03_16_120007) do
     t.string "unconfirmed_email"
     t.string "name", null: false
     t.string "nickname"
-    t.string "image"
     t.string "email", null: false
     t.bigint "post_id"
     t.json "tokens"
@@ -101,7 +102,5 @@ ActiveRecord::Schema.define(version: 2022_03_16_120007) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
-  add_foreign_key "team_editors", "teams", column: "edit_team_id"
-  add_foreign_key "team_editors", "users", column: "editor_id"
   add_foreign_key "teams", "users", column: "leader_id"
 end

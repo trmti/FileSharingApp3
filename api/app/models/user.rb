@@ -7,6 +7,6 @@ class User < ActiveRecord::Base
         :recoverable, :rememberable, :validatable
   include DeviseTokenAuth::Concerns::User
   has_and_belongs_to_many :teams
-  has_and_belongs_to_many :edit_team, class_name: 'Team'
-  belongs_to :post
+  has_and_belongs_to_many :edit_teams, class_name: 'Team', join_table: 'team_editors'
+  belongs_to :post, optional: true
 end

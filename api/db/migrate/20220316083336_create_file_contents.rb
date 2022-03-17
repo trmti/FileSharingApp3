@@ -4,6 +4,7 @@ class CreateFileContents < ActiveRecord::Migration[5.2]
       t.string :title, null: false
       t.text :description
       t.belongs_to :post
+      t.belongs_to :folder
     end
   end
 end

@@ -1,5 +1,5 @@
 class Api::V1::UserController < ApplicationController
-  before_action :set_user, only: %i[ get_image create_image update_image ]
+  before_action :set_user, only: %i[ get_image create_image update_image get_teams ]
   def index
     @users = User.all
     render json: @users
@@ -20,6 +20,11 @@ class Api::V1::UserController < ApplicationController
     @user.post = @post
     @user.save!
     render json: @user
+  end
+
+  def get_teams
+    @teams = @user.teams
+    render json: @teams
   end
 
   private
