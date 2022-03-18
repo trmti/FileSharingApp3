@@ -4,7 +4,6 @@ import { getPosts } from 'db/post';
 const Post: VFC = () => {
   const handleGetPosts = async () => {
     const { data } = await getPosts();
-    console.log(data);
   };
 
   useEffect(() => {

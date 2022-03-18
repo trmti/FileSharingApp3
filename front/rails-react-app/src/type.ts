@@ -36,36 +36,47 @@ export interface User {
   updated_at?: Date;
 }
 
-export type UserData = {
-  data: User;
-};
-
 export type FetchFailed = {
   status: 'error';
   message: string;
 };
 
-export type FetchUserSuccess = {
+export type FetchSuccess<T> = {
   status: 'success';
-  data: User;
+  data: T;
 };
-
-export type FetchPostSuccess = {
-  status: 'success';
-  data: Post;
-};
-
-export type FetchUser = FetchUserSuccess | FetchFailed;
 
 export interface Post {
-  id: string;
-  image: {
-    url: string;
+  post: {
+    id: string;
+    image: {
+      url: string;
+    };
+    created_at?: Date;
+    updated_at?: Date;
   };
-  created_at?: Date;
-  updated_at?: Date;
 }
 
 export interface PostApiJson {
   posts: Post[];
 }
+
+export interface Team {
+  id: number;
+  name: string;
+  description: string;
+  publish_range: 'private' | 'public';
+  leader_id: number;
+  post_id?: number;
+  created_at?: Date;
+  updated_at?: Date;
+}
+
+export interface TeamApiJson {
+  teams: Team[];
+}
+
+export type TeamWithImage = Team & {
+  cover_image: string;
+  leader_image: string;
+};

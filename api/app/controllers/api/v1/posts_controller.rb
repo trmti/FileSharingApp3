@@ -1,8 +1,12 @@
 class Api::V1::PostsController < ApplicationController
-  before_action :set_post, only: %i[destroy]
+  before_action :set_post, only: %i[show destroy]
 
   def index
     render json: { posts: Post.all.order('created_at DESC')}
+  end
+
+  def show
+    render json: @post, status: :ok
   end
 
   def create

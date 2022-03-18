@@ -6,7 +6,10 @@ Rails.application.routes.draw do
       get "user/get_teams/:id", to: "user#get_teams"
       post "user/create_image/:id", to: "user#create_image"
       post "user/update_image/:id", to: "user#update_image"
-      resources :posts, only: %i[index create destroy]
+      post "user/create_team/:id", to: "user#create_team"
+
+      get "teams/get_teams_record/:limit/:offset", to: "teams#get_teams_record"
+      resources :posts, only: %i[index show create destroy]
 
       mount_devise_token_auth_for 'User', at: 'auth', controllers: {
         registrations: 'api/v1/auth/registrations'

@@ -2,11 +2,20 @@ import axios, { AxiosResponse } from 'axios';
 import {
   SignUpParams,
   SignInParams,
-  UserData,
-  FetchUserSuccess,
+  User,
+  Team,
+  TeamApiJson,
+  FetchSuccess,
   FetchFailed,
 } from 'type';
 import Cookies from 'js-cookie';
+
+type FetchUserSuccess = FetchSuccess<User>;
+type FetchTeamApiJsonSuccess = FetchSuccess<TeamApiJson>;
+
+type UserData = {
+  data: User;
+};
 
 const api_url = `${process.env.REACT_APP_API_HOST}/api/v1`;
 
@@ -35,11 +44,6 @@ export const signUpUser = (params: SignUpParams) => {
     .post(`${api_url}/auth`, params, { withCredentials: true })
     .then((prop: AxiosResponse<UserData>): FetchUserSuccess => {
       const data = prop.data.data;
-      const headers = prop.headers;
-      Cookies.set('_access_token', headers['access-token']);
-      Cookies.set('_client', headers.client);
-      Cookies.set('_uid', headers.uid);
-
       return { status: 'success', data };
     })
     .catch((): FetchFailed => {
@@ -117,6 +121,19 @@ export const getCurrentUser = () => {
         message: 'ユーザーの取得に失敗しました',
       };
       return res;
+    });
+  return res;
+};
+
+export const getTeamsByUserId = (userId: number) => {
+  const res = axios
+    .get(`${api_url}/user/get_teams/${userId}`)
+    .then((prop: AxiosResponse<TeamApiJson>): FetchTeamApiJsonSuccess => {
+      const data = prop.data;
+      return { status: 'success', data };
+    })
+    .catch((): FetchFailed => {
+      return { status: 'error', message: 'チームの取得に失敗しました' };
     });
   return res;
 };

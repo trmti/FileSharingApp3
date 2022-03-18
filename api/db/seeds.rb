@@ -12,6 +12,7 @@
   user.save
   5.times do |o|
     team = user.teams.create({name: "team#{o + 1}", description: "seed", leader_id: n+1, publish_range: "private"})
+    user.editable_teams << team
     5.times do |p|
       team.editors << user
       folder = team.folders.create({title: "folder#{p + 1}", description: "seed"})

@@ -2,6 +2,7 @@ import { VFC, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Avatar, Layout } from 'antd';
 import styles from './style.module.css';
+import { colors } from 'app_design';
 import { getPostByUserId } from 'db/post';
 import { useAuthUser } from 'auth/AuthUserContext';
 
@@ -16,7 +17,7 @@ const MyHeader: VFC = () => {
     if (authUser !== null && authUser.post_id) {
       const userImage = await getPostByUserId(authUser.id);
       if (userImage.status === 'success') {
-        setAvatarUrl(userImage.data.image.url);
+        setAvatarUrl(userImage.data.post.image.url);
       }
     }
   };
@@ -30,7 +31,7 @@ const MyHeader: VFC = () => {
         zIndex: 1,
         width: '100%',
         height: '80px',
-        backgroundColor: '#393e4f',
+        backgroundColor: colors.Header,
         display: 'flex',
         justifyContent: 'space-between',
         top: 0,

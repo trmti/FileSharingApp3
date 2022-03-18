@@ -1,7 +1,7 @@
 import React, { VFC } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu } from 'antd';
-import { Layout } from 'antd';
+import { Menu, Layout } from 'antd';
+import { colors } from 'app_design';
 
 const { Sider } = Layout;
 
@@ -20,13 +20,18 @@ const MySider: VFC<Props> = ({ props }) => {
         overflow: 'auto',
         height: '100vh',
         position: 'fixed',
-        backgroundColor: 'black',
+        zIndex: 2,
         left: 0,
         top: 80,
         bottom: 0,
       }}
     >
-      <Menu theme="dark" mode="inline" defaultSelectedKeys={['0']}>
+      <Menu
+        theme="dark"
+        mode="inline"
+        defaultSelectedKeys={['0']}
+        style={{ background: colors.Card }}
+      >
         {props.map((prop, index) => {
           return (
             <>
@@ -35,9 +40,18 @@ const MySider: VFC<Props> = ({ props }) => {
                 key={index}
                 style={{ height: 80, fontSize: 30 }}
               >
-                <Link to={prop.to}>{prop.text}</Link>
+                <Link
+                  to={prop.to}
+                  style={{
+                    color: colors.Text.Black,
+                    fontSize: 30,
+                    fontFamily: 'HiraKakuProN-W6',
+                  }}
+                >
+                  {prop.text}
+                </Link>
               </Menu.Item>
-              <Menu.Divider />
+              <Menu.Divider style={{ border: `2px solid ${colors.Border}` }} />
             </>
           );
         })}

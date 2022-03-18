@@ -52,7 +52,10 @@ const siderProps = [
   },
   {
     icon: (
-      <Avatar src={process.env.PUBLIC_URL + '/icon/Bell.png'} size="small" />
+      <Avatar
+        src={process.env.PUBLIC_URL + '/icon/Notification.png'}
+        size="small"
+      />
     ),
     text: 'お知らせ',
     to: '/user/Notification',
@@ -82,9 +85,9 @@ export const App: VFC = () => {
           <Header />
           <Content
             style={{
-              marginTop: '80px',
-              marginLeft: '200px',
-              backgroundColor: '#F9FCFF',
+              marginTop: '110px',
+              marginLeft: '280px',
+              backgroundColor: colors.BG,
             }}
           >
             <Routes>
