@@ -1,9 +1,10 @@
 import { VFC } from 'react';
 import { Form, Input, Button, Space, FormProps } from 'antd';
 import { colors, text_style } from 'app_design';
+import { SignUpParams } from 'type';
 
 type Props = {
-  onFinish: (value: {}) => void;
+  onFinish: (data: SignUpParams) => Promise<void>;
   onFinishFailed: () => void;
 } & FormProps;
 

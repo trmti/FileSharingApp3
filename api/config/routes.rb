@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       post "user/create_team/:id", to: "user#create_team"
 
       get "teams/get_teams_record/:limit/:offset", to: "teams#get_teams_record"
+      get "teams/search_teams/:text/:limit", to: "teams#search_teams"
       resources :posts, only: %i[index show create destroy]
 
       mount_devise_token_auth_for 'User', at: 'auth', controllers: {

@@ -9,6 +9,11 @@ class Api::V1::TeamsController < ApplicationController
     render json: { teams: Team.order(created_at: :desc).limit(params[:limit]).offset(params[:offset]) }
   end
 
+  def search_teams
+    @teams = Team.where('name LIKE ?', "%#{params[:text]}%").limit(params[:limit])
+    render json: { teams: @teams }
+  end
+
   private
     def set_team
       @team = Team.find(params[:id])

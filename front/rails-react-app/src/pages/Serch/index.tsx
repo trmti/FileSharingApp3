@@ -1,19 +1,35 @@
-import { VFC } from 'react';
-import { Link } from 'react-router-dom';
+import { VFC, useState, useEffect } from 'react';
 import { useAuthUser } from 'auth/AuthUserContext';
+import SearchTemp from 'components/templates/Search';
+import { makeCardData } from 'utils';
+import { searchTeams } from 'db/team';
+import { TeamWithImage } from 'type';
 
-const Home: VFC = () => {
+const Search: VFC = () => {
   const user = useAuthUser();
+  const [searchedTeams, setSearchedTeams] =
+    useState<TeamWithImage[] | null>(null);
+  const onClick = (id: number) => {
+    console.log(id);
+  };
+  const onPressEnter = async (e: any) => {
+    setSearchedTeams(null);
+    const text = e.target.value;
+    const res = await searchTeams(text, 10);
+    if (res.status === 'success') {
+      const teams: TeamWithImage[] = await makeCardData(res);
+      setSearchedTeams(teams);
+    }
+  };
   return (
     <>
-      <div>Home</div>
-      <Link to="/signup">新規登録</Link>
-      <Link to="/login">ログイン</Link>
-      <Link to="/logout">ログアウト</Link>
-      <Link to="/user/post">ポスト</Link>
-      <div>{user?.id}</div>
+      <SearchTemp
+        searchedTeams={searchedTeams}
+        onClickCard={onClick}
+        onPressEnter={onPressEnter}
+      />
     </>
   );
 };
 
-export default Home;
+export default Search;

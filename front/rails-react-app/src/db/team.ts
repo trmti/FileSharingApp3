@@ -31,3 +31,19 @@ export const getTeamsRecord = (
 
   return res;
 };
+
+export const searchTeams = (
+  text: string,
+  limit: number
+): Promise<FetchTeamApiJsonSuccess | FetchFailed> => {
+  const res = client
+    .get(`/teams/search_teams/${text}/${limit}`)
+    .then((prop: AxiosResponse<TeamApiJson>): FetchTeamApiJsonSuccess => {
+      const teams = prop.data.teams;
+      return { status: 'success', data: { teams } };
+    })
+    .catch((): FetchFailed => {
+      return { status: 'error', message: 'チームの取得に失敗しました' };
+    });
+  return res;
+};

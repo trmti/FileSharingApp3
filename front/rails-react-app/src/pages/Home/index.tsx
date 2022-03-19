@@ -3,24 +3,9 @@ import { useAuthUser } from 'auth/AuthUserContext';
 import { getTeamsRecord } from 'db/team';
 import { showPosts, getPostByUserId } from 'db/post';
 import { getTeamsByUserId } from 'db/user';
-import { TeamWithImage } from 'type';
+import { TeamWithImage, FetchSuccess, TeamApiJson } from 'type';
+import { makeCardData } from 'utils';
 import HomeTemp from 'components/templates/Home';
-
-const defaultCoverImage = {
-  data: {
-    post: {
-      image: { url: 'http://localhost:8000/logo192.png' },
-    },
-  },
-};
-
-const defaultUserImage = {
-  data: {
-    post: {
-      image: { url: 'http://localhost:8000/logo192.png' },
-    },
-  },
-};
 
 const Home: FC = () => {
   const [recentlyTeams, setrecentlyTeams] =
@@ -40,22 +25,9 @@ const Home: FC = () => {
   useEffect(() => {
     if (user) {
       (async () => {
-        const team = await getTeamsByUserId(user.id);
-        if (team.status === 'success') {
-          const teams: TeamWithImage[] = await Promise.all(
-            team.data.teams.map(async (team) => {
-              const cover_post = team.post_id
-                ? await showPosts(team.post_id)
-                : defaultCoverImage;
-              const leader_post = await getPostByUserId(team.leader_id);
-              const leader_image =
-                leader_post.status === 'success'
-                  ? leader_post.data.post.image.url
-                  : defaultUserImage.data.post.image.url;
-              const cover_image = cover_post.data.post.image.url;
-              return { ...team, cover_image, leader_image };
-            })
-          );
+        const res = await getTeamsByUserId(user.id);
+        if (res.status === 'success') {
+          const teams: TeamWithImage[] = await makeCardData(res);
           setJoinTeams(teams);
         }
       })();
@@ -65,22 +37,9 @@ const Home: FC = () => {
   // 最近追加されたチームの取得
   useEffect(() => {
     (async () => {
-      const team = await getTeamsRecord(10, 0);
-      if (team.status === 'success') {
-        const teams: TeamWithImage[] = await Promise.all(
-          team.data.teams.map(async (team) => {
-            const cover_post = team.post_id
-              ? await showPosts(team.post_id)
-              : defaultCoverImage;
-            const leader_post = await getPostByUserId(team.leader_id);
-            const leader_image =
-              leader_post.status === 'success'
-                ? leader_post.data.post.image.url
-                : defaultUserImage.data.post.image.url;
-            const cover_image = cover_post.data.post.image.url;
-            return { ...team, cover_image, leader_image };
-          })
-        );
+      const res = await getTeamsRecord(10, 0);
+      if (res.status === 'success') {
+        const teams: TeamWithImage[] = await makeCardData(res);
         setrecentlyTeams(teams);
       }
     })();

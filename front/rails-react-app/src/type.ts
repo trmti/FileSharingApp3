@@ -21,6 +21,12 @@ export interface SignInParams {
   password: string;
 }
 
+export interface BuildTeamParams {
+  name: string;
+  description: string;
+  authority: 'public' | 'private';
+}
+
 // ユーザー
 export interface User {
   id: number;
