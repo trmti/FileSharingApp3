@@ -22,8 +22,18 @@ const JoinTeam: FC<Props> = ({ recentlyTeams, onClick }) => {
                 return (
                   <Col key={id}>
                     <Card
-                      style={{ width: 250, height: 350 }}
-                      cover={<img alt="team" src={cover_image} />}
+                      style={{ width: 300, height: 350 }}
+                      cover={
+                        <img
+                          alt="team"
+                          src={cover_image}
+                          height={250}
+                          width="auto"
+                          style={{
+                            objectFit: 'cover',
+                          }}
+                        />
+                      }
                       bodyStyle={{ backgroundColor: colors.Card }}
                       onClick={() => onClick(id)}
                       hoverable

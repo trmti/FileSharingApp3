@@ -1,9 +1,8 @@
 import { FC, useState, useEffect } from 'react';
 import { useAuthUser } from 'auth/AuthUserContext';
 import { getTeamsRecord } from 'db/team';
-import { showPosts, getPostByUserId } from 'db/post';
 import { getTeamsByUserId } from 'db/user';
-import { TeamWithImage, FetchSuccess, TeamApiJson } from 'type';
+import { TeamWithImage } from 'type';
 import { makeCardData } from 'utils';
 import HomeTemp from 'components/templates/Home';
 

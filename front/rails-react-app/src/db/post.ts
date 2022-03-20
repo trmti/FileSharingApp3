@@ -21,8 +21,19 @@ export const getPosts = (): AxiosPromise<PostApiJson> => {
   return client.get('/posts');
 };
 
-export const showPosts = (id: number): AxiosPromise<Post> => {
-  return client.get(`/posts/${id}`);
+export const showPost = (
+  id: number
+): Promise<FetchPostSuccess | FetchFailed> => {
+  const res = client
+    .get(`/posts/${id}`)
+    .then((prop: AxiosResponse<Post>): FetchPostSuccess => {
+      const post = prop.data;
+      return { status: 'success', data: post };
+    })
+    .catch((): FetchFailed => {
+      return { status: 'error', message: 'カバー画像の取得に失敗しました' };
+    });
+  return res;
 };
 
 export const createPost = (data: FormData): AxiosPromise => {
@@ -39,8 +50,8 @@ export const getPostByUserId = (
   const res = client
     .get(`/user/get_image/${userId}`)
     .then((prop: AxiosResponse<Post>): FetchPostSuccess => {
-      const post = prop.data.post;
-      return { status: 'success', data: { post } };
+      const data = prop.data;
+      return { status: 'success', data };
     })
     .catch((): FetchFailed => {
       return { status: 'error', message: 'ユーザー画像の取得に失敗しました。' };

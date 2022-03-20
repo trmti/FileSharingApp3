@@ -21,13 +21,23 @@ const SearchTeam: FC<Props> = ({ searchedTeams, onClickCard }) => {
             overflowY: 'hidden',
           }}
         >
-          <Row gutter={[100, 100]}>
+          <Row gutter={[50, 100]}>
             {searchedTeams.map(
               ({ cover_image, leader_image, name, description, id }) => {
                 return (
                   <Col key={id} span={8}>
                     <Card
-                      cover={<img alt="team" src={cover_image} />}
+                      cover={
+                        <img
+                          alt="team"
+                          src={cover_image}
+                          width="33%"
+                          style={{
+                            aspectRatio: '1/1',
+                            objectFit: 'cover',
+                          }}
+                        />
+                      }
                       bodyStyle={{ backgroundColor: colors.Card }}
                       onClick={() => onClickCard(id)}
                       hoverable

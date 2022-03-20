@@ -1,3 +1,5 @@
+import { UploadFile } from 'antd/lib/upload/interface';
+
 export type text_style_type = {
   font_family: string[];
   font_size: string;
@@ -24,7 +26,8 @@ export interface SignInParams {
 export interface BuildTeamParams {
   name: string;
   description: string;
-  authority: 'public' | 'private';
+  publish_range: 'public' | 'private';
+  file: UploadFile | null;
 }
 
 // ユーザー
@@ -53,14 +56,12 @@ export type FetchSuccess<T> = {
 };
 
 export interface Post {
-  post: {
-    id: string;
-    image: {
-      url: string;
-    };
-    created_at?: Date;
-    updated_at?: Date;
+  id: string;
+  image: {
+    url: string;
   };
+  created_at?: Date;
+  updated_at?: Date;
 }
 
 export interface PostApiJson {

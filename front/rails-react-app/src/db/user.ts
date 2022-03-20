@@ -3,7 +3,6 @@ import {
   SignUpParams,
   SignInParams,
   User,
-  Team,
   TeamApiJson,
   FetchSuccess,
   FetchFailed,
@@ -12,6 +11,9 @@ import Cookies from 'js-cookie';
 
 type FetchUserSuccess = FetchSuccess<User>;
 type FetchTeamApiJsonSuccess = FetchSuccess<TeamApiJson>;
+type LogOutSuccess = {
+  success: true;
+};
 
 type UserData = {
   data: User;
@@ -64,18 +66,15 @@ export const logOutUser = () => {
         uid: Cookies.get('_uid') || '',
       },
     })
-    .then((prop: AxiosResponse<UserData>): FetchUserSuccess => {
+    .then((prop: AxiosResponse<LogOutSuccess>): boolean => {
       Cookies.remove('_access_token');
       Cookies.remove('_client');
       Cookies.remove('_uid');
-      const data = prop.data.data;
-      return { status: 'success', data };
+      const data = prop.data.success;
+      return data;
     })
-    .catch((): FetchFailed => {
-      return {
-        status: 'error',
-        message: 'ログアウトに失敗しました',
-      };
+    .catch((): boolean => {
+      return false;
     });
   return res;
 };
@@ -127,7 +126,7 @@ export const getCurrentUser = () => {
 
 export const getTeamsByUserId = (userId: number) => {
   const res = axios
-    .get(`${api_url}/user/get_teams/${userId}`)
+    .get(`${api_url}/user/get_join_teams/${userId}`)
     .then((prop: AxiosResponse<TeamApiJson>): FetchTeamApiJsonSuccess => {
       const data = prop.data;
       return { status: 'success', data };

@@ -1,19 +1,66 @@
-import axios, { AxiosInstance, AxiosResponse, AxiosPromise } from 'axios';
-import { TeamApiJson, Team, FetchFailed, FetchSuccess } from 'type';
+import { AxiosResponse } from 'axios';
+import { createFormData } from 'utils';
+import { client, fileClient } from './client';
+import {
+  TeamApiJson,
+  Team,
+  Post,
+  FetchFailed,
+  FetchSuccess,
+  BuildTeamParams,
+} from 'type';
 
+type FetchPostSuccess = FetchSuccess<Post>;
 type FetchTeamSuccess = FetchSuccess<Team>;
 type FetchTeamApiJsonSuccess = FetchSuccess<TeamApiJson>;
 
-let client: AxiosInstance;
+const createPost = (
+  id: number,
+  image: FormData
+): Promise<FetchPostSuccess | FetchFailed> => {
+  const res = fileClient
+    .post(`/teams/create_image/${id}`, image)
+    .then((prop: AxiosResponse<Post>): FetchPostSuccess => {
+      console.log(prop);
+      return { status: 'success', data: prop.data };
+    })
+    .catch((): FetchFailed => {
+      return { status: 'error', message: 'イメージが作れませんでした' };
+    });
+  return res;
+};
 
-client = axios.create({
-  baseURL: 'http://localhost:3000/api/v1',
-});
+export const createTeam = (
+  params: BuildTeamParams,
+  leader_id: number
+): Promise<FetchTeamSuccess | FetchFailed> => {
+  const { file, ...otherParams } = params;
+  const res = client
+    .post(`/user/create_team/${leader_id}`, { ...otherParams })
+    .then((prop: AxiosResponse<Team>) => {
+      const team = prop.data;
+      return { id: team.id, file, team };
+    })
+    .then(({ id, file, team }): FetchTeamSuccess | FetchFailed => {
+      if (file) {
+        const image = createFormData('image', file);
+        const res = createPost(id, image);
+        return { status: 'success', data: team };
+      } else {
+        return { status: 'error', message: 'ファイルが選択されていません' };
+      }
+    })
+    .catch((): FetchFailed => {
+      return { status: 'error', message: 'チームの取得に失敗しました' };
+    });
+  return res;
+};
 
-client.interceptors.response.use((response: AxiosResponse): AxiosResponse => {
-  const data = response.data;
-  return { ...response.data, data };
-});
+// export const createPost = async (image: any) => {
+//   const formData = new FormData();
+//   formData.append('image', image);
+//   fileClient.post(`/posts`, formData);
+// };
 
 export const getTeamsRecord = (
   limit: number,

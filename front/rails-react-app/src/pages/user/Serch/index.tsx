@@ -6,7 +6,6 @@ import { searchTeams } from 'db/team';
 import { TeamWithImage } from 'type';
 
 const Search: VFC = () => {
-  const user = useAuthUser();
   const [searchedTeams, setSearchedTeams] =
     useState<TeamWithImage[] | null>(null);
   const onClick = (id: number) => {

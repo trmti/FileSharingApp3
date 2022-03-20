@@ -12,7 +12,6 @@ const Login: VFC = () => {
   const login = useLogin();
   const navigate = useNavigate();
   const onFinish = async (data: SignUpParams) => {
-    console.log('finish');
     try {
       await login({ email: data.email, password: data.password });
       navigate('../user');

@@ -86,12 +86,12 @@ export const App: VFC = () => {
           <Content
             style={{
               marginTop: '110px',
-              marginLeft: '280px',
+              marginLeft: '380px',
               backgroundColor: colors.BG,
             }}
           >
             <Routes>
-              <Route path="/" element={<Pages.Home />} />
+              <Route path="/" element={<Pages.Notification />} />
               <Route path="/signup" element={<Pages.Signup />} />
               <Route path="/login" element={<Pages.Login />} />
               <Route path="/logout" element={<Pages.Logout />} />

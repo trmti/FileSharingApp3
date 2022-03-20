@@ -1,11 +1,11 @@
 class Api::V1::UserController < ApplicationController
-  before_action :set_user, exept: %i[ index ]
+  before_action :set_user, exept: %i[ index create_team ]
   def index
     render json: { users: User.all.order('created_at DESC')}
   end
 
   def get_image
-    render json: { post: @user.post}
+    render json: @user.post
   end
 
   def create_image
@@ -26,7 +26,7 @@ class Api::V1::UserController < ApplicationController
     end
   end
 
-  def get_teams
+  def get_join_teams
     render json: { teams: @user.teams.order('created_at DESC')}, status: :ok
   end
 
@@ -47,6 +47,6 @@ class Api::V1::UserController < ApplicationController
       params.require(:user).permit(:image)
     end
     def team_params
-      params.require(:team).permit(:name, :description, :publish_range)
+      params.require(:team).permit(:name, :description, :publish_range, :image)
     end
 end

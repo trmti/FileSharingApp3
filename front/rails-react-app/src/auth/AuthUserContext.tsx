@@ -41,11 +41,10 @@ const AuthUserProvider: React.FC = ({ children }) => {
   const logout = async () => {
     setLoading(true);
     const res = await logOutUser();
-    if (res.status === 'success') {
+    if (res) {
       setAuthUser(null);
       setLoading(false);
     } else {
-      console.error(res.message);
       setLoading(false);
       throw new Error();
     }
@@ -53,12 +52,20 @@ const AuthUserProvider: React.FC = ({ children }) => {
 
   const signup = async (data: SignUpParams) => {
     setLoading(true);
-    const res = await signUpUser(data);
-    if (res.status === 'success') {
-      setAuthUser(res.data);
+    const signupRes = await signUpUser(data);
+    if (signupRes.status === 'success') {
+      const loginRes = await loginUser({
+        email: data.email,
+        password: data.password,
+      });
+      if (loginRes.status === 'success') {
+        setAuthUser(loginRes.data);
+      } else {
+        console.error(loginRes.message);
+      }
       setLoading(false);
     } else {
-      console.error(res.message);
+      console.error(signupRes.message);
       setLoading(false);
       throw new Error();
     }

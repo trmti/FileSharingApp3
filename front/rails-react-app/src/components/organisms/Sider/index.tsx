@@ -25,6 +25,7 @@ const MySider: VFC<Props> = ({ props }) => {
         top: 80,
         bottom: 0,
       }}
+      width={300}
     >
       <Menu
         theme="dark"

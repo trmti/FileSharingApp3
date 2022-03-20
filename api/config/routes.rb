@@ -3,13 +3,14 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :user, only: %i[index]
       get "user/get_image/:id", to: "user#get_image"
-      get "user/get_teams/:id", to: "user#get_teams"
+      get "user/get_join_teams/:id", to: "user#get_join_teams"
       post "user/create_image/:id", to: "user#create_image"
       post "user/update_image/:id", to: "user#update_image"
       post "user/create_team/:id", to: "user#create_team"
-
+      
       get "teams/get_teams_record/:limit/:offset", to: "teams#get_teams_record"
       get "teams/search_teams/:text/:limit", to: "teams#search_teams"
+      post "teams/create_image/:id", to: "teams#create_image"
       resources :posts, only: %i[index show create destroy]
 
       mount_devise_token_auth_for 'User', at: 'auth', controllers: {

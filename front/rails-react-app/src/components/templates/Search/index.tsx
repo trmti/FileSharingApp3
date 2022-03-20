@@ -13,7 +13,7 @@ type Props = {
 const Search: FC<Props> = ({ searchedTeams, onClickCard, onPressEnter }) => {
   return (
     <>
-      <div style={{ width: '80%', margin: '0 auto', textAlign: 'center' }}>
+      <div style={{ width: '90%', margin: '0 auto', textAlign: 'center' }}>
         <TitleWithLine style={{ display: 'block' }}>チームを探す</TitleWithLine>
         <Input
           placeholder="Search Team By Name or Label"

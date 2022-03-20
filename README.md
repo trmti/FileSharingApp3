@@ -1,7 +1,7 @@
 # 初期設定
 
-docker-compose run front sh -c "npm --prefix ./rails-react-app install ./rails-react-app"
 docker-compose build
+(初回起動時と Gemfile や package.json を変更した際に Build をしてください。)
 
 # サーバーの立ち上げ
 

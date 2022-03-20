@@ -22,11 +22,18 @@ const JoinTeam: VFC<Props> = ({ joinTeams, onClick }) => {
                   <Col key={id}>
                     <Card
                       style={{
-                        width: 250,
+                        width: 300,
                         height: 350,
                       }}
                       bodyStyle={{ backgroundColor: colors.Card }}
-                      cover={<img alt="team" src={cover_image} />}
+                      cover={
+                        <img
+                          alt="team"
+                          src={cover_image}
+                          width="auto"
+                          height={250}
+                        />
+                      }
                       onClick={() => onClick(id)}
                       hoverable
                     >

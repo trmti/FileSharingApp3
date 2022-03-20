@@ -17,7 +17,7 @@ const MyHeader: VFC = () => {
     if (authUser !== null && authUser.post_id) {
       const userImage = await getPostByUserId(authUser.id);
       if (userImage.status === 'success') {
-        setAvatarUrl(userImage.data.post.image.url);
+        setAvatarUrl(userImage.data.image.url);
       }
     }
   };
