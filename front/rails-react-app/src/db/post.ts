@@ -6,7 +6,7 @@ let client: AxiosInstance;
 type FetchPostSuccess = FetchSuccess<Post>;
 
 client = axios.create({
-  baseURL: 'http://localhost:3000/api/v1',
+  baseURL: `${process.env.REACT_APP_API_HOST}/api/v1`,
   headers: {
     'Content-Type': 'multipart/form-data',
   },
