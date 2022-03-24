@@ -29,7 +29,7 @@ const SearchTeam: FC<Props> = ({ searchedTeams, onClickCard }) => {
                 team: { name, description, id },
               }) => {
                 return (
-                  <Col key={id} span={8}>
+                  <Col key={id} xxl={6} lg={8} md={12} xs={24}>
                     <Card
                       cover={
                         <img

@@ -14,7 +14,7 @@ const Login: VFC = () => {
   const onFinish = async (data: SignUpParams) => {
     try {
       await login({ email: data.email, password: data.password });
-      navigate('/user');
+      navigate(-1);
     } catch {
       message.error('ユーザーが存在しません。');
     }

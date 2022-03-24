@@ -4,7 +4,7 @@ import { File, FetchSuccess, FetchFailed } from 'type';
 
 type FetchFilesSuccess = FetchSuccess<File[]>;
 
-export const getFilesFromFolderId = (
+export const getFilesByFolderId = (
   id: number
 ): Promise<FetchFilesSuccess | FetchFailed> => {
   const res = client
