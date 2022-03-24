@@ -55,7 +55,7 @@ const JoinTeam: VFC<Props> = ({ joinTeams, onClick }) => {
     return (
       <Typography
         style={{
-          fontSize: text_style.Title_M.font_size,
+          fontSize: text_style.Title_M.fontSize,
           margin: '50px 0 40px 100px',
           color: colors.Text.Gray,
         }}

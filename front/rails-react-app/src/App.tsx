@@ -91,19 +91,23 @@ export const App: VFC = () => {
             }}
           >
             <Routes>
-              <Route path="/" element={<Pages.Notification />} />
+              <Route path="/" element={<Pages.UserNotification />} />
               <Route path="/signup" element={<Pages.Signup />} />
               <Route path="/login" element={<Pages.Login />} />
               <Route path="/logout" element={<Pages.Logout />} />
 
               <Route path="/user" element={<PrivateRoute />}>
-                <Route path="/user" element={<Pages.Home />} />
-                <Route path="/user/search" element={<Pages.Search />} />
-                <Route path="/user/build" element={<Pages.Build />} />
+                <Route path="/user" element={<Pages.UserHome />} />
+                <Route path="/user/search" element={<Pages.UserSearch />} />
+                <Route path="/user/build" element={<Pages.UserBuild />} />
                 <Route
                   path="/user/Notification"
-                  element={<Pages.Notification />}
+                  element={<Pages.UserNotification />}
                 />
+
+                <Route path="/user/team/:id" element={<Pages.TeamHome />} />
+
+                <Route path="*" element={<Pages.Login />} />
               </Route>
             </Routes>
           </Content>

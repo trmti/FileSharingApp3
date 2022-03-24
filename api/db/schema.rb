@@ -47,7 +47,7 @@ ActiveRecord::Schema.define(version: 2022_03_16_120007) do
     t.string "image", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["image"], name: "index_posts_on_image", unique: true
+    t.index ["image"], name: "index_posts_on_image"
   end
 
   create_table "team_editors", id: false, force: :cascade do |t|

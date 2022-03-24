@@ -5,6 +5,7 @@ import {
   TeamApiJson,
   Team,
   Post,
+  User,
   FetchFailed,
   FetchSuccess,
   BuildTeamParams,
@@ -13,15 +14,30 @@ import {
 type FetchPostSuccess = FetchSuccess<Post>;
 type FetchTeamSuccess = FetchSuccess<Team>;
 type FetchTeamApiJsonSuccess = FetchSuccess<TeamApiJson>;
+type FetchUsersSuccess = FetchSuccess<User[]>;
 
-const createPost = (
+export const getTeamById = (
+  teamId: number
+): Promise<FetchTeamSuccess | FetchFailed> => {
+  const res = client
+    .get(`/teams/${teamId}`)
+    .then((prop: AxiosResponse<Team>): FetchTeamSuccess => {
+      return { status: 'success', data: prop.data };
+    })
+    .catch((): FetchFailed => {
+      return { status: 'error', message: 'チームが見つかりませんでした' };
+    });
+
+  return res;
+};
+
+const createImage = (
   id: number,
   image: FormData
 ): Promise<FetchPostSuccess | FetchFailed> => {
   const res = fileClient
     .post(`/teams/create_image/${id}`, image)
     .then((prop: AxiosResponse<Post>): FetchPostSuccess => {
-      console.log(prop);
       return { status: 'success', data: prop.data };
     })
     .catch((): FetchFailed => {
@@ -44,7 +60,7 @@ export const createTeam = (
     .then(({ id, file, team }): FetchTeamSuccess | FetchFailed => {
       if (file) {
         const image = createFormData('image', file);
-        const res = createPost(id, image);
+        createImage(id, image);
         return { status: 'success', data: team };
       } else {
         return { status: 'error', message: 'ファイルが選択されていません' };
@@ -56,11 +72,35 @@ export const createTeam = (
   return res;
 };
 
-// export const createPost = async (image: any) => {
-//   const formData = new FormData();
-//   formData.append('image', image);
-//   fileClient.post(`/posts`, formData);
-// };
+export const getUsers = (
+  teamId: number
+): Promise<FetchUsersSuccess | FetchFailed> => {
+  const res = client
+    .get(`/teams/get_users/${teamId}`)
+    .then((prop: AxiosResponse<User[]>): FetchUsersSuccess => {
+      const users = prop.data;
+      return { status: 'success', data: users };
+    })
+    .catch((): FetchFailed => {
+      return { status: 'error', message: 'ユーザー一覧の取得に失敗しました' };
+    });
+  return res;
+};
+
+export const getEditors = (
+  teamId: number
+): Promise<FetchUsersSuccess | FetchFailed> => {
+  const res = client
+    .get(`/teams/get_editors/${teamId}`)
+    .then((prop: AxiosResponse<User[]>): FetchUsersSuccess => {
+      const editors = prop.data;
+      return { status: 'success', data: editors };
+    })
+    .catch((): FetchFailed => {
+      return { status: 'error', message: 'ユーザー一覧の取得に失敗しました' };
+    });
+  return res;
+};
 
 export const getTeamsRecord = (
   limit: number,

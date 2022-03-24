@@ -1,23 +1,25 @@
 import { FC, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuthUser } from 'auth/AuthUserContext';
 import { getTeamsRecord } from 'db/team';
 import { getTeamsByUserId } from 'db/user';
 import { TeamWithImage } from 'type';
-import { makeCardData } from 'utils';
+import { createTeamCard } from 'utils/user';
 import HomeTemp from 'components/templates/Home';
 
 const Home: FC = () => {
+  const navigate = useNavigate();
   const [recentlyTeams, setrecentlyTeams] =
     useState<TeamWithImage[] | null>(null);
   const user = useAuthUser();
   const [joinTeams, setJoinTeams] = useState<TeamWithImage[] | null>(null);
 
   const onClickJoinTeams = (id: number) => {
-    console.log(id);
+    navigate(`../team/${id}`);
   };
 
   const onClickRecentlyTeams = (id: number) => {
-    console.log(id);
+    navigate(`../team/${id}`);
   };
 
   // ユーザーが参加しているチームの取得
@@ -26,11 +28,12 @@ const Home: FC = () => {
       (async () => {
         const res = await getTeamsByUserId(user.id);
         if (res.status === 'success') {
-          const teams: TeamWithImage[] = await makeCardData(res);
+          const teams: TeamWithImage[] = await createTeamCard(res);
           setJoinTeams(teams);
         }
       })();
     }
+    return;
   }, []);
 
   // 最近追加されたチームの取得
@@ -38,7 +41,7 @@ const Home: FC = () => {
     (async () => {
       const res = await getTeamsRecord(10, 0);
       if (res.status === 'success') {
-        const teams: TeamWithImage[] = await makeCardData(res);
+        const teams: TeamWithImage[] = await createTeamCard(res);
         setrecentlyTeams(teams);
       }
     })();

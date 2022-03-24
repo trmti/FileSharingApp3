@@ -12,6 +12,7 @@ import {
 import { UploadFile } from 'antd/lib/upload/interface';
 import ImgCrop from 'antd-img-crop';
 import { BuildTeamParams } from 'type';
+import { useLoading } from 'auth/AuthUserContext';
 import { colors, text_style } from 'app_design';
 
 const { Title } = Typography;
@@ -23,13 +24,13 @@ type Props = {
 } & FormProps;
 
 const FormBuildTeam: FC<Props> = ({ onFinish, onFinishFailed, ...other }) => {
+  const loading = useLoading();
   const [file, setFile] = useState<UploadFile | null>(null);
   const props = {
     beforeUpload: () => {
       return false;
     },
     onChange: (data: any) => {
-      console.log(data.file);
       setFile(data.file);
       return false;
     },
@@ -79,7 +80,7 @@ const FormBuildTeam: FC<Props> = ({ onFinish, onFinishFailed, ...other }) => {
             </Select>
           </Form.Item>
           <Form.Item label={<Title>File</Title>}>
-            <ImgCrop aspect={6 / 7} rotate>
+            <ImgCrop aspect={5 / 3} rotate>
               <Upload {...props} accept=".png, .jpg, .jpeg">
                 <Button>select File</Button>
               </Upload>
@@ -92,14 +93,15 @@ const FormBuildTeam: FC<Props> = ({ onFinish, onFinishFailed, ...other }) => {
             htmlType="submit"
             shape="round"
             size="large"
+            disabled={loading}
             style={{
               width: '180px',
               height: '60px',
               marginTop: '40px',
               marginLeft: '40px',
               color: colors.Text.Gray,
-              fontSize: text_style.Button.font_size,
-              letterSpacing: text_style.Button.letter_spacing,
+              fontSize: text_style.Button.fontSize,
+              letterSpacing: text_style.Button.letterSpacing,
             }}
           >
             作成

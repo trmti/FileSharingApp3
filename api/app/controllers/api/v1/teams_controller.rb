@@ -1,8 +1,24 @@
 class Api::V1::TeamsController < ApplicationController
-  before_action :set_team, only: %i[create_image]
+  before_action :set_team, only: %i[show create_image get_users get_editors get_folders]
 
   def index
     render json: { teams: Team.all.order('created_at DESC')}
+  end
+
+  def show
+    render json: @team, status: :ok
+  end
+
+  def get_users
+    render json: @team.users.order('created_at DESC'), status: :ok
+  end
+
+  def get_editors
+    render json: @team.editors.order('created_at DESC'), status: :ok
+  end
+
+  def get_folders
+    render json: @team.folders.order('created_at DESC'), status: :ok
   end
 
   def create_image

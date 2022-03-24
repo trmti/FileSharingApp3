@@ -51,8 +51,8 @@ const FormLogin: VFC<Props> = (props) => {
               marginTop: '40px',
               marginLeft: '40px',
               color: colors.Text.Gray,
-              fontSize: text_style.Button.font_size,
-              letterSpacing: text_style.Button.letter_spacing,
+              fontSize: text_style.Button.fontSize,
+              letterSpacing: text_style.Button.letterSpacing,
             }}
           >
             登録

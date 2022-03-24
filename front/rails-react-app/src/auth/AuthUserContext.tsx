@@ -1,24 +1,18 @@
 import React, { createContext, useContext, useState } from 'react';
-import { loginUser, logOutUser, signUpUser, getCurrentUser } from 'db/user';
+import { loginUser, logOutUser, signUpUser, getCurrentUser } from 'db/auth';
 import { User, SignInParams, SignUpParams } from 'type';
 
-type Props = {
-  login: (props: SignInParams) => Promise<void>;
-  logout: () => Promise<void>;
-  signup: (props: SignUpParams) => Promise<void>;
-  updateUser: () => Promise<void>;
-  authUser: User | null;
-  loading: boolean;
-};
-
-const AuthUserContext = createContext<Props>({
-  login: async (_) => console.error('Providerが設定されていません'),
-  logout: async () => console.error('Providerが設定されていません'),
-  signup: async () => console.error('Providerが設定されていません'),
-  updateUser: async () => console.error('Providerが設定されていません'),
-  authUser: null,
-  loading: true,
-});
+const AuthUserContext = createContext(
+  {} as {
+    login: (props: SignInParams) => Promise<void>;
+    logout: () => Promise<void>;
+    signup: (props: SignUpParams) => Promise<void>;
+    updateUser: () => Promise<void>;
+    authUser: User | null;
+    loading: boolean;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  }
+);
 
 const AuthUserProvider: React.FC = ({ children }) => {
   const [authUser, setAuthUser] = useState<User | null>(null);
@@ -87,7 +81,15 @@ const AuthUserProvider: React.FC = ({ children }) => {
 
   return (
     <AuthUserContext.Provider
-      value={{ login, logout, signup, updateUser, loading, authUser }}
+      value={{
+        login,
+        logout,
+        signup,
+        updateUser,
+        loading,
+        setLoading,
+        authUser,
+      }}
     >
       {children}
     </AuthUserContext.Provider>
@@ -99,6 +101,7 @@ export const useLogout = () => useContext(AuthUserContext).logout;
 export const useSignup = () => useContext(AuthUserContext).signup;
 export const useUpdateUser = () => useContext(AuthUserContext).updateUser;
 export const useLoading = () => useContext(AuthUserContext).loading;
+export const useSetLoading = () => useContext(AuthUserContext).setLoading;
 export const useAuthUser = () => useContext(AuthUserContext).authUser;
 
 export default AuthUserProvider;

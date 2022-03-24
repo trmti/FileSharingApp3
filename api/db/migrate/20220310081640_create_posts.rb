@@ -5,6 +5,6 @@ class CreatePosts < ActiveRecord::Migration[5.2]
 
       t.timestamps
     end
-    add_index :posts, :image, unique: true
+    add_index :posts, :image
   end
 end
