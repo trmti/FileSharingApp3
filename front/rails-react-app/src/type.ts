@@ -1,3 +1,5 @@
+import { UploadFile } from 'antd/lib/upload/interface';
+
 export type text_style_type = {
   font_family: string[];
   font_size: string;
@@ -6,6 +8,7 @@ export type text_style_type = {
 
 export type pixel = `${number}px`;
 export type percent = `${number}%`;
+export type publish_range = 'private' | 'public';
 
 // サインアップ
 export interface SignUpParams {
@@ -21,6 +24,13 @@ export interface SignInParams {
   password: string;
 }
 
+export interface BuildTeamParams {
+  name: string;
+  description: string;
+  publish_range: publish_range;
+  file: UploadFile | null;
+}
+
 // ユーザー
 export interface User {
   id: number;
@@ -30,23 +40,91 @@ export interface User {
   name: string;
   nickname?: string;
   image?: string;
+  post_id?: number;
   allowPasswordChange: boolean;
   created_at?: Date;
   updated_at?: Date;
 }
-
-export type UserData = {
-  data: User;
-};
-
-export type FetchUserSuccess = {
-  status: 'success';
-  data: User;
-};
 
 export type FetchFailed = {
   status: 'error';
   message: string;
 };
 
-export type FetchUser = FetchUserSuccess | FetchFailed;
+export type FetchSuccess<T> = {
+  status: 'success';
+  data: T;
+};
+
+export interface Post {
+  id: string;
+  image: {
+    url: string;
+  };
+  created_at?: Date;
+  updated_at?: Date;
+}
+
+export interface PostApiJson {
+  posts: Post[];
+}
+
+export interface UserImageAndName {
+  image: string | null;
+  name: string;
+}
+
+export interface Team {
+  id: number;
+  name: string;
+  description: string;
+  publish_range: publish_range;
+  leader_id: number;
+  post_id?: number;
+  created_at?: Date;
+  updated_at?: Date;
+}
+
+export interface TeamWithImage {
+  team: Team;
+  leader_image: string | null;
+  cover_image: string | null;
+}
+
+export interface TeamDescription {
+  team: Team;
+  image: string | null;
+  leader: UserImageAndName;
+  authors: UserImageAndName[];
+}
+
+export type Folder = {
+  folder: {
+    id: number;
+    title: string;
+    description: string;
+    team_id: number;
+    post_id: number | null;
+    created_at?: Date;
+    updated_at?: Date;
+  };
+  image: string | null;
+};
+
+export type File = {
+  file: {
+    id: number;
+    title: string;
+    description: string;
+    post_id: number | null;
+    folder_id: number;
+  };
+  image: string | null;
+  comment_count: number;
+};
+
+export type Comment = {
+  text: string;
+  user_id: number;
+  file_content_id: number;
+};

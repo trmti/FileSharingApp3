@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(version: 2022_03_16_120007) do
   enable_extension "plpgsql"
 
   create_table "comments", force: :cascade do |t|
-    t.string "text"
+    t.string "text", null: false
     t.bigint "user_id"
     t.bigint "file_content_id"
     t.index ["file_content_id"], name: "index_comments_on_file_content_id"
@@ -24,14 +24,16 @@ ActiveRecord::Schema.define(version: 2022_03_16_120007) do
   end
 
   create_table "file_contents", force: :cascade do |t|
-    t.string "title"
+    t.string "title", null: false
     t.text "description"
     t.bigint "post_id"
+    t.bigint "folder_id"
+    t.index ["folder_id"], name: "index_file_contents_on_folder_id"
     t.index ["post_id"], name: "index_file_contents_on_post_id"
   end
 
   create_table "folders", force: :cascade do |t|
-    t.string "title"
+    t.string "title", null: false
     t.text "description"
     t.bigint "post_id"
     t.bigint "team_id"
@@ -42,23 +44,24 @@ ActiveRecord::Schema.define(version: 2022_03_16_120007) do
   end
 
   create_table "posts", force: :cascade do |t|
-    t.string "image"
+    t.string "image", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["image"], name: "index_posts_on_image"
   end
 
-  create_table "team_editors", force: :cascade do |t|
-    t.bigint "editor_id"
-    t.bigint "edit_team_id"
-    t.index ["edit_team_id"], name: "index_team_editors_on_edit_team_id"
-    t.index ["editor_id"], name: "index_team_editors_on_editor_id"
+  create_table "team_editors", id: false, force: :cascade do |t|
+    t.bigint "team_id"
+    t.bigint "user_id"
+    t.index ["team_id"], name: "index_team_editors_on_team_id"
+    t.index ["user_id"], name: "index_team_editors_on_user_id"
   end
 
   create_table "teams", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.text "description"
+    t.string "publish_range", null: false
     t.bigint "post_id"
-    t.string "publish_range"
     t.bigint "leader_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -85,10 +88,9 @@ ActiveRecord::Schema.define(version: 2022_03_16_120007) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
-    t.string "name"
+    t.string "name", null: false
     t.string "nickname"
-    t.string "image"
-    t.string "email"
+    t.string "email", null: false
     t.bigint "post_id"
     t.json "tokens"
     t.datetime "created_at", null: false
@@ -100,7 +102,5 @@ ActiveRecord::Schema.define(version: 2022_03_16_120007) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
-  add_foreign_key "team_editors", "teams", column: "edit_team_id"
-  add_foreign_key "team_editors", "users", column: "editor_id"
   add_foreign_key "teams", "users", column: "leader_id"
 end

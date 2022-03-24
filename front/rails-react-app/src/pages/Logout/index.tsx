@@ -2,7 +2,6 @@ import { VFC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
 import { useLogout } from 'auth/AuthUserContext';
-import LogoutTemp from 'components/templates/Logout';
 
 const Logout: VFC = () => {
   const logout = useLogout();
@@ -17,7 +16,7 @@ const Logout: VFC = () => {
       );
     }
   };
-  return <LogoutTemp onClick={onClick} />;
+  return <button onClick={onClick}>ログアウト</button>;
 };
 
 export default Logout;

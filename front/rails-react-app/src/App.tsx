@@ -8,20 +8,18 @@ import {
   Route,
   RouteProps,
 } from 'react-router-dom';
-import { Layout } from 'antd';
+import { Layout, Avatar } from 'antd';
 import AuthUserProvider, {
   useLoading,
   useAuthUser,
   useUpdateUser,
 } from 'auth/AuthUserContext';
-import AppHeader from 'components/organisms/Header';
-import Home from 'pages/Home';
-import Signup from 'pages/Signup';
-import Login from 'pages/Login';
-import Logout from 'pages/Logout';
+import Header from 'components/organisms/Header';
+import Sider from 'components/organisms/Sider';
+import * as Pages from 'pages';
 import { colors } from 'app_design';
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 
 const GlobalStyles = createGlobalStyle`
   body {
@@ -30,14 +28,46 @@ const GlobalStyles = createGlobalStyle`
   }
 `;
 
+const siderProps = [
+  {
+    icon: (
+      <Avatar src={process.env.PUBLIC_URL + '/icon/Home.png'} size="small" />
+    ),
+    text: 'ホーム',
+    to: '/user',
+  },
+  {
+    icon: (
+      <Avatar src={process.env.PUBLIC_URL + '/icon/Search.png'} size="small" />
+    ),
+    text: '探す',
+    to: '/user/search',
+  },
+  {
+    icon: (
+      <Avatar src={process.env.PUBLIC_URL + '/icon/Build.png'} size="small" />
+    ),
+    text: '作る',
+    to: '/user/build',
+  },
+  {
+    icon: (
+      <Avatar
+        src={process.env.PUBLIC_URL + '/icon/Notification.png'}
+        size="small"
+      />
+    ),
+    text: 'お知らせ',
+    to: '/user/Notification',
+  },
+];
+
 const PrivateRoute: FC<RouteProps> = () => {
   const updateUser = useUpdateUser();
   const loading = useLoading();
   const user = useAuthUser();
   useEffect(() => {
-    (async () => {
-      await updateUser();
-    })();
+    updateUser();
   }, []);
   if (!loading) {
     return user !== null ? <Outlet /> : <Navigate to="/login" />;
@@ -51,18 +81,37 @@ export const App: VFC = () => {
     <>
       <AuthUserProvider>
         <BrowserRouter>
-          <Header>
-            <AppHeader />
-          </Header>
-          <Content>
+          <Sider props={siderProps} />
+          <Header />
+          <Content
+            style={{
+              marginTop: '110px',
+              marginLeft: '380px',
+              backgroundColor: colors.BG,
+            }}
+          >
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/logout" element={<Logout />} />
+              <Route path="/" element={<Pages.UserNotification />} />
+              <Route path="/signup" element={<Pages.Signup />} />
+              <Route path="/login" element={<Pages.Login />} />
+              <Route path="/logout" element={<Pages.Logout />} />
 
               <Route path="/user" element={<PrivateRoute />}>
-                <Route path="/user" element={<Home />} />
+                <Route path="/user" element={<Pages.UserHome />} />
+                <Route path="/user/search" element={<Pages.UserSearch />} />
+                <Route path="/user/build" element={<Pages.UserBuild />} />
+                <Route
+                  path="/user/Notification"
+                  element={<Pages.UserNotification />}
+                />
+
+                <Route path="/user/team/:teamId" element={<Pages.TeamHome />} />
+                <Route
+                  path="/user/team/:teamId/folder/:folderId"
+                  element={<Pages.TeamFolder />}
+                />
+
+                <Route path="*" element={<Pages.Login />} />
               </Route>
             </Routes>
           </Content>
