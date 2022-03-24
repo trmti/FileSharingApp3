@@ -1,50 +1,36 @@
 import { FC, useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import {
-  Team,
-  TeamPageProps,
-  FolderWithImage,
-  FetchFailed,
-  FetchSuccess,
-} from 'type';
+import { useParams, useNavigate } from 'react-router-dom';
+import { TeamDescription, Folder, FetchFailed, FetchSuccess } from 'type';
 import { getTeamById } from 'db/team';
 import { getFoldersByTeamId } from 'db/folders';
-import { createTeamPageProps } from 'utils/team';
-import { getUrl } from 'utils';
 import HomeTemp from 'components/templates/TeamHome';
 
-type FetchTeamSuccess = FetchSuccess<Team>;
+type FetchTeamDescriptionSuccess = FetchSuccess<TeamDescription>;
 
 const Home: FC = () => {
-  const [teamProp, setTeamProp] = useState<TeamPageProps | null>(null);
-  const [folders, setFolders] = useState<FolderWithImage[] | null>(null);
-  let { id } = useParams();
-  let res: FetchTeamSuccess | FetchFailed;
+  const [teamProp, setTeamProp] = useState<TeamDescription | null>(null);
+  const [folders, setFolders] = useState<Folder[] | null>(null);
+  let { teamId } = useParams();
+  const navigate = useNavigate();
+  let res: FetchTeamDescriptionSuccess | FetchFailed;
   const onClickCard = (id: number) => {
-    console.log(id);
+    navigate(`folder/${id}`);
   };
   const setNewFolders = async () => {
-    const folders = await getFoldersByTeamId(Number(id));
+    const folders = await getFoldersByTeamId(Number(teamId));
     if (folders.status === 'success') {
-      const foldersWithImage = Promise.all(
-        folders.data.map(async (folder): Promise<FolderWithImage> => {
-          const image = await getUrl(folder);
-          return { ...folder, image };
-        })
-      );
-      setFolders(await foldersWithImage);
+      setFolders(folders.data);
     } else {
       setFolders(null);
     }
   };
   useEffect(() => {
     (async () => {
-      res = id
-        ? await getTeamById(Number(id))
+      res = teamId
+        ? await getTeamById(Number(teamId))
         : { status: 'error', message: 'パラメータが正しくありません' };
       if (res.status === 'success') {
-        const newProp = await createTeamPageProps(res.data);
-        setTeamProp(newProp);
+        setTeamProp(res.data);
         await setNewFolders();
       } else {
         setTeamProp(null);

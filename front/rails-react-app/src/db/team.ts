@@ -2,10 +2,10 @@ import { AxiosResponse } from 'axios';
 import { createFormData } from 'utils';
 import { client, fileClient } from './client';
 import {
-  TeamApiJson,
   Team,
+  TeamWithImage,
+  TeamDescription,
   Post,
-  User,
   FetchFailed,
   FetchSuccess,
   BuildTeamParams,
@@ -13,17 +13,19 @@ import {
 
 type FetchPostSuccess = FetchSuccess<Post>;
 type FetchTeamSuccess = FetchSuccess<Team>;
-type FetchTeamApiJsonSuccess = FetchSuccess<TeamApiJson>;
-type FetchUsersSuccess = FetchSuccess<User[]>;
+type FetchTeamDescriptionSuccess = FetchSuccess<TeamDescription>;
+type FetchTeamsSuccess = FetchSuccess<TeamWithImage[]>;
 
 export const getTeamById = (
   teamId: number
-): Promise<FetchTeamSuccess | FetchFailed> => {
+): Promise<FetchTeamDescriptionSuccess | FetchFailed> => {
   const res = client
     .get(`/teams/${teamId}`)
-    .then((prop: AxiosResponse<Team>): FetchTeamSuccess => {
-      return { status: 'success', data: prop.data };
-    })
+    .then(
+      (prop: AxiosResponse<TeamDescription>): FetchTeamDescriptionSuccess => {
+        return { status: 'success', data: prop.data };
+      }
+    )
     .catch((): FetchFailed => {
       return { status: 'error', message: 'チームが見つかりませんでした' };
     });
@@ -54,14 +56,14 @@ export const createTeam = (
   const res = client
     .post(`/user/create_team/${leader_id}`, { ...otherParams })
     .then((prop: AxiosResponse<Team>) => {
-      const team = prop.data;
-      return { id: team.id, file, team };
+      const data = prop.data;
+      return { id: data.id, file, data };
     })
-    .then(({ id, file, team }): FetchTeamSuccess | FetchFailed => {
+    .then(({ id, file, data }): FetchTeamSuccess | FetchFailed => {
       if (file) {
         const image = createFormData('image', file);
         createImage(id, image);
-        return { status: 'success', data: team };
+        return { status: 'success', data };
       } else {
         return { status: 'error', message: 'ファイルが選択されていません' };
       }
@@ -72,45 +74,15 @@ export const createTeam = (
   return res;
 };
 
-export const getUsers = (
-  teamId: number
-): Promise<FetchUsersSuccess | FetchFailed> => {
-  const res = client
-    .get(`/teams/get_users/${teamId}`)
-    .then((prop: AxiosResponse<User[]>): FetchUsersSuccess => {
-      const users = prop.data;
-      return { status: 'success', data: users };
-    })
-    .catch((): FetchFailed => {
-      return { status: 'error', message: 'ユーザー一覧の取得に失敗しました' };
-    });
-  return res;
-};
-
-export const getEditors = (
-  teamId: number
-): Promise<FetchUsersSuccess | FetchFailed> => {
-  const res = client
-    .get(`/teams/get_editors/${teamId}`)
-    .then((prop: AxiosResponse<User[]>): FetchUsersSuccess => {
-      const editors = prop.data;
-      return { status: 'success', data: editors };
-    })
-    .catch((): FetchFailed => {
-      return { status: 'error', message: 'ユーザー一覧の取得に失敗しました' };
-    });
-  return res;
-};
-
 export const getTeamsRecord = (
   limit: number,
   offset: number
-): Promise<FetchTeamApiJsonSuccess | FetchFailed> => {
+): Promise<FetchTeamsSuccess | FetchFailed> => {
   const res = client
     .get(`/teams/get_teams_record/${limit}/${offset}`)
-    .then((prop: AxiosResponse<TeamApiJson>): FetchTeamApiJsonSuccess => {
-      const teams = prop.data.teams;
-      return { status: 'success', data: { teams } };
+    .then((prop: AxiosResponse<TeamWithImage[]>): FetchTeamsSuccess => {
+      const data = prop.data;
+      return { status: 'success', data };
     })
     .catch((): FetchFailed => {
       return { status: 'error', message: 'チームの取得に失敗しました。' };
@@ -122,12 +94,12 @@ export const getTeamsRecord = (
 export const searchTeams = (
   text: string,
   limit: number
-): Promise<FetchTeamApiJsonSuccess | FetchFailed> => {
+): Promise<FetchTeamsSuccess | FetchFailed> => {
   const res = client
     .get(`/teams/search_teams/${text}/${limit}`)
-    .then((prop: AxiosResponse<TeamApiJson>): FetchTeamApiJsonSuccess => {
-      const teams = prop.data.teams;
-      return { status: 'success', data: { teams } };
+    .then((prop: AxiosResponse<TeamWithImage[]>): FetchTeamsSuccess => {
+      const data = prop.data;
+      return { status: 'success', data };
     })
     .catch((): FetchFailed => {
       return { status: 'error', message: 'チームの取得に失敗しました' };

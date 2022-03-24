@@ -69,6 +69,11 @@ export interface PostApiJson {
   posts: Post[];
 }
 
+export interface UserImageAndName {
+  image: string | null;
+  name: string;
+}
+
 export interface Team {
   id: number;
   name: string;
@@ -80,32 +85,46 @@ export interface Team {
   updated_at?: Date;
 }
 
-export interface TeamApiJson {
-  teams: Team[];
+export interface TeamWithImage {
+  team: Team;
+  leader_image: string | null;
+  cover_image: string | null;
 }
 
-export type TeamWithImage = Team & {
-  cover_image: string;
-  leader_image: string;
-};
-
-export type TeamPageProps = {
-  title: string;
-  description: string;
-  publish_range: publish_range;
-  image_url: string;
-  leader: { image_url: string; name: string };
-  authors: { image_url: string; name: string }[];
-};
+export interface TeamDescription {
+  team: Team;
+  image: string | null;
+  leader: UserImageAndName;
+  authors: UserImageAndName[];
+}
 
 export type Folder = {
-  id: number;
-  title: string;
-  description: string;
-  team_id: number;
-  post_id: number | null;
-  created_at?: Date;
-  updated_at?: Date;
+  folder: {
+    id: number;
+    title: string;
+    description: string;
+    team_id: number;
+    post_id: number | null;
+    created_at?: Date;
+    updated_at?: Date;
+  };
+  image: string | null;
 };
 
-export type FolderWithImage = Folder & { image: string };
+export type File = {
+  file: {
+    id: number;
+    title: string;
+    description: string;
+    post_id: number | null;
+    folder_id: number;
+  };
+  image: string | null;
+  comment_count: number;
+};
+
+export type Comment = {
+  text: string;
+  user_id: number;
+  file_content_id: number;
+};

@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Typography, Card, Avatar, Row, Col } from 'antd';
 import { colors, text_style } from 'app_design';
-
+import { defaultCoverImage } from 'utils';
 import { TeamWithImage } from 'type';
 
 const { Meta } = Card;
@@ -23,14 +23,18 @@ const SearchTeam: FC<Props> = ({ searchedTeams, onClickCard }) => {
         >
           <Row gutter={[50, 100]}>
             {searchedTeams.map(
-              ({ cover_image, leader_image, name, description, id }) => {
+              ({
+                cover_image,
+                leader_image,
+                team: { name, description, id },
+              }) => {
                 return (
                   <Col key={id} span={8}>
                     <Card
                       cover={
                         <img
                           alt="team"
-                          src={cover_image}
+                          src={cover_image ? cover_image : defaultCoverImage}
                           width="33%"
                           style={{
                             aspectRatio: '1/1',
@@ -43,7 +47,13 @@ const SearchTeam: FC<Props> = ({ searchedTeams, onClickCard }) => {
                       hoverable
                     >
                       <Meta
-                        avatar={<Avatar src={leader_image} />}
+                        avatar={
+                          <Avatar
+                            src={
+                              leader_image ? leader_image : defaultCoverImage
+                            }
+                          />
+                        }
                         title={name}
                         description={description}
                       />

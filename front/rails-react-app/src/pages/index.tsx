@@ -10,3 +10,4 @@ export { default as UserNotification } from './user/Notification';
 
 // チーム
 export { default as TeamHome } from './team/Home';
+export { default as TeamFolder } from './team/Folder';

@@ -4,12 +4,12 @@ import { Divider } from 'antd';
 import TeamHeader from 'components/organisms/TeamHeader';
 import Folders from 'components/organisms/Folders';
 import BackButton from 'components/molecules/BackButton';
-import { TeamPageProps, FolderWithImage } from 'type';
+import { TeamDescription, Folder } from 'type';
 import { colors } from 'app_design';
 
 type Props = {
-  team: TeamPageProps | null;
-  folders: FolderWithImage[] | null;
+  team: TeamDescription | null;
+  folders: Folder[] | null;
   onClickCard: (id: number) => void;
 };
 

@@ -31,7 +31,14 @@ class Api::V1::UserController < ApplicationController
   end
 
   def get_join_teams
-    render json: { teams: @user.teams.order('created_at DESC')}, status: :ok
+    @teams = @user.teams.order('created_at DESC')
+    @res = []
+    @teams.each do |team|
+      @cover_image = team.post ? team.post.image.url : nil
+      @leader_image = team.leader.post ? team.leader.post.image.url : nil
+      @res.push({team: team, leader_image: @leader_image, cover_image: @cover_image})
+    end
+    render json: @res, status: :ok
   end
 
   def create_team

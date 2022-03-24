@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Typography, Card, Avatar, Row, Col } from 'antd';
+import { defaultCoverImage } from 'utils';
 import { colors, text_style } from 'app_design';
-
 import { TeamWithImage } from 'type';
 
 const { Meta } = Card;
@@ -18,7 +18,11 @@ const JoinTeam: FC<Props> = ({ recentlyTeams, onClick }) => {
         <div style={{ overflowX: 'scroll', overflowY: 'hidden' }}>
           <Row gutter={30} wrap={false}>
             {recentlyTeams.map(
-              ({ cover_image, leader_image, name, description, id }) => {
+              ({
+                cover_image,
+                leader_image,
+                team: { name, description, id },
+              }) => {
                 return (
                   <Col key={id}>
                     <Card
@@ -26,7 +30,7 @@ const JoinTeam: FC<Props> = ({ recentlyTeams, onClick }) => {
                       cover={
                         <img
                           alt="team"
-                          src={cover_image}
+                          src={cover_image ? cover_image : defaultCoverImage}
                           height={250}
                           width="auto"
                           style={{
@@ -39,7 +43,13 @@ const JoinTeam: FC<Props> = ({ recentlyTeams, onClick }) => {
                       hoverable
                     >
                       <Meta
-                        avatar={<Avatar src={leader_image} />}
+                        avatar={
+                          <Avatar
+                            src={
+                              leader_image ? leader_image : defaultCoverImage
+                            }
+                          />
+                        }
                         title={name}
                         description={description}
                       />

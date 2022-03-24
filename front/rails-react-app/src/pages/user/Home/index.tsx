@@ -4,7 +4,6 @@ import { useAuthUser } from 'auth/AuthUserContext';
 import { getTeamsRecord } from 'db/team';
 import { getTeamsByUserId } from 'db/user';
 import { TeamWithImage } from 'type';
-import { createTeamCard } from 'utils/user';
 import HomeTemp from 'components/templates/Home';
 
 const Home: FC = () => {
@@ -28,8 +27,7 @@ const Home: FC = () => {
       (async () => {
         const res = await getTeamsByUserId(user.id);
         if (res.status === 'success') {
-          const teams: TeamWithImage[] = await createTeamCard(res);
-          setJoinTeams(teams);
+          setJoinTeams(res.data);
         }
       })();
     }
@@ -41,8 +39,7 @@ const Home: FC = () => {
     (async () => {
       const res = await getTeamsRecord(10, 0);
       if (res.status === 'success') {
-        const teams: TeamWithImage[] = await createTeamCard(res);
-        setrecentlyTeams(teams);
+        setrecentlyTeams(res.data);
       }
     })();
   }, []);

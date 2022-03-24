@@ -3,7 +3,7 @@ import { Avatar } from 'antd';
 import { colors, text_style } from 'app_design';
 
 type Props = {
-  src: string;
+  src: string | null;
   name: string;
   BG: string;
   style?: {};

@@ -1,12 +1,13 @@
 import { FC } from 'react';
 import { Row, Col, Card, Avatar, Typography } from 'antd';
 import { colors, text_style } from 'app_design';
-import { FolderWithImage } from 'type';
+import { defaultCoverImage } from 'utils';
+import { Folder } from 'type';
 
 const { Meta } = Card;
 
 type Props = {
-  folders: FolderWithImage[] | null;
+  folders: Folder[] | null;
   onClick: (id: number) => void;
 };
 const Folders: FC<Props> = ({ folders, onClick }) => {
@@ -16,7 +17,7 @@ const Folders: FC<Props> = ({ folders, onClick }) => {
         <Typography.Title>フォルダ</Typography.Title>
         <div style={{ overflowX: 'scroll', overflowY: 'hidden' }}>
           <Row gutter={30} wrap={false}>
-            {folders.map(({ image, title, description, id }) => {
+            {folders.map(({ image, folder: { title, description, id } }) => {
               return (
                 <Col key={id}>
                   <Card
@@ -26,7 +27,12 @@ const Folders: FC<Props> = ({ folders, onClick }) => {
                     }}
                     bodyStyle={{ backgroundColor: colors.Card }}
                     cover={
-                      <img alt="team" src={image} width="auto" height={250} />
+                      <img
+                        alt="team"
+                        src={image ? image : defaultCoverImage}
+                        width="auto"
+                        height={250}
+                      />
                     }
                     onClick={() => onClick(id)}
                     hoverable

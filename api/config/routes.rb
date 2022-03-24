@@ -17,6 +17,12 @@ Rails.application.routes.draw do
       post "teams/create_image/:id", to: "teams#create_image"
 
       resources :posts, only: %i[index show create destroy]
+
+      resources :folders, only: %i[]
+      get "folders/get_files/:id", to: "folders#get_files"
+
+      resources :file_contents, only: %i[]
+      get "file_contents/get_file/:id", to: "file_contents#get_file"
       
       mount_devise_token_auth_for 'User', at: 'auth', controllers: {
         registrations: 'api/v1/auth/registrations'

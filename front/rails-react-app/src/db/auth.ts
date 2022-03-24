@@ -3,14 +3,12 @@ import {
   SignUpParams,
   SignInParams,
   User,
-  TeamApiJson,
   FetchSuccess,
   FetchFailed,
 } from 'type';
 import Cookies from 'js-cookie';
 
 type FetchUserSuccess = FetchSuccess<User>;
-type FetchTeamApiJsonSuccess = FetchSuccess<TeamApiJson>;
 type LogOutSuccess = {
   success: true;
 };

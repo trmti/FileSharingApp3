@@ -105,7 +105,11 @@ export const App: VFC = () => {
                   element={<Pages.UserNotification />}
                 />
 
-                <Route path="/user/team/:id" element={<Pages.TeamHome />} />
+                <Route path="/user/team/:teamId" element={<Pages.TeamHome />} />
+                <Route
+                  path="/user/team/:teamId/folder/:folderId"
+                  element={<Pages.TeamFolder />}
+                />
 
                 <Route path="*" element={<Pages.Login />} />
               </Route>

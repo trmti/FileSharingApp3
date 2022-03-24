@@ -1,8 +1,8 @@
 import { AxiosResponse } from 'axios';
 import { client } from './client';
-import { User, TeamApiJson, FetchSuccess, FetchFailed } from 'type';
+import { User, TeamWithImage, FetchSuccess, FetchFailed } from 'type';
 
-type FetchTeamApiJsonSuccess = FetchSuccess<TeamApiJson>;
+type FetchTeamsSuccess = FetchSuccess<TeamWithImage[]>;
 type FetchUserSuccess = FetchSuccess<User>;
 
 export const getUserByUserId = (userId: number) => {
@@ -21,7 +21,7 @@ export const getUserByUserId = (userId: number) => {
 export const getTeamsByUserId = (userId: number) => {
   const res = client
     .get(`/user/get_join_teams/${userId}`)
-    .then((prop: AxiosResponse<TeamApiJson>): FetchTeamApiJsonSuccess => {
+    .then((prop: AxiosResponse<TeamWithImage[]>): FetchTeamsSuccess => {
       const data = prop.data;
       return { status: 'success', data };
     })

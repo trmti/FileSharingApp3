@@ -2,6 +2,7 @@ import { VFC } from 'react';
 import { Typography, Card, Avatar, Row, Col } from 'antd';
 import { TeamWithImage } from 'type';
 import { colors, text_style } from 'app_design';
+import { defaultCoverImage } from 'utils';
 
 const { Meta } = Card;
 
@@ -17,7 +18,11 @@ const JoinTeam: VFC<Props> = ({ joinTeams, onClick }) => {
         <div style={{ overflowX: 'scroll', overflowY: 'hidden' }}>
           <Row gutter={30} wrap={false}>
             {joinTeams.map(
-              ({ cover_image, leader_image, name, description, id }) => {
+              ({
+                cover_image,
+                leader_image,
+                team: { name, description, id },
+              }) => {
                 return (
                   <Col key={id}>
                     <Card
@@ -29,7 +34,7 @@ const JoinTeam: VFC<Props> = ({ joinTeams, onClick }) => {
                       cover={
                         <img
                           alt="team"
-                          src={cover_image}
+                          src={cover_image ? cover_image : defaultCoverImage}
                           width="auto"
                           height={250}
                         />
@@ -38,7 +43,13 @@ const JoinTeam: VFC<Props> = ({ joinTeams, onClick }) => {
                       hoverable
                     >
                       <Meta
-                        avatar={<Avatar src={leader_image} />}
+                        avatar={
+                          <Avatar
+                            src={
+                              leader_image ? leader_image : defaultCoverImage
+                            }
+                          />
+                        }
                         title={name}
                         description={description}
                       />
