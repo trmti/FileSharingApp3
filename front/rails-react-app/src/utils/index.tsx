@@ -1,4 +1,4 @@
-export const defaultCoverImage: string = 'http://localhost:8000/logo192.png';
+export const defaultCoverImage: string = `${process.env.PUBLIC_URL}/logo192.png`;
 
 export const createFormData = (formName: string, data: any): FormData => {
   const formData = new FormData();
