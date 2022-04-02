@@ -11,13 +11,14 @@ type Props = {
     text: string;
     to: string;
   }[];
+  setAction: React.Dispatch<React.SetStateAction<boolean>>;
+  isCollapsed: boolean;
 };
 
-const MySider: VFC<Props> = ({ props }) => {
+const MySider: VFC<Props> = ({ props, setAction, isCollapsed }) => {
   return (
     <Sider
       style={{
-        overflow: 'auto',
         height: '100vh',
         position: 'fixed',
         zIndex: 2,
@@ -25,7 +26,12 @@ const MySider: VFC<Props> = ({ props }) => {
         top: 80,
         bottom: 0,
       }}
+      onCollapse={(collapsed) => {
+        setAction(collapsed);
+      }}
       width={300}
+      breakpoint="lg"
+      collapsedWidth="0"
     >
       <Menu
         theme="dark"

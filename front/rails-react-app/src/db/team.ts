@@ -1,17 +1,16 @@
 import { AxiosResponse } from 'axios';
 import { createFormData } from 'utils';
-import { client, fileClient } from './client';
+import { client } from './client';
+import { createImage } from './post';
 import {
   Team,
   TeamWithImage,
   TeamDescription,
-  Post,
   FetchFailed,
   FetchSuccess,
   BuildTeamParams,
 } from 'type';
 
-type FetchPostSuccess = FetchSuccess<Post>;
 type FetchTeamSuccess = FetchSuccess<Team>;
 type FetchTeamDescriptionSuccess = FetchSuccess<TeamDescription>;
 type FetchTeamsSuccess = FetchSuccess<TeamWithImage[]>;
@@ -33,21 +32,6 @@ export const getTeamById = (
   return res;
 };
 
-const createImage = (
-  id: number,
-  image: FormData
-): Promise<FetchPostSuccess | FetchFailed> => {
-  const res = fileClient
-    .post(`/teams/create_image/${id}`, image)
-    .then((prop: AxiosResponse<Post>): FetchPostSuccess => {
-      return { status: 'success', data: prop.data };
-    })
-    .catch((): FetchFailed => {
-      return { status: 'error', message: 'イメージが作れませんでした' };
-    });
-  return res;
-};
-
 export const createTeam = (
   params: BuildTeamParams,
   leader_id: number
@@ -55,15 +39,18 @@ export const createTeam = (
   const { file, ...otherParams } = params;
   const res = client
     .post(`/user/create_team/${leader_id}`, { ...otherParams })
-    .then((prop: AxiosResponse<Team>) => {
+    .then(async (prop: AxiosResponse<Team>): Promise<
+      FetchTeamSuccess | FetchFailed
+    > => {
       const data = prop.data;
-      return { id: data.id, file, data };
-    })
-    .then(({ id, file, data }): FetchTeamSuccess | FetchFailed => {
       if (file) {
         const image = createFormData('image', file);
-        createImage(id, image);
-        return { status: 'success', data };
+        const res = await createImage(data.id, image, 'teams');
+        if (res.status === 'success') {
+          return { status: 'success', data };
+        } else {
+          return { status: 'error', message: '画像の作成に失敗しました' };
+        }
       } else {
         return { status: 'error', message: 'ファイルが選択されていません' };
       }

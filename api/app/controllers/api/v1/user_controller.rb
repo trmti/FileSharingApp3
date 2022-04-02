@@ -12,24 +12,6 @@ class Api::V1::UserController < ApplicationController
     render json: @user.post
   end
 
-  def create_image
-    @post = @user.build_post(image: params[:image])
-    if @post.save
-      render json: @post, status: :created
-    else
-      render status: :internal_server_error
-    end
-  end
-
-  def update_image
-    @post = @user.build_post(image: params[:image])
-    if @post.save
-      render json: @user, status: :accepted
-    else
-      render status: :internal_server_error
-    end
-  end
-
   def get_join_teams
     @teams = @user.teams.order('created_at DESC')
     @res = []

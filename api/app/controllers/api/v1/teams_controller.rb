@@ -1,5 +1,5 @@
 class Api::V1::TeamsController < ApplicationController
-  before_action :set_team, only: %i[show create_image get_users get_editors get_folders]
+  before_action :set_team, only: %i[show create_image get_folders create_folder]
 
   def index
     render json: { teams: Team.all.order('created_at DESC')}
@@ -18,14 +18,6 @@ class Api::V1::TeamsController < ApplicationController
     render json: {team: @team, image: @image, leader: {image: @leader_image, name: @team.leader.name}, authors: @author_res}, status: :ok
   end
 
-  def get_users
-    render json: @team.users.order('created_at DESC'), status: :ok
-  end
-
-  def get_editors
-    render json: @team.editors.order('created_at DESC'), status: :ok
-  end
-
   def get_folders
     @folders = @team.folders.order('created_at DESC')
     @res = []
@@ -34,6 +26,16 @@ class Api::V1::TeamsController < ApplicationController
       @res.push({folder: folder, image: @image})
     end
     render json: @res, status: :ok
+  end
+
+  def create_folder
+    @folder = @team.folders.build(title: params[:title], description: params[:description])
+    @team.folders << @folder
+    if @folder.save
+      render json: @folder, status: :created
+    else
+      render status: :internal_server_error
+    end
   end
 
   def create_image
@@ -64,7 +66,8 @@ class Api::V1::TeamsController < ApplicationController
       @leader_image = team.leader.post ? team.leader.post.image.url : nil
       @res.push({team: team, leader_image: @leader_image, cover_image: @cover_image})
     end
-    render json: @res  end
+    render json: @res 
+  end
 
   private
     def set_team
@@ -75,5 +78,8 @@ class Api::V1::TeamsController < ApplicationController
     end
     def post_params
       params.require(:post).permit(:image)
+    end
+    def folder_params
+      params.require(:folder).permit(:title, :description)
     end
 end

@@ -24,7 +24,7 @@ const Folder: FC = () => {
         }
       })();
     }
-  }, []);
+  }, [folderId]);
   return (
     <>
       <FolderTemp files={files} onClick={onClick} onChangeSort={onChangeSort} />

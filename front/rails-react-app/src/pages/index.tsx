@@ -5,7 +5,7 @@ export { default as Signup } from './Signup';
 // ユーザー
 export { default as UserHome } from './user/Home';
 export { default as UserBuild } from './user/Build';
-export { default as UserSearch } from './user/Serch';
+export { default as UserSearch } from './user/Search';
 export { default as UserNotification } from './user/Notification';
 
 // チーム
