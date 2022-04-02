@@ -24,13 +24,6 @@ export interface SignInParams {
   password: string;
 }
 
-export interface BuildTeamParams {
-  name: string;
-  description: string;
-  publish_range: publish_range;
-  file: UploadFile | null;
-}
-
 // ユーザー
 export interface User {
   id: number;
@@ -98,17 +91,32 @@ export interface TeamDescription {
   authors: UserImageAndName[];
 }
 
+export interface BuildTeamParams {
+  name: string;
+  description: string;
+  publish_range: publish_range;
+  file: UploadFile | null;
+}
+
 export type Folder = {
-  folder: {
-    id: number;
-    title: string;
-    description: string;
-    team_id: number;
-    post_id: number | null;
-    created_at?: Date;
-    updated_at?: Date;
-  };
+  id: number;
+  title: string;
+  description: string;
+  team_id: number;
+  post_id: number | null;
+  created_at?: Date;
+  updated_at?: Date;
+};
+
+export type FolderWithImage = {
+  folder: Folder;
   image: string | null;
+};
+
+export type BuildFolderParams = {
+  title: string;
+  description: string;
+  file: UploadFile | null;
 };
 
 export type File = {

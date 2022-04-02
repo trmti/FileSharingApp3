@@ -32,7 +32,7 @@ const Home: FC = () => {
       })();
     }
     return;
-  }, []);
+  }, [user]);
 
   // 最近追加されたチームの取得
   useEffect(() => {

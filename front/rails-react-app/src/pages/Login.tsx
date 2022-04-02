@@ -30,11 +30,7 @@ const Login: VFC = () => {
       size="large"
     >
       <TitleWithLine>ログイン</TitleWithLine>
-      <FormLogin
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        style={{ width: '100%', paddingTop: 40 }}
-      />
+      <FormLogin onFinish={onFinish} onFinishFailed={onFinishFailed} />
       <Typography.Link>
         <Link to="/signup">サインアップページ</Link>
       </Typography.Link>

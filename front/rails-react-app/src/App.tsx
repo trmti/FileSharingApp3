@@ -1,4 +1,4 @@
-import { VFC, FC, useEffect } from 'react';
+import { VFC, FC, useEffect, useState } from 'react';
 import { createGlobalStyle } from 'styled-components';
 import {
   BrowserRouter,
@@ -77,16 +77,21 @@ const PrivateRoute: FC<RouteProps> = () => {
 };
 
 export const App: VFC = () => {
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   return (
     <>
       <AuthUserProvider>
         <BrowserRouter>
-          <Sider props={siderProps} />
+          <Sider
+            props={siderProps}
+            setAction={setIsCollapsed}
+            isCollapsed={isCollapsed}
+          />
           <Header />
           <Content
             style={{
               marginTop: '110px',
-              marginLeft: '380px',
+              marginLeft: isCollapsed ? '0' : '380px',
               backgroundColor: colors.BG,
             }}
           >

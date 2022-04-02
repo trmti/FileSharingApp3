@@ -1,5 +1,6 @@
-import axios, { AxiosInstance, AxiosResponse, AxiosPromise } from 'axios';
-import { PostApiJson, Post, FetchFailed, FetchSuccess } from 'type';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import { fileClient } from './client';
+import { Post, FetchFailed, FetchSuccess } from 'type';
 
 let client: AxiosInstance;
 
@@ -17,33 +18,6 @@ client.interceptors.response.use((response: AxiosResponse): AxiosResponse => {
   return { ...response.data, data };
 });
 
-export const getPosts = (): AxiosPromise<PostApiJson> => {
-  return client.get('/posts');
-};
-
-export const showPost = (
-  id: number
-): Promise<FetchPostSuccess | FetchFailed> => {
-  const res = client
-    .get(`/posts/${id}`)
-    .then((prop: AxiosResponse<Post>): FetchPostSuccess => {
-      const post = prop.data;
-      return { status: 'success', data: post };
-    })
-    .catch((): FetchFailed => {
-      return { status: 'error', message: 'カバー画像の取得に失敗しました' };
-    });
-  return res;
-};
-
-export const createPost = (data: FormData): AxiosPromise => {
-  return client.post('/posts', data);
-};
-
-export const deletePost = (id: string): AxiosPromise => {
-  return client.delete(`/posts/${id}`);
-};
-
 export const getPostByUserId = (
   userId: number
 ): Promise<FetchPostSuccess | FetchFailed> => {
@@ -60,16 +34,18 @@ export const getPostByUserId = (
   return res;
 };
 
-export const createUserImage = (
-  userId: number,
-  data: FormData
-): AxiosPromise<Post> => {
-  return client.post(`/user/get_image/${userId}`, data);
-};
-
-export const updateUserImage = (
-  userId: number,
-  data: FormData
-): AxiosPromise<Post> => {
-  return client.post(`/user/get_image/${userId}`, data);
+export const createImage = (
+  id: number,
+  image: FormData,
+  master: 'teams' | 'folders'
+) => {
+  const res = fileClient
+    .post(`/${master}/create_image/${id}`, image)
+    .then((prop) => {
+      return { status: 'success', data: prop.data };
+    })
+    .catch((): FetchFailed => {
+      return { status: 'error', message: 'イメージが作れませんでした' };
+    });
+  return res;
 };

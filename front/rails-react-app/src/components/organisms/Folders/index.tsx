@@ -1,22 +1,48 @@
 import { FC } from 'react';
-import { Row, Col, Card, Avatar, Typography } from 'antd';
+import { Row, Col, Card, Typography } from 'antd';
+import { FolderAddOutlined } from '@ant-design/icons';
 import { colors, text_style } from 'app_design';
 import { defaultCoverImage } from 'utils';
-import { Folder } from 'type';
+import { FolderWithImage } from 'type';
 
 const { Meta } = Card;
 
 type Props = {
-  folders: Folder[] | null;
+  folders: FolderWithImage[] | null;
   onClick: (id: number) => void;
+  onClickNewFolder: () => void;
 };
-const Folders: FC<Props> = ({ folders, onClick }) => {
+const Folders: FC<Props> = ({ folders, onClick, onClickNewFolder }) => {
   if (folders !== null) {
     return (
       <>
         <Typography.Title>フォルダ</Typography.Title>
         <div style={{ overflowX: 'scroll', overflowY: 'hidden' }}>
           <Row gutter={30} wrap={false}>
+            <Card
+              style={{
+                width: 300,
+                height: 350,
+              }}
+              bodyStyle={{ backgroundColor: colors.Card }}
+              cover={
+                <FolderAddOutlined
+                  style={{
+                    height: 250,
+                    width: 300,
+                    fontSize: 250,
+                    opacity: 0.5,
+                  }}
+                />
+              }
+              hoverable
+              onClick={onClickNewFolder}
+            >
+              <Meta
+                title="新規フォルダ"
+                description="クリックして新しいフォルダを作る"
+              />
+            </Card>
             {folders.map(({ image, folder: { title, description, id } }) => {
               return (
                 <Col key={id}>

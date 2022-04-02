@@ -6,3 +6,6 @@
   > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
   font-size: 30px;
 }
+.ant-layout-sider-zero-width-trigger {
+  top: 0;
+}

@@ -5,24 +5,22 @@ import {
   Space,
   Input,
   Typography,
-  Select,
   Upload,
   FormProps,
 } from 'antd';
 import { UploadFile } from 'antd/lib/upload/interface';
 import ImgCrop from 'antd-img-crop';
-import { BuildTeamParams } from 'type';
+import { BuildFolderParams } from 'type';
 import { colors, text_style } from 'app_design';
 
 const { Title } = Typography;
-const { Option } = Select;
 
 type Props = {
-  onFinish: (data: BuildTeamParams) => Promise<void>;
+  onFinish: (data: BuildFolderParams) => Promise<void>;
   onFinishFailed: () => void;
 } & FormProps;
 
-const FormBuildTeam: FC<Props> = ({ onFinish, onFinishFailed, ...other }) => {
+const FormBuildFolder: FC<Props> = ({ onFinish, onFinishFailed, ...other }) => {
   const [file, setFile] = useState<UploadFile | null>(null);
   const props = {
     beforeUpload: () => {
@@ -44,40 +42,27 @@ const FormBuildTeam: FC<Props> = ({ onFinish, onFinishFailed, ...other }) => {
         onFinishFailed={onFinishFailed}
         {...other}
       >
-        <Space direction="vertical" size="large">
+        <Space direction="vertical" size="large" style={{ width: '100%' }}>
           <Form.Item
             label={<Title>TeamName</Title>}
-            name="name"
-            rules={[{ required: true, message: 'チーム名を入力してください' }]}
+            name="title"
+            rules={[
+              { required: true, message: 'フォルダ名を入力してください' },
+            ]}
           >
             <Input
-              placeholder="チーム名を入力してください"
-              style={{ width: 500, height: 36 }}
+              placeholder="フォルダ名を入力してください"
+              style={{ width: '100%', height: 36 }}
             />
           </Form.Item>
           <Form.Item label={<Title>Description</Title>} name="description">
             <Input.TextArea
-              placeholder="チームの詳細説明を入力してください"
+              placeholder="フォルダの詳細説明を入力してください"
               style={{ width: '100%', padding: 15 }}
               autoSize
             />
           </Form.Item>
-          <Form.Item
-            label={<Title>Authority</Title>}
-            name="publish_range"
-            rules={[
-              { required: true, message: 'チームの公開範囲を選択してください' },
-            ]}
-          >
-            <Select
-              placeholder="チームの公開範囲を選択してください"
-              style={{ width: 250, padding: 10 }}
-            >
-              <Option value="private">Private</Option>
-              <Option value="public">Public</Option>
-            </Select>
-          </Form.Item>
-          <Form.Item label={<Title>File</Title>}>
+          <Form.Item label={<Title>Image</Title>}>
             <ImgCrop aspect={5 / 3} rotate>
               <Upload {...props} accept=".png, .jpg, .jpeg">
                 <Button>select File</Button>
@@ -109,4 +94,4 @@ const FormBuildTeam: FC<Props> = ({ onFinish, onFinishFailed, ...other }) => {
   );
 };
 
-export default FormBuildTeam;
+export default FormBuildFolder;
