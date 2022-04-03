@@ -41,7 +41,7 @@ const TeamHeader: FC<Props> = ({ team }) => {
                 </Col>
                 <Col>
                   <Title style={{ display: 'inline', color: colors.Text.Gray }}>
-                    権限
+                    Authority
                   </Title>
                   <Paragraph
                     style={{

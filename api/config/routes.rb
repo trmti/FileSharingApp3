@@ -13,12 +13,14 @@ Rails.application.routes.draw do
       post "teams/create_folder/:id", to: "teams#create_folder"
       post "teams/create_image/:id", to: "teams#create_image"
       
-      resources :folders, only: %i[]
+      resources :folders, only: %i[show]
       get "folders/get_files/:id", to: "folders#get_files"
+      post "folders/create_file/:id", to: "folders#create_file"
       post "folders/create_image/:id", to: "folders#create_image"
       
       resources :file_contents, only: %i[]
       get "file_contents/get_file/:id", to: "file_contents#get_file"
+      post "file_contents/create_image/:id", to: "file_contents#create_image"
       
       resources :posts, only: %i[index show create destroy]
 

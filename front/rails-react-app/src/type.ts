@@ -115,20 +115,28 @@ export type FolderWithImage = {
 
 export type BuildFolderParams = {
   title: string;
-  description: string;
+  description: string | null;
   file: UploadFile | null;
 };
 
 export type File = {
-  file: {
-    id: number;
-    title: string;
-    description: string;
-    post_id: number | null;
-    folder_id: number;
-  };
+  id: number;
+  title: string | null;
+  description: string | null;
+  post_id: number | null;
+  folder_id: number;
+};
+
+export type FileWithImage = {
+  file: File;
   image: string | null;
   comment_count: number;
+};
+
+export type BuildFileParams = {
+  title: string | null;
+  description: string | null;
+  file: UploadFile;
 };
 
 export type Comment = {

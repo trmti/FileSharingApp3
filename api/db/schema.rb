@@ -19,15 +19,19 @@ ActiveRecord::Schema.define(version: 2022_03_16_120007) do
     t.string "text", null: false
     t.bigint "user_id"
     t.bigint "file_content_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["file_content_id"], name: "index_comments_on_file_content_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
   create_table "file_contents", force: :cascade do |t|
-    t.string "title", null: false
+    t.string "title"
     t.text "description"
     t.bigint "post_id"
     t.bigint "folder_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["folder_id"], name: "index_file_contents_on_folder_id"
     t.index ["post_id"], name: "index_file_contents_on_post_id"
   end

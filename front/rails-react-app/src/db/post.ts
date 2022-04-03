@@ -37,7 +37,7 @@ export const getPostByUserId = (
 export const createImage = (
   id: number,
   image: FormData,
-  master: 'teams' | 'folders'
+  master: 'teams' | 'folders' | 'file_contents'
 ) => {
   const res = fileClient
     .post(`/${master}/create_image/${id}`, image)

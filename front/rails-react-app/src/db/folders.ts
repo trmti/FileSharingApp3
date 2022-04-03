@@ -13,6 +13,20 @@ import {
 type FetchFoldersSuccess = FetchSuccess<FolderWithImage[]>;
 type FetchFolderSuccess = FetchSuccess<Folder>;
 
+export const showFolder = (
+  folderId: number
+): Promise<FetchFolderSuccess | FetchFailed> => {
+  const res = client
+    .get(`/folders/${folderId}`)
+    .then((prop: AxiosResponse<Folder>): FetchFolderSuccess => {
+      return { status: 'success', data: prop.data };
+    })
+    .catch((): FetchFailed => {
+      return { status: 'error', message: 'フォルダーの作成に失敗しました' };
+    });
+  return res;
+};
+
 export const getFoldersByTeamId = (
   id: number
 ): Promise<FetchFoldersSuccess | FetchFailed> => {
@@ -29,11 +43,11 @@ export const getFoldersByTeamId = (
 
 export const createFolder = (
   params: BuildFolderParams,
-  leader_id: number
+  team_id: number
 ): Promise<FetchFolderSuccess | FetchFailed> => {
   const { file, ...otherParams } = params;
   const res = client
-    .post(`/teams/create_folder/${leader_id}`, { ...otherParams })
+    .post(`/teams/create_folder/${team_id}`, { ...otherParams })
     .then(async (prop: AxiosResponse<Folder>): Promise<
       FetchFolderSuccess | FetchFailed
     > => {
