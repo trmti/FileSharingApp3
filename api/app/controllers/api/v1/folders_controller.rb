@@ -1,8 +1,13 @@
 class Api::V1::FoldersController < ApplicationController
-  before_action :set_folder, only: %i[show get_files create_file create_image]
+  before_action :set_folder, only: %i[show destroy get_files create_file create_image]
 
   def show
     render json: @folder
+  end
+
+  def destroy
+    @folder.destroy
+    render json: {message: "フォルダーを削除しました"}, status: :ok
   end
 
   def get_files

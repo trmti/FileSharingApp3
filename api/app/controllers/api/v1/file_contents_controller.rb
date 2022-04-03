@@ -1,5 +1,10 @@
 class Api::V1::FileContentsController < ApplicationController
-  before_action :set_file, only: %i[create_image]
+  before_action :set_file, only: %i[destroy create_image]
+
+  def destroy
+    @file.destroy
+    render json: {message: "ファイルを削除しました"}, status: :ok
+  end
 
   def create_image
     @post = @file.create_post(image: params[:image])

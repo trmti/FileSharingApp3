@@ -4,6 +4,7 @@ import { Typography, Button, Select, Affix, Modal, Row, Col } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import Files from 'components/organisms/Files';
 import BackButton from 'components/molecules/BackButton';
+import DescriptionDropdown from 'components/molecules/DescriptionDropdown';
 import FormBuildFile from 'components/organisms/FormBuildFile';
 import { FileAddOutlined } from '@ant-design/icons';
 import { text_style } from 'app_design';
@@ -17,8 +18,10 @@ type Props = {
   onChangeSort: (value: string) => void;
   onFinish: (data: BuildFileParams) => Promise<void>;
   onFinishFailed: () => void;
+  onDelete: () => Promise<void>;
   isModalVisible: boolean;
   setIsModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  isEditor: boolean;
 };
 
 const Folder: FC<Props> = ({
@@ -28,8 +31,10 @@ const Folder: FC<Props> = ({
   onChangeSort,
   onFinish,
   onFinishFailed,
+  onDelete,
   isModalVisible,
   setIsModalVisible,
+  isEditor,
 }) => {
   const navigate = useNavigate();
   const { teamId } = useParams();
@@ -49,11 +54,19 @@ const Folder: FC<Props> = ({
             }}
           />
         </Col>
-        <Col sm={20} xs={24}>
-          <Typography.Title style={{ marginLeft: '30%' }}>
+        <Col sm={17} xs={20}>
+          <Typography.Title style={{ marginLeft: '40%' }}>
             {folderName}
           </Typography.Title>
         </Col>
+
+        {isEditor ? (
+          <Col sm={1} xs={4}>
+            <DescriptionDropdown onDelete={onDelete} />
+          </Col>
+        ) : (
+          <></>
+        )}
       </Row>
       <Row style={{ marginBottom: 30 }}>
         <Col sm={6} xs={24}>
@@ -84,7 +97,12 @@ const Folder: FC<Props> = ({
           </Select>
         </Col>
       </Row>
-      <Files files={files} onClick={onClick} style={{ marginRight: 50 }} />
+      <Files
+        files={files}
+        onClick={onClick}
+        style={{ marginRight: 50 }}
+        isEditor={isEditor}
+      />
       <Affix offsetBottom={30} style={{ position: 'fixed', right: 30 }}>
         <Button
           type="default"

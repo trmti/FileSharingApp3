@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { Row, Col, Card, Typography, Button, Image, Popconfirm } from 'antd';
 import { FileWithImage } from 'type';
 import { defaultCoverImage } from 'utils';
+import DescriptionDropdown from 'components/molecules/DescriptionDropdown';
 import { colors, text_style } from 'app_design';
 
 const { Meta } = Card;
@@ -10,9 +11,10 @@ type Props = {
   files: FileWithImage[] | null;
   onClick: (id: number) => void;
   style?: {};
+  isEditor: boolean;
 };
 
-const Files: FC<Props> = ({ files, onClick, style }) => {
+const Files: FC<Props> = ({ files, onClick, style, isEditor }) => {
   const text = text_style.Body_S;
   if (files !== null) {
     return (
@@ -39,7 +41,24 @@ const Files: FC<Props> = ({ files, onClick, style }) => {
                       hoverable
                     >
                       <Meta
-                        title={title ? title : 'No Title'}
+                        title={
+                          <div
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                            }}
+                          >
+                            <p>{title ? title : 'No Title'}</p>
+                            {isEditor ? (
+                              <DescriptionDropdown
+                                small
+                                onDelete={async () => {}}
+                              />
+                            ) : (
+                              <></>
+                            )}
+                          </div>
+                        }
                         description={
                           <div onClick={(e) => e.stopPropagation()}>
                             <Popconfirm
@@ -79,7 +98,7 @@ const Files: FC<Props> = ({ files, onClick, style }) => {
                           style={{ marginTop: 30, marginBottom: 5, ...text }}
                         >
                           <span style={{ color: colors.Theme.Sub }}>
-                            {comment_count - 1}件
+                            {comment_count}件
                           </span>
                           のコメント
                         </Typography.Paragraph>

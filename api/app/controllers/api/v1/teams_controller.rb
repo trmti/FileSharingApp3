@@ -1,5 +1,5 @@
 class Api::V1::TeamsController < ApplicationController
-  before_action :set_team, only: %i[show create_image get_folders create_folder]
+  before_action :set_team, except: [:index, :get_teams_record]
 
   def index
     render json: { teams: Team.all.order('created_at DESC')}
@@ -18,6 +18,11 @@ class Api::V1::TeamsController < ApplicationController
     render json: {team: @team, image: @image, leader: {image: @leader_image, name: @team.leader.name}, authors: @author_res}, status: :ok
   end
 
+  def destroy
+    @team.destroy
+    render json: {message: "チームを削除しました"}, status: :ok
+  end
+
   def get_folders
     @folders = @team.folders.order('created_at DESC')
     @res = []
@@ -26,6 +31,14 @@ class Api::V1::TeamsController < ApplicationController
       @res.push({folder: folder, image: @image})
     end
     render json: @res, status: :ok
+  end
+
+  def get_editor_ids
+    render json: {ids: @team.editor_ids}, status: :ok
+  end
+
+  def get_leader_id
+    render json: {id: @team.leader_id}, status: :ok
   end
 
   def create_folder

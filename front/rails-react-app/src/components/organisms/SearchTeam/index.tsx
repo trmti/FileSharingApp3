@@ -55,7 +55,9 @@ const SearchTeam: FC<Props> = ({ searchedTeams, onClickCard }) => {
                           />
                         }
                         title={name}
-                        description={description}
+                        description={
+                          description ? description : 'No description'
+                        }
                       />
                     </Card>
                   </Col>

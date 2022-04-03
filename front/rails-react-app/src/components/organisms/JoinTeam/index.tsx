@@ -51,7 +51,9 @@ const JoinTeam: VFC<Props> = ({ joinTeams, onClick }) => {
                           />
                         }
                         title={name}
-                        description={description}
+                        description={
+                          description ? description : 'No description'
+                        }
                       />
                     </Card>
                   </Col>

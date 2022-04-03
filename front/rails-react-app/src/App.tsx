@@ -130,9 +130,8 @@ export const App: VFC = () => {
                     path="/user/team/:teamId/folder/:folderId"
                     element={<Pages.TeamFolder />}
                   />
-
-                  <Route path="*" element={<Pages.Login />} />
                 </Route>
+                <Route path="*" element={<Pages.Login />} />
               </Routes>
             </Content>
           )}

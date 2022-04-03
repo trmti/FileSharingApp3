@@ -12,7 +12,11 @@ type Props = {
 };
 
 const TeamHeader: FC<Props> = ({ team }) => {
-  const translate = { private: 'プライベート', public: 'パブリック' };
+  const translate = {
+    private: 'プライベート',
+    public: 'パブリック',
+    open: 'オープン',
+  };
   if (team != null) {
     const {
       team: { name, description, publish_range },

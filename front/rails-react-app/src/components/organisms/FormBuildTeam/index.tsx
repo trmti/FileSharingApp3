@@ -74,7 +74,8 @@ const FormBuildTeam: FC<Props> = ({ onFinish, onFinishFailed, ...other }) => {
               style={{ width: 250, padding: 10 }}
             >
               <Option value="private">Private</Option>
-              <Option value="public">Public</Option>
+              <Option value="public">Public</Option>{' '}
+              <Option value="open">Open</Option>
             </Select>
           </Form.Item>
           <Form.Item label={<Title>File</Title>}>

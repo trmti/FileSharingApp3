@@ -8,29 +8,39 @@ import {
   FetchFailed,
   FetchSuccess,
 } from 'type';
+import { useAuthUser } from 'auth/AuthUserContext';
 import { getTeamById } from 'db/team';
+import { setInLeader, setInEditor } from 'utils';
+import { deleteSome } from 'db/utils';
 import { getFoldersByTeamId, createFolder } from 'db/folders';
 import HomeTemp from 'components/templates/TeamHome';
 
 type FetchTeamDescriptionSuccess = FetchSuccess<TeamDescription>;
 
+const setNewFolders = async (
+  setFolders: React.Dispatch<React.SetStateAction<FolderWithImage[] | null>>,
+  teamId: number
+) => {
+  const folders = await getFoldersByTeamId(Number(teamId));
+  if (folders.status === 'success') {
+    setFolders(folders.data);
+  } else {
+    setFolders(null);
+  }
+};
+
 const Home: FC = () => {
   const [teamProp, setTeamProp] = useState<TeamDescription | null>(null);
   const [folders, setFolders] = useState<FolderWithImage[] | null>(null);
+  const [isLeader, setIsLeader] = useState<boolean>(false);
+  const [isEditor, setIsEditor] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const authUser = useAuthUser();
   let { teamId } = useParams();
   const navigate = useNavigate();
   let res: FetchTeamDescriptionSuccess | FetchFailed;
   const onClickCard = (id: number) => {
     navigate(`folder/${id}`);
-  };
-  const setNewFolders = async () => {
-    const folders = await getFoldersByTeamId(Number(teamId));
-    if (folders.status === 'success') {
-      setFolders(folders.data);
-    } else {
-      setFolders(null);
-    }
   };
   const onFinish = async (data: BuildFolderParams) => {
     if (teamId) {
@@ -38,12 +48,21 @@ const Home: FC = () => {
       if (res.status === 'success') {
         setIsModalVisible(false);
         message.success('フォルダを作成しました');
-        await setNewFolders();
+        await setNewFolders(setFolders, Number(teamId));
       } else {
         message.error(
           'フォルダの作成に失敗しました。時間をおいて再度お試しください。'
         );
       }
+    }
+  };
+  const onDelete = async () => {
+    const res = await deleteSome(Number(teamId), 'teams');
+    if (res.status === 'success') {
+      message.success(res.data.message);
+      navigate('..');
+    } else {
+      message.error(res.message);
     }
   };
   const onFinishFailed = () => {
@@ -56,12 +75,20 @@ const Home: FC = () => {
         : { status: 'error', message: 'パラメータが正しくありません' };
       if (res.status === 'success') {
         setTeamProp(res.data);
-        await setNewFolders();
+        await setNewFolders(setFolders, Number(teamId));
       } else {
         setTeamProp(null);
       }
     })();
-  }, []);
+  }, [teamId]);
+  useEffect(() => {
+    (async () => {
+      if (authUser) {
+        await setInLeader(setIsLeader, Number(teamId), authUser.id);
+        await setInEditor(setIsEditor, Number(teamId), authUser.id);
+      }
+    })();
+  }, [authUser, teamId]);
   return (
     <>
       <HomeTemp
@@ -70,8 +97,11 @@ const Home: FC = () => {
         onClickCard={onClickCard}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
+        onDelete={onDelete}
         isModalVisible={isModalVisible}
         setIsModalVisible={setIsModalVisible}
+        isLeader={isLeader}
+        isEditor={isEditor}
       />
     </>
   );

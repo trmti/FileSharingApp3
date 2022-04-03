@@ -8,7 +8,7 @@ export type text_style_type = {
 
 export type pixel = `${number}px`;
 export type percent = `${number}%`;
-export type publish_range = 'private' | 'public';
+export type publish_range = 'private' | 'public' | 'open';
 
 // サインアップ
 export interface SignUpParams {
