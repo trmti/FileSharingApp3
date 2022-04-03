@@ -12,9 +12,10 @@ type Props = {
   onClick: (id: number) => void;
   style?: {};
   isEditor: boolean;
+  onDelete: (id: number) => Promise<void>;
 };
 
-const Files: FC<Props> = ({ files, onClick, style, isEditor }) => {
+const Files: FC<Props> = ({ files, onClick, style, isEditor, onDelete }) => {
   const text = text_style.Body_S;
   if (files !== null) {
     return (
@@ -52,7 +53,7 @@ const Files: FC<Props> = ({ files, onClick, style, isEditor }) => {
                             {isEditor ? (
                               <DescriptionDropdown
                                 small
-                                onDelete={async () => {}}
+                                onDelete={() => onDelete(id)}
                               />
                             ) : (
                               <></>

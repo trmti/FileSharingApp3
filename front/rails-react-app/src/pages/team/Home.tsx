@@ -1,6 +1,7 @@
 import { FC, useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { message } from 'antd';
+import { message, Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import {
   TeamDescription,
   FolderWithImage,
@@ -19,14 +20,17 @@ type FetchTeamDescriptionSuccess = FetchSuccess<TeamDescription>;
 
 const setNewFolders = async (
   setFolders: React.Dispatch<React.SetStateAction<FolderWithImage[] | null>>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   teamId: number
 ) => {
+  setLoading(true);
   const folders = await getFoldersByTeamId(Number(teamId));
   if (folders.status === 'success') {
     setFolders(folders.data);
   } else {
     setFolders(null);
   }
+  setLoading(false);
 };
 
 const Home: FC = () => {
@@ -35,6 +39,8 @@ const Home: FC = () => {
   const [isLeader, setIsLeader] = useState<boolean>(false);
   const [isEditor, setIsEditor] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [loadingTeam, setLoadingTeam] = useState<boolean>(false);
+  const [loadingFolders, setLoadingFolders] = useState<boolean>(false);
   const authUser = useAuthUser();
   let { teamId } = useParams();
   const navigate = useNavigate();
@@ -48,7 +54,11 @@ const Home: FC = () => {
       if (res.status === 'success') {
         setIsModalVisible(false);
         message.success('フォルダを作成しました');
-        await setNewFolders(setFolders, Number(teamId));
+        await setNewFolders(setFolders, setLoadingFolders, Number(teamId));
+      } else if (res.status === 'continue') {
+        setIsModalVisible(false);
+        message.info(res.message);
+        await setNewFolders(setFolders, setLoadingFolders, Number(teamId));
       } else {
         message.error(
           'フォルダの作成に失敗しました。時間をおいて再度お試しください。'
@@ -69,15 +79,19 @@ const Home: FC = () => {
     message.error('入力されていない項目があります。');
   };
   useEffect(() => {
+    setLoadingTeam(true);
     (async () => {
       res = teamId
         ? await getTeamById(Number(teamId))
         : { status: 'error', message: 'パラメータが正しくありません' };
       if (res.status === 'success') {
         setTeamProp(res.data);
-        await setNewFolders(setFolders, Number(teamId));
+        await setNewFolders(setFolders, setLoadingFolders, Number(teamId));
+        setLoadingTeam(false);
       } else {
         setTeamProp(null);
+        message.error('チームが存在しません');
+        navigate('..');
       }
     })();
   }, [teamId]);
@@ -91,18 +105,28 @@ const Home: FC = () => {
   }, [authUser, teamId]);
   return (
     <>
-      <HomeTemp
-        team={teamProp}
-        folders={folders}
-        onClickCard={onClickCard}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        onDelete={onDelete}
-        isModalVisible={isModalVisible}
-        setIsModalVisible={setIsModalVisible}
-        isLeader={isLeader}
-        isEditor={isEditor}
-      />
+      {loadingTeam ? (
+        <Spin
+          indicator={
+            <LoadingOutlined style={{ marginTop: '10vh', fontSize: 300 }} />
+          }
+          style={{ width: '100%' }}
+        />
+      ) : (
+        <HomeTemp
+          team={teamProp}
+          folders={folders}
+          onClickCard={onClickCard}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          onDelete={onDelete}
+          isModalVisible={isModalVisible}
+          setIsModalVisible={setIsModalVisible}
+          isLeader={isLeader}
+          isEditor={isEditor}
+          loading={loadingFolders}
+        />
+      )}
     </>
   );
 };

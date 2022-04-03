@@ -19,7 +19,6 @@ export const getFilesByFolderId = (
   const res = client
     .get(`/folders/get_files/${id}`)
     .then((prop: AxiosResponse<FileWithImage[]>): FetchFilesSuccess => {
-      console.log(prop.data);
       return { status: 'success', data: prop.data };
     })
     .catch((): FetchFailed => {

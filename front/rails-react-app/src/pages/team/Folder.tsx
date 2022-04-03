@@ -14,6 +14,7 @@ const Folder: FC = () => {
   const [folderName, setFolderName] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [isEditor, setIsEditor] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const { folderId, teamId } = useParams();
   const authUser = useAuthUser();
   const navigate = useNavigate();
@@ -21,12 +22,14 @@ const Folder: FC = () => {
     console.log(id);
   };
   const setNewFiles = async () => {
+    setLoading(true);
     const newFiles = await getFilesByFolderId(Number(folderId));
     if (newFiles.status === 'success') {
       setFiles(newFiles.data);
     } else {
       setFiles(null);
     }
+    setLoading(false);
   };
   const onChangeSort = (value: string) => {
     console.log(value);
@@ -44,11 +47,20 @@ const Folder: FC = () => {
   const onFinishFailed = () => {
     message.error('画像を選択してください');
   };
-  const onDelete = async () => {
+  const onDeleteFolder = async () => {
     const res = await deleteSome(Number(folderId), 'folders');
     if (res.status === 'success') {
       message.success(res.data.message);
       navigate(`/user/team/${teamId}`);
+    } else {
+      message.error(res.message);
+    }
+  };
+  const onDeleteFile = async (fileId: number) => {
+    const res = await deleteSome(fileId, 'file_contents');
+    if (res.status === 'success') {
+      await setNewFiles();
+      message.success(res.data.message);
     } else {
       message.error(res.message);
     }
@@ -76,10 +88,12 @@ const Folder: FC = () => {
         folderName={folderName}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
-        onDelete={onDelete}
+        onDeleteFolder={onDeleteFolder}
+        onDeleteFile={onDeleteFile}
         isModalVisible={isModalVisible}
         setIsModalVisible={setIsModalVisible}
         isEditor={isEditor}
+        loading={loading}
       />
     </>
   );

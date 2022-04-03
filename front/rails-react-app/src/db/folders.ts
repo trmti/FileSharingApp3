@@ -12,6 +12,7 @@ import {
 
 type FetchFoldersSuccess = FetchSuccess<FolderWithImage[]>;
 type FetchFolderSuccess = FetchSuccess<Folder>;
+type FetchPostFailed = { status: 'continue'; message: string };
 
 export const showFolder = (
   folderId: number
@@ -44,12 +45,12 @@ export const getFoldersByTeamId = (
 export const createFolder = (
   params: BuildFolderParams,
   team_id: number
-): Promise<FetchFolderSuccess | FetchFailed> => {
+): Promise<FetchFolderSuccess | FetchPostFailed | FetchFailed> => {
   const { file, ...otherParams } = params;
   const res = client
     .post(`/teams/create_folder/${team_id}`, { ...otherParams })
     .then(async (prop: AxiosResponse<Folder>): Promise<
-      FetchFolderSuccess | FetchFailed
+      FetchFolderSuccess | FetchPostFailed
     > => {
       const data = prop.data;
       if (file) {
@@ -58,10 +59,13 @@ export const createFolder = (
         if (res.status === 'success') {
           return { status: 'success', data };
         } else {
-          return { status: 'error', message: '画像の作成に失敗しました' };
+          return { status: 'continue', message: '画像の作成に失敗しました' };
         }
       } else {
-        return { status: 'error', message: 'ファイルが選択されていません。' };
+        return {
+          status: 'continue',
+          message: 'ファイルが選択されていません。',
+        };
       }
     })
     .catch((): FetchFailed => {

@@ -15,7 +15,7 @@ export const deleteSome = (
       return { status: 'success', data: prop.data };
     })
     .catch((): FetchFailed => {
-      return { status: 'error', message: 'チームを削除できませんでした' };
+      return { status: 'error', message: '削除できませんでした' };
     });
   return res;
 };

@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
-import { Menu, Dropdown } from 'antd';
+import React, { FC, useState } from 'react';
+import { Menu, Dropdown, Modal } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 
 type Props = {
@@ -9,14 +9,31 @@ type Props = {
 };
 
 const menu = (onDelete: () => Promise<void>) => {
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const handleOnClick = () => {
+    setIsModalVisible(true);
+  };
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
   return (
-    <Menu>
-      <Menu.Item key={1}>
-        <a style={{ color: 'red' }} onClick={onDelete}>
-          削除
-        </a>
-      </Menu.Item>
-    </Menu>
+    <>
+      <Menu>
+        <Menu.Item key={1}>
+          <a style={{ color: 'red' }} onClick={handleOnClick}>
+            削除
+          </a>
+        </Menu.Item>
+      </Menu>
+      <Modal
+        title="削除"
+        onOk={onDelete}
+        onCancel={handleCancel}
+        visible={isModalVisible}
+      >
+        <p>本当に削除してよろしいですか？</p>
+      </Modal>
+    </>
   );
 };
 

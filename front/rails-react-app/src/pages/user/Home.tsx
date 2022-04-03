@@ -10,6 +10,8 @@ const Home: FC = () => {
   const navigate = useNavigate();
   const [recentlyTeams, setrecentlyTeams] =
     useState<TeamWithImage[] | null>(null);
+  const [loadingJoinTeams, setLoadingJoinTeams] = useState<boolean>(false);
+  const [loadingRecentTeams, setLoadingRecentTeams] = useState<boolean>(false);
   const user = useAuthUser();
   const [joinTeams, setJoinTeams] = useState<TeamWithImage[] | null>(null);
 
@@ -23,12 +25,14 @@ const Home: FC = () => {
 
   // ユーザーが参加しているチームの取得
   useEffect(() => {
+    setLoadingJoinTeams(true);
     if (user) {
       (async () => {
         const res = await getTeamsByUserId(user.id);
         if (res.status === 'success') {
           setJoinTeams(res.data);
         }
+        setLoadingJoinTeams(false);
       })();
     }
     return;
@@ -36,11 +40,13 @@ const Home: FC = () => {
 
   // 最近追加されたチームの取得
   useEffect(() => {
+    setLoadingRecentTeams(true);
     (async () => {
       const res = await getTeamsRecord(10, 0);
       if (res.status === 'success') {
         setrecentlyTeams(res.data);
       }
+      setLoadingRecentTeams(false);
     })();
   }, []);
 
@@ -48,6 +54,8 @@ const Home: FC = () => {
     <HomeTemp
       joinTeams={joinTeams}
       recentlyTeams={recentlyTeams}
+      loadingJoinTeams={loadingJoinTeams}
+      loadingRecentTeams={loadingRecentTeams}
       onClickJoinTeams={onClickJoinTeams}
       onClickRecentlyTeams={onClickRecentlyTeams}
     />

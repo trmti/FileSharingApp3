@@ -1,5 +1,5 @@
 class Api::V1::TeamsController < ApplicationController
-  before_action :set_team, except: [:index, :get_teams_record]
+  before_action :set_team, except: [:index, :get_teams_record, :search_teams]
 
   def index
     render json: { teams: Team.all.order('created_at DESC')}

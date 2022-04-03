@@ -1,16 +1,23 @@
 import { FC } from 'react';
+import { Input, Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import SearchTeam from 'components/organisms/SearchTeam';
 import TitleWithLine from 'components/atoms/TileWithLine';
-import { Input } from 'antd';
 import { TeamWithImage } from 'type';
 
 type Props = {
   searchedTeams: TeamWithImage[] | null;
   onClickCard: (id: number) => void;
   onPressEnter: (e: any) => void;
+  loading: boolean;
 };
 
-const Search: FC<Props> = ({ searchedTeams, onClickCard, onPressEnter }) => {
+const Search: FC<Props> = ({
+  searchedTeams,
+  onClickCard,
+  onPressEnter,
+  loading,
+}) => {
   return (
     <>
       <div style={{ width: '90%', margin: '0 auto', textAlign: 'center' }}>
@@ -39,7 +46,11 @@ const Search: FC<Props> = ({ searchedTeams, onClickCard, onPressEnter }) => {
             見つかったチーム
           </TitleWithLine>
         </div>
-        <SearchTeam searchedTeams={searchedTeams} onClickCard={onClickCard} />
+        {loading ? (
+          <Spin indicator={<LoadingOutlined style={{ fontSize: 100 }} />} />
+        ) : (
+          <SearchTeam searchedTeams={searchedTeams} onClickCard={onClickCard} />
+        )}
       </div>
     </>
   );

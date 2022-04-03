@@ -20,6 +20,7 @@ type UserData = {
 const api_url = `${process.env.REACT_APP_API_HOST}/api/v1`;
 
 export const loginUser = (params: SignInParams) => {
+  console.log('login');
   const res = axios
     .post(`${api_url}/auth/sign_in`, params, { withCredentials: true })
     .then((prop: AxiosResponse<UserData>): FetchUserSuccess => {

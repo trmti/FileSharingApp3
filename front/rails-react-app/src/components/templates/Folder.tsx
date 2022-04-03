@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { FileWithImage, BuildFileParams } from 'type';
-import { Typography, Button, Select, Affix, Modal, Row, Col } from 'antd';
+import { Typography, Button, Select, Affix, Modal, Row, Col, Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import Files from 'components/organisms/Files';
 import BackButton from 'components/molecules/BackButton';
@@ -18,10 +19,12 @@ type Props = {
   onChangeSort: (value: string) => void;
   onFinish: (data: BuildFileParams) => Promise<void>;
   onFinishFailed: () => void;
-  onDelete: () => Promise<void>;
+  onDeleteFolder: () => Promise<void>;
+  onDeleteFile: (fileId: number) => Promise<void>;
   isModalVisible: boolean;
   setIsModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
   isEditor: boolean;
+  loading: boolean;
 };
 
 const Folder: FC<Props> = ({
@@ -31,10 +34,12 @@ const Folder: FC<Props> = ({
   onChangeSort,
   onFinish,
   onFinishFailed,
-  onDelete,
+  onDeleteFolder,
+  onDeleteFile,
   isModalVisible,
   setIsModalVisible,
   isEditor,
+  loading,
 }) => {
   const navigate = useNavigate();
   const { teamId } = useParams();
@@ -62,7 +67,7 @@ const Folder: FC<Props> = ({
 
         {isEditor ? (
           <Col sm={1} xs={4}>
-            <DescriptionDropdown onDelete={onDelete} />
+            <DescriptionDropdown onDelete={onDeleteFolder} />
           </Col>
         ) : (
           <></>
@@ -97,12 +102,20 @@ const Folder: FC<Props> = ({
           </Select>
         </Col>
       </Row>
-      <Files
-        files={files}
-        onClick={onClick}
-        style={{ marginRight: 50 }}
-        isEditor={isEditor}
-      />
+      {loading ? (
+        <Spin
+          indicator={<LoadingOutlined style={{ fontSize: 300 }} />}
+          style={{ width: '100%' }}
+        />
+      ) : (
+        <Files
+          files={files}
+          onClick={onClick}
+          style={{ marginRight: 50 }}
+          isEditor={isEditor}
+          onDelete={onDeleteFile}
+        />
+      )}
       <Affix offsetBottom={30} style={{ position: 'fixed', right: 30 }}>
         <Button
           type="default"

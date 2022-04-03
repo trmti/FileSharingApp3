@@ -14,6 +14,9 @@ import {
 type FetchTeamSuccess = FetchSuccess<Team>;
 type FetchTeamDescriptionSuccess = FetchSuccess<TeamDescription>;
 type FetchTeamsSuccess = FetchSuccess<TeamWithImage[]>;
+
+type FetchImageFailed = { status: 'continue'; message: string };
+
 type ids = { ids: number[] };
 type id = { id: number };
 type FetchIdsSuccess = FetchSuccess<ids>;
@@ -39,12 +42,12 @@ export const getTeamById = (
 export const createTeam = (
   params: BuildTeamParams,
   leader_id: number
-): Promise<FetchTeamSuccess | FetchFailed> => {
+): Promise<FetchTeamSuccess | FetchImageFailed | FetchFailed> => {
   const { file, ...otherParams } = params;
   const res = client
     .post(`/user/create_team/${leader_id}`, { ...otherParams })
     .then(async (prop: AxiosResponse<Team>): Promise<
-      FetchTeamSuccess | FetchFailed
+      FetchTeamSuccess | FetchImageFailed
     > => {
       const data = prop.data;
       if (file) {
@@ -53,10 +56,17 @@ export const createTeam = (
         if (res.status === 'success') {
           return { status: 'success', data };
         } else {
-          return { status: 'error', message: '画像の作成に失敗しました' };
+          return {
+            status: 'continue',
+            message: '画像の作成に失敗しました。',
+          };
         }
       } else {
-        return { status: 'error', message: 'ファイルが選択されていません' };
+        return {
+          status: 'continue',
+          message:
+            '画像ファイルが選択されていません\nホーム画像無しでチームを作成します。',
+        };
       }
     })
     .catch((): FetchFailed => {

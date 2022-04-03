@@ -20,9 +20,15 @@ const { Option } = Select;
 type Props = {
   onFinish: (data: BuildTeamParams) => Promise<void>;
   onFinishFailed: () => void;
+  loading: boolean;
 } & FormProps;
 
-const FormBuildTeam: FC<Props> = ({ onFinish, onFinishFailed, ...other }) => {
+const FormBuildTeam: FC<Props> = ({
+  onFinish,
+  onFinishFailed,
+  loading,
+  ...other
+}) => {
   const [file, setFile] = useState<UploadFile | null>(null);
   const props = {
     beforeUpload: () => {
@@ -92,6 +98,8 @@ const FormBuildTeam: FC<Props> = ({ onFinish, onFinishFailed, ...other }) => {
             htmlType="submit"
             shape="round"
             size="large"
+            loading={loading}
+            disabled={loading}
             style={{
               width: '180px',
               height: '60px',

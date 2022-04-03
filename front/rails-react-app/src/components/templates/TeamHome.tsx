@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Divider, Modal } from 'antd';
+import { Divider, Modal, Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import TeamHeader from 'components/organisms/TeamHeader';
 import Folders from 'components/organisms/Folders';
 import FormBuildFolder from 'components/organisms/FormBuildFolder';
@@ -20,6 +21,7 @@ type Props = {
   setIsModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
   isLeader: boolean;
   isEditor: boolean;
+  loading: boolean;
 };
 
 const Home: FC<Props> = ({
@@ -33,6 +35,7 @@ const Home: FC<Props> = ({
   setIsModalVisible,
   isLeader,
   isEditor,
+  loading,
 }) => {
   const navigate = useNavigate();
   const onClickNewFolder = () => {
@@ -61,13 +64,17 @@ const Home: FC<Props> = ({
       </div>
       <TeamHeader team={team} />
       <Divider style={{ borderTop: `3px solid ${colors.Border}` }} />
-      <Folders
-        folders={folders}
-        onClick={onClickCard}
-        onClickNewFolder={onClickNewFolder}
-        publish_range={team?.team.publish_range}
-        isEditor={isEditor}
-      />
+      {loading ? (
+        <Spin indicator={<LoadingOutlined style={{ fontSize: 30 }} />} />
+      ) : (
+        <Folders
+          folders={folders}
+          onClick={onClickCard}
+          onClickNewFolder={onClickNewFolder}
+          publish_range={team?.team.publish_range}
+          isEditor={isEditor}
+        />
+      )}
       <Modal
         title="新規フォルダ作成"
         visible={isModalVisible}
