@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { FileWithImage, BuildFileParams } from 'type';
-import { Typography, Button, Select, Affix, Modal } from 'antd';
+import { Typography, Button, Select, Affix, Modal, Row, Col } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import Files from 'components/organisms/Files';
 import BackButton from 'components/molecules/BackButton';
@@ -41,41 +41,49 @@ const Folder: FC<Props> = ({
   };
   return (
     <>
-      <div style={{ display: 'flex' }}>
-        <BackButton
-          onClick={() => {
-            navigate(`../team/${teamId}`);
-          }}
-        />
-        <Typography.Title style={{ marginLeft: '30%' }}>
-          {folderName}
-        </Typography.Title>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-        <Typography.Title style={{ marginTop: 30, flex: 1 }}>
-          ファイル
-        </Typography.Title>
-        <div style={{ flex: 4, margin: 'auto' }}>
+      <Row>
+        <Col sm={4} xs={24}>
+          <BackButton
+            onClick={() => {
+              navigate(`../team/${teamId}`);
+            }}
+          />
+        </Col>
+        <Col sm={20} xs={24}>
+          <Typography.Title style={{ marginLeft: '30%' }}>
+            {folderName}
+          </Typography.Title>
+        </Col>
+      </Row>
+      <Row style={{ marginBottom: 30 }}>
+        <Col sm={6} xs={24}>
+          <Typography.Title
+            style={{ marginTop: 15, flex: 1, ...text_style.Title_S }}
+          >
+            ファイル一覧
+          </Typography.Title>
+        </Col>
+        <Col sm={12} xs={18}>
           <Button
             type="primary"
             shape="round"
-            style={{ marginLeft: '30%', width: '40%', height: 50 }}
+            style={{ marginLeft: '20%', width: '60%', height: 50 }}
           >
             スライドショー
           </Button>
-        </div>
-        <div style={{ flex: 1, margin: 'auto' }}>
+        </Col>
+        <Col sm={6} xs={6}>
           <Select
             defaultValue="newer"
             onChange={onChangeSort}
-            style={{ width: 150, marginRight: '30%' }}
+            style={{ width: '90%', maxWidth: 150, marginTop: 10 }}
           >
             <Option value="newer">新しい順</Option>
             <Option value="older">古い順</Option>
             <Option value="popular">人気順</Option>
           </Select>
-        </div>
-      </div>
+        </Col>
+      </Row>
       <Files files={files} onClick={onClick} style={{ marginRight: 50 }} />
       <Affix offsetBottom={30} style={{ position: 'fixed', right: 30 }}>
         <Button

@@ -101,7 +101,7 @@ export interface BuildTeamParams {
 export type Folder = {
   id: number;
   title: string;
-  description: string;
+  description: string | null;
   team_id: number;
   post_id: number | null;
   created_at?: Date;

@@ -44,7 +44,7 @@ const FormBuildTeam: FC<Props> = ({ onFinish, onFinishFailed, ...other }) => {
         onFinishFailed={onFinishFailed}
         {...other}
       >
-        <Space direction="vertical" size="large">
+        <Space direction="vertical" size="large" style={{ width: '100%' }}>
           <Form.Item
             label={<Title>TeamName</Title>}
             name="name"
@@ -52,7 +52,7 @@ const FormBuildTeam: FC<Props> = ({ onFinish, onFinishFailed, ...other }) => {
           >
             <Input
               placeholder="チーム名を入力してください"
-              style={{ width: 500, height: 36 }}
+              style={{ width: '100%', maxWidth: 500, height: 36 }}
             />
           </Form.Item>
           <Form.Item label={<Title>Description</Title>} name="description">

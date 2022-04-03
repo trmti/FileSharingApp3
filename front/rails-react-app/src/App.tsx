@@ -78,48 +78,64 @@ const PrivateRoute: FC<RouteProps> = () => {
 
 export const App: VFC = () => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+  const [isSmall, setIsSmall] = useState<boolean>(window.innerWidth < 480);
+  useEffect(() => {
+    const onResize = () => {
+      setIsSmall(window.innerWidth < 480);
+    };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
   return (
     <>
       <AuthUserProvider>
         <BrowserRouter>
           <Sider
             props={siderProps}
-            setAction={setIsCollapsed}
+            setIsCollapsed={setIsCollapsed}
+            small={isSmall}
             isCollapsed={isCollapsed}
           />
-          <Header />
-          <Content
-            style={{
-              marginTop: '110px',
-              marginLeft: isCollapsed ? '0' : '380px',
-              backgroundColor: colors.BG,
-            }}
-          >
-            <Routes>
-              <Route path="/" element={<Pages.UserNotification />} />
-              <Route path="/signup" element={<Pages.Signup />} />
-              <Route path="/login" element={<Pages.Login />} />
-              <Route path="/logout" element={<Pages.Logout />} />
+          <Header small={isSmall} />
+          {!isCollapsed && window.innerWidth < 480 ? (
+            <></>
+          ) : (
+            <Content
+              style={{
+                marginTop: '110px',
+                marginLeft: isCollapsed ? 50 : 300,
+                backgroundColor: colors.BG,
+              }}
+            >
+              <Routes>
+                <Route path="/" element={<Pages.UserNotification />} />
+                <Route path="/signup" element={<Pages.Signup />} />
+                <Route path="/login" element={<Pages.Login />} />
+                <Route path="/logout" element={<Pages.Logout />} />
 
-              <Route path="/user" element={<PrivateRoute />}>
-                <Route path="/user" element={<Pages.UserHome />} />
-                <Route path="/user/search" element={<Pages.UserSearch />} />
-                <Route path="/user/build" element={<Pages.UserBuild />} />
-                <Route
-                  path="/user/Notification"
-                  element={<Pages.UserNotification />}
-                />
+                <Route path="/user" element={<PrivateRoute />}>
+                  <Route path="/user" element={<Pages.UserHome />} />
+                  <Route path="/user/search" element={<Pages.UserSearch />} />
+                  <Route path="/user/build" element={<Pages.UserBuild />} />
+                  <Route
+                    path="/user/Notification"
+                    element={<Pages.UserNotification />}
+                  />
 
-                <Route path="/user/team/:teamId" element={<Pages.TeamHome />} />
-                <Route
-                  path="/user/team/:teamId/folder/:folderId"
-                  element={<Pages.TeamFolder />}
-                />
+                  <Route
+                    path="/user/team/:teamId"
+                    element={<Pages.TeamHome />}
+                  />
+                  <Route
+                    path="/user/team/:teamId/folder/:folderId"
+                    element={<Pages.TeamFolder />}
+                  />
 
-                <Route path="*" element={<Pages.Login />} />
-              </Route>
-            </Routes>
-          </Content>
+                  <Route path="*" element={<Pages.Login />} />
+                </Route>
+              </Routes>
+            </Content>
+          )}
         </BrowserRouter>
         <GlobalStyles />
       </AuthUserProvider>

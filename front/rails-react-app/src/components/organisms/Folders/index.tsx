@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Row, Col, Card, Typography } from 'antd';
+import { Row, Col, Card, Typography, Popconfirm } from 'antd';
 import { FolderAddOutlined } from '@ant-design/icons';
 import { colors, text_style } from 'app_design';
 import { defaultCoverImage } from 'utils';
@@ -63,7 +63,41 @@ const Folders: FC<Props> = ({ folders, onClick, onClickNewFolder }) => {
                     onClick={() => onClick(id)}
                     hoverable
                   >
-                    <Meta title={title} description={description} />
+                    <Meta
+                      title={title}
+                      description={
+                        <div
+                          onClick={(e) => {
+                            e.stopPropagation();
+                          }}
+                        >
+                          <Popconfirm
+                            title={
+                              <div
+                                style={{
+                                  width: 300,
+                                  overflowWrap: 'break-word',
+                                }}
+                              >
+                                <p
+                                  style={{
+                                    whiteSpace: 'pre-wrap',
+                                  }}
+                                >
+                                  {description ? description : 'No Description'}
+                                </p>
+                              </div>
+                            }
+                            icon={null}
+                            showCancel={false}
+                          >
+                            <Typography.Paragraph ellipsis>
+                              {description ? description : 'No description'}
+                            </Typography.Paragraph>
+                          </Popconfirm>
+                        </div>
+                      }
+                    />
                   </Card>
                 </Col>
               );

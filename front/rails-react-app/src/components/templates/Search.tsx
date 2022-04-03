@@ -18,7 +18,8 @@ const Search: FC<Props> = ({ searchedTeams, onClickCard, onPressEnter }) => {
         <Input
           placeholder="Search Team By Name or Label"
           style={{
-            width: 500,
+            width: '100%',
+            maxWidth: 400,
             borderRadius: 100,
             marginTop: 40,
             marginBottom: 50,

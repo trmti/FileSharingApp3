@@ -1,14 +1,18 @@
-import { VFC, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Avatar, Layout } from 'antd';
 import styles from './style.module.css';
-import { colors } from 'app_design';
+import { colors, text_style } from 'app_design';
 import { getPostByUserId } from 'db/post';
 import { useAuthUser } from 'auth/AuthUserContext';
 
 const { Header } = Layout;
 
-const MyHeader: VFC = () => {
+type Props = {
+  small: boolean;
+};
+
+const MyHeader: FC<Props> = ({ small }) => {
   const authUser = useAuthUser();
   const [avatarUrl, setAvatarUrl] = useState<string>(
     process.env.PUBLIC_URL + '/logo192.png'
@@ -30,7 +34,7 @@ const MyHeader: VFC = () => {
         position: 'fixed',
         zIndex: 1,
         width: '100%',
-        height: '80px',
+        height: small ? '60px' : '80px',
         backgroundColor: colors.Header,
         display: 'flex',
         justifyContent: 'space-between',
@@ -39,9 +43,24 @@ const MyHeader: VFC = () => {
       }}
     >
       <Link to="/">
-        <p className={styles.Title}>Share-Kosen</p>
+        <p className={small ? styles.TitleSmall : styles.Title}>Share-Kosen</p>
       </Link>
-      <Avatar size="large" src={avatarUrl} style={{ marginTop: '15px' }} />
+      <div style={{ display: 'flex' }}>
+        <p
+          style={{
+            color: colors.BG,
+            marginRight: 20,
+            fontSize: small ? 15 : 24,
+          }}
+        >
+          {authUser ? authUser.name : '未ログイン'}
+        </p>
+        <Avatar
+          size={small ? 'small' : 'large'}
+          src={avatarUrl}
+          style={{ marginTop: small ? '20px' : '15px' }}
+        />
+      </div>
     </Header>
   );
 };

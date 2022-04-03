@@ -13,3 +13,11 @@
 .ant-popover-message-title {
   padding-left: 5px;
 }
+
+.ant-tooltip-inner {
+  display: none;
+}
+
+.ant-tooltip-arrow-content {
+  display: none;
+}

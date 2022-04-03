@@ -41,30 +41,34 @@ const Files: FC<Props> = ({ files, onClick, style }) => {
                       <Meta
                         title={title ? title : 'No Title'}
                         description={
-                          <Popconfirm
-                            title={
-                              <div
-                                style={{
-                                  width: 300,
-                                  overflowWrap: 'break-word',
-                                }}
-                              >
-                                <p
+                          <div onClick={(e) => e.stopPropagation()}>
+                            <Popconfirm
+                              title={
+                                <div
                                   style={{
-                                    whiteSpace: 'pre-wrap',
+                                    width: 300,
+                                    overflowWrap: 'break-word',
                                   }}
                                 >
-                                  {description ? description : 'No Description'}
-                                </p>
-                              </div>
-                            }
-                            icon={null}
-                            showCancel={false}
-                          >
-                            <Typography.Paragraph ellipsis>
-                              {description ? description : 'No Description'}
-                            </Typography.Paragraph>
-                          </Popconfirm>
+                                  <p
+                                    style={{
+                                      whiteSpace: 'pre-wrap',
+                                    }}
+                                  >
+                                    {description
+                                      ? description
+                                      : 'No Description'}
+                                  </p>
+                                </div>
+                              }
+                              icon={null}
+                              showCancel={false}
+                            >
+                              <Typography.Paragraph ellipsis>
+                                {description ? description : 'No Description'}
+                              </Typography.Paragraph>
+                            </Popconfirm>
+                          </div>
                         }
                       />
                       <Row

@@ -21,34 +21,57 @@ const TeamHeader: FC<Props> = ({ team }) => {
       authors,
     } = team;
     return (
-      <Row gutter={30} style={{ height: '35vh' }}>
-        <Col span={12}>
-          <Title>{name}</Title>
-          <Paragraph ellipsis>{description}</Paragraph>
-          <Affix offsetBottom={10}>
+      <>
+        <Title style={{ marginLeft: 10 }}>{name}</Title>
+        <Row gutter={30}>
+          <Col md={12} xs={24}>
+            <Image
+              src={image ? image : defaultCoverImage}
+              style={{
+                width: '100%',
+                height: 'auto',
+                aspectRatio: '5/3',
+              }}
+              width="100%"
+              height="auto"
+            />
+          </Col>
+          <Col md={12} xs={24}>
+            <Paragraph ellipsis>{description}</Paragraph>
             <div>
-              <Row justify="space-between" style={{ marginBottom: 40 }}>
-                <Col>
+              <Row justify="space-between" style={{ marginBottom: 20 }}>
+                <Col span={12}>
                   <Title style={{ display: 'inline', color: colors.Text.Gray }}>
                     Leader
                   </Title>
+                </Col>
+                <Col span={12}>
                   <UserIcon
                     src={leader.image ? leader.image : defaultCoverImage}
                     name={leader.name}
                     BG={colors.IconBlue}
-                    style={{ marginLeft: 20, lineHeight: '100%' }}
+                    style={{ lineHeight: '100%' }}
                   />
                 </Col>
-                <Col>
-                  <Title style={{ display: 'inline', color: colors.Text.Gray }}>
+              </Row>
+              <Row style={{ marginBottom: 20 }}>
+                <Col sm={24} lg={12}>
+                  <Title
+                    style={{
+                      display: 'inline',
+                      color: colors.Text.Gray,
+                    }}
+                  >
                     Authority
                   </Title>
+                </Col>
+                <Col sm={24} lg={12}>
                   <Paragraph
                     style={{
                       display: 'inline',
-                      marginLeft: 50,
-                      marginBottom: 10,
                       color: colors.Text.Black,
+                      lineHeight: '50px',
+                      marginLeft: 30,
                       ...text_style.Title_S,
                     }}
                   >
@@ -56,41 +79,37 @@ const TeamHeader: FC<Props> = ({ team }) => {
                   </Paragraph>
                 </Col>
               </Row>
-              <Row>
-                <Title
-                  style={{
-                    display: 'inline',
-                    color: colors.Text.Gray,
-                    marginRight: 40,
-                  }}
-                >
-                  Authors
-                </Title>
-                <Avatar.Group maxCount={5} style={{ overflow: 'scroll' }}>
-                  {authors.map((author, index) => (
-                    <UserIcon
-                      key={index}
-                      src={author.image ? author.image : defaultCoverImage}
-                      name={author.name}
-                      BG={colors.IconOrange}
-                    />
-                  ))}
-                </Avatar.Group>
+              <Row gutter={30}>
+                <Col span={24}>
+                  <Title
+                    style={{
+                      display: 'inline',
+                      color: colors.Text.Gray,
+                    }}
+                  >
+                    Authors
+                  </Title>
+                </Col>
+                <Col span={24}>
+                  <Avatar.Group
+                    maxCount={5}
+                    style={{ overflow: 'scroll', marginLeft: 30 }}
+                  >
+                    {authors.map((author, index) => (
+                      <UserIcon
+                        key={index}
+                        src={author.image ? author.image : defaultCoverImage}
+                        name={author.name}
+                        BG={colors.IconOrange}
+                      />
+                    ))}
+                  </Avatar.Group>
+                </Col>
               </Row>
             </div>
-          </Affix>
-        </Col>
-        <Col span={12}>
-          <Image
-            src={image ? image : defaultCoverImage}
-            style={{
-              width: 'auto',
-              height: '35vh',
-              aspectRatio: '5/3',
-            }}
-          />
-        </Col>
-      </Row>
+          </Col>
+        </Row>
+      </>
     );
   } else {
     return (
