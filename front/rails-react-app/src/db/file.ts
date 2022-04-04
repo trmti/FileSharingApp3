@@ -20,33 +20,3 @@ export const getFilesByFolderId = (id: number) => {
   );
   return res;
 };
-
-export const createFile = async (
-  params: BuildFileParams,
-  folderId: number
-): Promise<FetchFileSuccess | FetchFailed> => {
-  const { file, ...otherParams } = params;
-  const res = client
-    .post(`/folders/create_file/${folderId}`, { ...otherParams })
-    .then((props: AxiosResponse<File>): Promise<
-      FetchSuccess<File> | FetchFailed
-    > => {
-      const data = props.data;
-      if (!file) {
-        throw new Error();
-      }
-      const image = createFormData('image', file);
-      const res = createOrUpdateImage(data.id, image, 'file_contents', 'create')
-        .then((): FetchSuccess<File> => {
-          return { status: 'success', data };
-        })
-        .catch((): FetchFailed => {
-          return { status: 'error', message: '画像の作成に失敗しました。' };
-        });
-      return res;
-    })
-    .catch((): FetchFailed => {
-      return { status: 'error', message: '画像を選択してください。' };
-    });
-  return res;
-};
