@@ -11,12 +11,19 @@ type Props = {
   small?: boolean;
 };
 
-const menu = (
-  onDelete: () => Promise<void>,
-  FormUpdate: React.ReactChild,
-  isEditModalVisible: boolean,
-  setIsEditModalVisible: React.Dispatch<React.SetStateAction<boolean>>
-) => {
+type OtherProps = {
+  onDelete: () => Promise<void>;
+  FormUpdate: React.ReactChild;
+  isEditModalVisible: boolean;
+  setIsEditModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const MenuDropdown: FC<OtherProps> = ({
+  onDelete,
+  FormUpdate,
+  isEditModalVisible,
+  setIsEditModalVisible,
+}) => {
   const [isDeleteModalVisible, setIsDeleteModalVisible] =
     useState<boolean>(false);
   const handleCancel = () => {
@@ -77,12 +84,14 @@ const DescriptionDropdown: FC<Props> = ({
   return (
     <div style={style}>
       <Dropdown
-        overlay={menu(
-          onDelete,
-          FormUpdate,
-          isEditModalVisible,
-          setIsEditModalVisible
-        )}
+        overlay={
+          <MenuDropdown
+            onDelete={onDelete}
+            FormUpdate={FormUpdate}
+            isEditModalVisible={isEditModalVisible}
+            setIsEditModalVisible={setIsEditModalVisible}
+          />
+        }
         trigger={['click']}
         arrow
       >
