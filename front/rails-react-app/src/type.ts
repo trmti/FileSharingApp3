@@ -98,6 +98,13 @@ export interface BuildTeamParams {
   file: UploadFile | null;
 }
 
+export interface UpdateTeamParams {
+  name: string | null;
+  description: string | null;
+  publish_range: publish_range | null;
+  file: UploadFile | null;
+}
+
 export type Folder = {
   id: number;
   title: string;

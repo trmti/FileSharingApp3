@@ -1,7 +1,8 @@
 import { AxiosResponse } from 'axios';
+import { getAction } from './utils';
+import { createOrUpdateImage } from './post';
 import { client } from './client';
 import { createFormData } from 'utils';
-import { createImage } from './post';
 import {
   FileWithImage,
   File,
@@ -10,48 +11,42 @@ import {
   FetchFailed,
 } from 'type';
 
-type FetchFilesSuccess = FetchSuccess<FileWithImage[]>;
 type FetchFileSuccess = FetchSuccess<File>;
 
-export const getFilesByFolderId = (
-  id: number
-): Promise<FetchFilesSuccess | FetchFailed> => {
-  const res = client
-    .get(`/folders/get_files/${id}`)
-    .then((prop: AxiosResponse<FileWithImage[]>): FetchFilesSuccess => {
-      return { status: 'success', data: prop.data };
-    })
-    .catch((): FetchFailed => {
-      return { status: 'error', message: 'ファイル一覧の取得に失敗しました' };
-    });
+export const getFilesByFolderId = (id: number) => {
+  const res = getAction<FileWithImage[]>(
+    `/folders/get_files/${id}`,
+    'ファイル一覧の取得に失敗しました'
+  );
   return res;
 };
 
-export const createFile = (
+export const createFile = async (
   params: BuildFileParams,
   folderId: number
 ): Promise<FetchFileSuccess | FetchFailed> => {
   const { file, ...otherParams } = params;
   const res = client
     .post(`/folders/create_file/${folderId}`, { ...otherParams })
-    .then(async (prop: AxiosResponse<File>): Promise<
-      FetchFileSuccess | FetchFailed
+    .then((props: AxiosResponse<File>): Promise<
+      FetchSuccess<File> | FetchFailed
     > => {
-      const data = prop.data;
-      if (file) {
-        const image = createFormData('image', file);
-        const res = await createImage(data.id, image, 'file_contents');
-        if (res.status === 'success') {
-          return { status: 'success', data };
-        } else {
-          return { status: 'error', message: '画像の作成に失敗しました' };
-        }
-      } else {
-        return { status: 'error', message: 'ファイルが選択されていません。' };
+      const data = props.data;
+      if (!file) {
+        throw new Error();
       }
+      const image = createFormData('image', file);
+      const res = createOrUpdateImage(data.id, image, 'file_contents', 'create')
+        .then((): FetchSuccess<File> => {
+          return { status: 'success', data };
+        })
+        .catch((): FetchFailed => {
+          return { status: 'error', message: '画像の作成に失敗しました。' };
+        });
+      return res;
     })
     .catch((): FetchFailed => {
-      return { status: 'error', message: 'ファイルの作成に失敗しました' };
+      return { status: 'error', message: '画像を選択してください。' };
     });
   return res;
 };

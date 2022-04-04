@@ -1,5 +1,4 @@
 import { VFC } from 'react';
-import { useLoading } from 'auth/AuthUserContext';
 import { Form, Input, Button, Space, FormProps } from 'antd';
 import { colors, text_style } from 'app_design';
 import { SignUpParams } from 'type';

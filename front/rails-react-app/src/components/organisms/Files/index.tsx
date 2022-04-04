@@ -1,7 +1,8 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { Row, Col, Card, Typography, Button, Image, Popconfirm } from 'antd';
-import { FileWithImage } from 'type';
+import { FileWithImage, BuildFileParams } from 'type';
 import { defaultCoverImage } from 'utils';
+import FormUpdateFile from 'components/organisms/FormFile';
 import DescriptionDropdown from 'components/molecules/DescriptionDropdown';
 import { colors, text_style } from 'app_design';
 
@@ -10,12 +11,23 @@ const { Meta } = Card;
 type Props = {
   files: FileWithImage[] | null;
   onClick: (id: number) => void;
-  style?: {};
   isEditor: boolean;
   onDelete: (id: number) => Promise<void>;
+  UpdateFile: (data: BuildFileParams & { fileId: number }) => Promise<void>;
+  UpdateFileFailed: () => void;
+  style?: React.CSSProperties;
 };
 
-const Files: FC<Props> = ({ files, onClick, style, isEditor, onDelete }) => {
+const Files: FC<Props> = ({
+  files,
+  onClick,
+  style,
+  UpdateFile,
+  UpdateFileFailed,
+  isEditor,
+  onDelete,
+}) => {
+  const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
   const text = text_style.Body_S;
   if (files !== null) {
     return (
@@ -54,6 +66,17 @@ const Files: FC<Props> = ({ files, onClick, style, isEditor, onDelete }) => {
                               <DescriptionDropdown
                                 small
                                 onDelete={() => onDelete(id)}
+                                isEditModalVisible={isEditModalVisible}
+                                setIsEditModalVisible={setIsEditModalVisible}
+                                FormUpdate={
+                                  <FormUpdateFile
+                                    onFinish={UpdateFile}
+                                    onFinishFailed={UpdateFileFailed}
+                                    fileId={id}
+                                    fileName={title}
+                                    description={description}
+                                  />
+                                }
                               />
                             ) : (
                               <></>

@@ -1,6 +1,7 @@
 class Api::V1::TeamsController < ApplicationController
   before_action :set_team, except: [:index, :get_teams_record, :search_teams]
 
+  # ------ resources ---------------------------------------------
   def index
     render json: { teams: Team.all.order('created_at DESC')}
   end
@@ -18,11 +19,25 @@ class Api::V1::TeamsController < ApplicationController
     render json: {team: @team, image: @image, leader: {image: @leader_image, name: @team.leader.name}, authors: @author_res}, status: :ok
   end
 
+  def update
+    new_params = team_params.dup
+    new_params.delete(:leader_id) {|key|
+      @team.update(new_params)
+      render json: @team, status: :ok
+      return
+    }
+    @leader = User.find(params[:leader_id])
+    @team.leader = @leader
+    @team.update(new_params)
+    render json: @team, status: :ok
+  end
+
   def destroy
     @team.destroy
     render json: {message: "チームを削除しました"}, status: :ok
   end
 
+  # ------ folder ----------------------------------------------------------
   def get_folders
     @folders = @team.folders.order('created_at DESC')
     @res = []
@@ -31,14 +46,6 @@ class Api::V1::TeamsController < ApplicationController
       @res.push({folder: folder, image: @image})
     end
     render json: @res, status: :ok
-  end
-
-  def get_editor_ids
-    render json: {ids: @team.editor_ids}, status: :ok
-  end
-
-  def get_leader_id
-    render json: {id: @team.leader_id}, status: :ok
   end
 
   def create_folder
@@ -50,7 +57,8 @@ class Api::V1::TeamsController < ApplicationController
       render status: :internal_server_error
     end
   end
-
+  
+  # ------ post ------------------------------
   def create_image
     @post = @team.create_post(image: params[:image])
     if @team.save
@@ -60,6 +68,26 @@ class Api::V1::TeamsController < ApplicationController
     end
   end
 
+  def update_image
+    @post = @team.build_post(image: params[:image])
+    @team.post = @post
+    if @team.save
+      render json: @post, status: :created
+    else
+      render status: :internal_server_error
+    end
+  end
+  
+  # ------ user ------------------------------
+  def get_editor_ids
+    render json: {ids: @team.editor_ids}, status: :ok
+  end
+
+  def get_leader_id
+    render json: {id: @team.leader_id}, status: :ok
+  end
+
+  # ------ team ------------------------
   def get_teams_record
     @teams = Team.order(created_at: :desc).limit(params[:limit]).offset(params[:offset])
     @res = []
@@ -87,7 +115,7 @@ class Api::V1::TeamsController < ApplicationController
       @team = Team.find(params[:id])
     end
     def team_params
-      params.require(:team).permit(:image)
+      params.require(:team).permit(:image, :name, :description, :publish_range, :leader_id)
     end
     def post_params
       params.require(:post).permit(:image)

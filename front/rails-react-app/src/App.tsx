@@ -8,7 +8,8 @@ import {
   Route,
   RouteProps,
 } from 'react-router-dom';
-import { Layout, Avatar } from 'antd';
+import { Layout, Avatar, Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import AuthUserProvider, {
   useLoading,
   useAuthUser,
@@ -72,7 +73,12 @@ const PrivateRoute: FC<RouteProps> = () => {
   if (!loading) {
     return user !== null ? <Outlet /> : <Navigate to="/login" />;
   } else {
-    return <></>;
+    return (
+      <Spin
+        indicator={<LoadingOutlined style={{ fontSize: 400 }} />}
+        style={{ width: '100%' }}
+      />
+    );
   }
 };
 

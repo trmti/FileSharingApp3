@@ -1,10 +1,8 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { fileClient } from './client';
-import { Post, FetchFailed, FetchSuccess } from 'type';
+import { getAction, postAction } from './utils';
+import { Post } from 'type';
 
 let client: AxiosInstance;
-
-type FetchPostSuccess = FetchSuccess<Post>;
 
 client = axios.create({
   baseURL: `${process.env.REACT_APP_API_HOST}/api/v1`,
@@ -18,34 +16,25 @@ client.interceptors.response.use((response: AxiosResponse): AxiosResponse => {
   return { ...response.data, data };
 });
 
-export const getPostByUserId = (
-  userId: number
-): Promise<FetchPostSuccess | FetchFailed> => {
-  const res = client
-    .get(`/user/get_image/${userId}`)
-    .then((prop: AxiosResponse<Post>): FetchPostSuccess => {
-      const data = prop.data;
-      return { status: 'success', data };
-    })
-    .catch((): FetchFailed => {
-      return { status: 'error', message: 'ユーザー画像の取得に失敗しました。' };
-    });
-
+export const getPostByUserId = (userId: number) => {
+  const res = getAction<Post>(
+    `/user/get_image/${userId}`,
+    'ユーザー画像の取得に失敗しました。'
+  );
   return res;
 };
 
-export const createImage = (
+export const createOrUpdateImage = (
   id: number,
   image: FormData,
-  master: 'teams' | 'folders' | 'file_contents'
+  master: 'teams' | 'folders' | 'file_contents',
+  action: 'create' | 'update'
 ) => {
-  const res = fileClient
-    .post(`/${master}/create_image/${id}`, image)
-    .then((prop) => {
-      return { status: 'success', data: prop.data };
-    })
-    .catch((): FetchFailed => {
-      return { status: 'error', message: 'イメージが作れませんでした' };
-    });
+  const res = postAction<Post>(
+    `/${master}/${action}_image/${id}`,
+    image,
+    'イメージが作れませんでした',
+    client
+  );
   return res;
 };

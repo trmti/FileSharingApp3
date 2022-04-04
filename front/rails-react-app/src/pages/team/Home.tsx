@@ -3,17 +3,20 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { message, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import {
+  Folder,
   TeamDescription,
   FolderWithImage,
   BuildFolderParams,
   FetchFailed,
   FetchSuccess,
+  UpdateTeamParams,
 } from 'type';
 import { useAuthUser } from 'auth/AuthUserContext';
+import { createSome, updateSome } from 'db/utils';
 import { getTeamById } from 'db/team';
 import { setInLeader, setInEditor } from 'utils';
 import { deleteSome } from 'db/utils';
-import { getFoldersByTeamId, createFolder } from 'db/folders';
+import { getFoldersByTeamId } from 'db/folders';
 import HomeTemp from 'components/templates/TeamHome';
 
 type FetchTeamDescriptionSuccess = FetchSuccess<TeamDescription>;
@@ -38,7 +41,9 @@ const Home: FC = () => {
   const [folders, setFolders] = useState<FolderWithImage[] | null>(null);
   const [isLeader, setIsLeader] = useState<boolean>(false);
   const [isEditor, setIsEditor] = useState<boolean>(false);
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [isCreateModalVisible, setIsCreateModalVisible] =
+    useState<boolean>(false);
+  const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
   const [loadingTeam, setLoadingTeam] = useState<boolean>(false);
   const [loadingFolders, setLoadingFolders] = useState<boolean>(false);
   const authUser = useAuthUser();
@@ -48,15 +53,20 @@ const Home: FC = () => {
   const onClickCard = (id: number) => {
     navigate(`folder/${id}`);
   };
-  const onFinish = async (data: BuildFolderParams) => {
+  const CreateFolder = async (data: BuildFolderParams) => {
     if (teamId) {
-      const res = await createFolder(data, Number(teamId));
+      const res = await createSome<Folder>(
+        'teams',
+        'folder',
+        data,
+        Number(teamId)
+      );
       if (res.status === 'success') {
-        setIsModalVisible(false);
+        setIsCreateModalVisible(false);
         message.success('フォルダを作成しました');
         await setNewFolders(setFolders, setLoadingFolders, Number(teamId));
       } else if (res.status === 'continue') {
-        setIsModalVisible(false);
+        setIsCreateModalVisible(false);
         message.info(res.message);
         await setNewFolders(setFolders, setLoadingFolders, Number(teamId));
       } else {
@@ -65,6 +75,30 @@ const Home: FC = () => {
         );
       }
     }
+  };
+  const CreateFolderFailed = () => {
+    message.error('入力されていない項目があります。');
+  };
+  const UpdateTeam = async (data: UpdateTeamParams) => {
+    if (teamId) {
+      const res = await updateSome('teams', data, Number(teamId));
+      if (res.status !== 'error') {
+        message.success('チームの情報を更新しました');
+        setIsEditModalVisible(false);
+        const teamReload = await getTeamById(Number(teamId));
+        if (teamReload.status === 'success') {
+          setTeamProp(teamReload.data);
+        } else {
+          message.error('チームが見つかりませんでした');
+          navigate('..');
+        }
+      } else {
+        message.error(res.message);
+      }
+    }
+  };
+  const UpdateTeamFailed = () => {
+    message.error('チームの更新に失敗しました');
   };
   const onDelete = async () => {
     const res = await deleteSome(Number(teamId), 'teams');
@@ -75,15 +109,14 @@ const Home: FC = () => {
       message.error(res.message);
     }
   };
-  const onFinishFailed = () => {
-    message.error('入力されていない項目があります。');
-  };
   useEffect(() => {
     setLoadingTeam(true);
+    if (!teamId) {
+      message.error('パラメータが正しくありません');
+      return;
+    }
     (async () => {
-      res = teamId
-        ? await getTeamById(Number(teamId))
-        : { status: 'error', message: 'パラメータが正しくありません' };
+      res = await getTeamById(Number(teamId));
       if (res.status === 'success') {
         setTeamProp(res.data);
         await setNewFolders(setFolders, setLoadingFolders, Number(teamId));
@@ -117,11 +150,15 @@ const Home: FC = () => {
           team={teamProp}
           folders={folders}
           onClickCard={onClickCard}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
+          CreateFolder={CreateFolder}
+          CreateFolderFailed={CreateFolderFailed}
+          UpdateTeam={UpdateTeam}
+          UpdateTeamFailed={UpdateTeamFailed}
           onDelete={onDelete}
-          isModalVisible={isModalVisible}
-          setIsModalVisible={setIsModalVisible}
+          isCreateModalVisible={isCreateModalVisible}
+          setIsCreateModalVisible={setIsCreateModalVisible}
+          isEditModalVisible={isEditModalVisible}
+          setIsEditModalVisible={setIsEditModalVisible}
           isLeader={isLeader}
           isEditor={isEditor}
           loading={loadingFolders}

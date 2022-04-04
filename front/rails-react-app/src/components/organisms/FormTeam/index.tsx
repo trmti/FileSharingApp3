@@ -1,26 +1,30 @@
 import { FC, useState } from 'react';
-import {
-  Form,
-  Button,
-  Space,
-  Input,
-  Typography,
-  Upload,
-  FormProps,
-} from 'antd';
+import { Form, Button, Space, Input, Typography, Select, Upload } from 'antd';
 import { UploadFile } from 'antd/lib/upload/interface';
 import ImgCrop from 'antd-img-crop';
-import { BuildFolderParams } from 'type';
+import { BuildTeamParams, publish_range } from 'type';
 import { colors, text_style } from 'app_design';
 
 const { Title } = Typography;
+const { Option } = Select;
 
 type Props = {
-  onFinish: (data: BuildFolderParams) => Promise<void>;
+  onFinish: (data: BuildTeamParams) => Promise<void>;
   onFinishFailed: () => void;
-} & FormProps;
+  loading: boolean;
+  teamName?: string;
+  description?: string;
+  authority?: publish_range;
+};
 
-const FormBuildFolder: FC<Props> = ({ onFinish, onFinishFailed, ...other }) => {
+const FormBuildTeam: FC<Props> = ({
+  onFinish,
+  onFinishFailed,
+  loading,
+  teamName,
+  description,
+  authority,
+}) => {
   const [file, setFile] = useState<UploadFile | null>(null);
   const props = {
     beforeUpload: () => {
@@ -40,29 +44,47 @@ const FormBuildFolder: FC<Props> = ({ onFinish, onFinishFailed, ...other }) => {
         layout="vertical"
         onFinish={(data) => onFinish({ ...data, file })}
         onFinishFailed={onFinishFailed}
-        {...other}
+        initialValues={{
+          name: teamName,
+          description: description,
+          publish_range: authority,
+        }}
       >
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
           <Form.Item
             label={<Title>TeamName</Title>}
-            name="title"
-            rules={[
-              { required: true, message: 'フォルダ名を入力してください' },
-            ]}
+            name="name"
+            rules={[{ required: true, message: 'チーム名を入力してください' }]}
           >
             <Input
-              placeholder="フォルダ名を入力してください"
-              style={{ width: '100%', height: 36 }}
+              placeholder="チーム名を入力してください"
+              style={{ width: '100%', maxWidth: 500, height: 36 }}
             />
           </Form.Item>
           <Form.Item label={<Title>Description</Title>} name="description">
             <Input.TextArea
-              placeholder="フォルダの詳細説明を入力してください"
+              placeholder="チームの詳細説明を入力してください"
               style={{ width: '100%', padding: 15 }}
               autoSize
             />
           </Form.Item>
-          <Form.Item label={<Title>Image</Title>}>
+          <Form.Item
+            label={<Title>Authority</Title>}
+            name="publish_range"
+            rules={[
+              { required: true, message: 'チームの公開範囲を選択してください' },
+            ]}
+          >
+            <Select
+              placeholder="チームの公開範囲を選択してください"
+              style={{ width: 250, padding: 10 }}
+            >
+              <Option value="private">Private</Option>
+              <Option value="public">Public</Option>{' '}
+              <Option value="open">Open</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item label={<Title>File</Title>}>
             <ImgCrop aspect={5 / 3} rotate>
               <Upload {...props} accept=".png, .jpg, .jpeg">
                 <Button>select File</Button>
@@ -76,6 +98,8 @@ const FormBuildFolder: FC<Props> = ({ onFinish, onFinishFailed, ...other }) => {
             htmlType="submit"
             shape="round"
             size="large"
+            loading={loading}
+            disabled={loading}
             style={{
               width: '180px',
               height: '60px',
@@ -94,4 +118,4 @@ const FormBuildFolder: FC<Props> = ({ onFinish, onFinishFailed, ...other }) => {
   );
 };
 
-export default FormBuildFolder;
+export default FormBuildTeam;

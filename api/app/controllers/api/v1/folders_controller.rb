@@ -1,8 +1,14 @@
 class Api::V1::FoldersController < ApplicationController
-  before_action :set_folder, only: %i[show destroy get_files create_file create_image]
+  before_action :set_folder, except: %i[]
 
+  # ------ resources --------------------------------
   def show
     render json: @folder
+  end
+
+  def update
+    @folder.update(folder_params)
+    render json: @folder, status: :ok
   end
 
   def destroy
@@ -10,6 +16,7 @@ class Api::V1::FoldersController < ApplicationController
     render json: {message: "フォルダーを削除しました"}, status: :ok
   end
 
+  # ------ file --------------------
   def get_files
     @files = @folder.file_contents
     @res = []
@@ -31,8 +38,19 @@ class Api::V1::FoldersController < ApplicationController
     end
   end
 
+  # ------ post --------------------------------
   def create_image
     @post = @folder.create_post(image: params[:image])
+    if @folder.save
+      render json: @post, status: :created
+    else
+      render status: :internal_server_error
+    end
+  end
+
+  def update_image
+    @post = @folder.build_post(image: params[:image])
+    @folder.post = @post
     if @folder.save
       render json: @post, status: :created
     else
@@ -46,6 +64,6 @@ class Api::V1::FoldersController < ApplicationController
     end
 
     def folder_params
-      params.permit()
+      params.permit(:title, :description)
     end
 end

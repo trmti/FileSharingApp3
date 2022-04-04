@@ -6,13 +6,15 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+publish_range = ["public", "private", "open"]
+
 5.times do |n|
   user = User.create!(name: "user#{n + 1}", email: "user#{n + 1}@example.com", password: "123456789", password_confirmation: "123456789")
   user.create_post(image: File.open("./app/assets/images/seed#{n + 1}.jpg"))
   user.save
   puts "create user!"
   5.times do |o|
-    team = user.teams.create({name: "team#{o}", description: "seed", leader_id: n+1, publish_range: "private"})
+    team = user.teams.create({name: "team#{o}", description: "seed", leader_id: n+1, publish_range: publish_range[n % 3]})
     if n == 0
       team.editors << user
     end
