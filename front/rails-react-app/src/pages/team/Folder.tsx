@@ -3,8 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { message } from 'antd';
 import { useAuthUser } from 'auth/AuthUserContext';
 import { showFolder } from 'db/folders';
-import { getFilesByFolderId, createFile } from 'db/file';
-import { deleteSome, updateSome } from 'db/utils';
+import { getFilesByFolderId } from 'db/file';
+import { deleteSome, updateSome, createSome } from 'db/utils';
 import { setInEditor } from 'utils';
 import {
   Folder as FolderType,
@@ -42,7 +42,9 @@ const Folder: FC = () => {
     console.log(value);
   };
   const BuildFile = async (data: BuildFileParams) => {
-    const res = folderId ? await createFile(data, Number(folderId)) : null;
+    const res = folderId
+      ? await createSome('folders', 'file_content', data, Number(folderId))
+      : null;
     if (res?.status === 'success') {
       message.success('ファイルの作成に成功しました');
       setIsModalVisible(false);
