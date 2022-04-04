@@ -10,7 +10,6 @@ const AuthUserContext = createContext(
     updateUser: () => Promise<void>;
     authUser: User | null;
     loading: boolean;
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   }
 );
 
@@ -87,7 +86,6 @@ const AuthUserProvider: React.FC = ({ children }) => {
         signup,
         updateUser,
         loading,
-        setLoading,
         authUser,
       }}
     >
@@ -101,7 +99,6 @@ export const useLogout = () => useContext(AuthUserContext).logout;
 export const useSignup = () => useContext(AuthUserContext).signup;
 export const useUpdateUser = () => useContext(AuthUserContext).updateUser;
 export const useLoading = () => useContext(AuthUserContext).loading;
-export const useSetLoading = () => useContext(AuthUserContext).setLoading;
 export const useAuthUser = () => useContext(AuthUserContext).authUser;
 
 export default AuthUserProvider;

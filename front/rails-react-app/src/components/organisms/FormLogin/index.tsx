@@ -6,10 +6,11 @@ import { SignUpParams } from 'type';
 type Props = {
   onFinish: (data: SignUpParams) => Promise<void>;
   onFinishFailed: () => void;
+  loading: boolean;
 } & FormProps;
 
 const FormLogin: VFC<Props> = (props) => {
-  const { onFinish, onFinishFailed, ...other } = props;
+  const { onFinish, onFinishFailed, loading, ...other } = props;
   return (
     <>
       <Form
@@ -45,6 +46,8 @@ const FormLogin: VFC<Props> = (props) => {
             htmlType="submit"
             shape="round"
             size="large"
+            loading={loading}
+            disabled={loading}
             style={{
               width: '180px',
               height: '60px',

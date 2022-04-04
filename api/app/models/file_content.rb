@@ -1,4 +1,4 @@
 class FileContent < ApplicationRecord
-  has_many :comments
-  belongs_to :post, optional: true
+  has_many :comments, dependent: :destroy
+  belongs_to :post, optional: true, dependent: :destroy
 end

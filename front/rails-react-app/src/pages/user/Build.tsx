@@ -1,28 +1,33 @@
-import { VFC } from 'react';
+import { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BuildTeamParams } from 'type';
 import { message } from 'antd';
 import { useAuthUser } from 'auth/AuthUserContext';
-import { createTeam } from 'db/team';
+import { createSome } from 'db/utils';
 import TitleWithLine from 'components/atoms/TileWithLine';
-import FormBuildTeam from 'components/organisms/FormBuildTeam';
+import FormBuildTeam from 'components/organisms/FormTeam';
 
-const Build: VFC = () => {
+const Build: FC = () => {
+  const [loading, setLoading] = useState<boolean>(false);
   const user = useAuthUser();
   const navigate = useNavigate();
   const onFinish = async (data: BuildTeamParams) => {
+    setLoading(true);
     if (user) {
-      const res = await createTeam(data, user.id);
+      const res = await createSome('user', 'team', data, user.id);
       if (res.status === 'success') {
+        message.success('チームを作成しました。');
+        navigate('..');
+      } else if (res.status === 'continue') {
+        message.info(res.message);
         navigate('..');
       } else {
-        message.error(
-          'チームの作成に失敗しました。時間をおいて再度お試しください'
-        );
+        message.error(res.message);
       }
     } else {
       message.error('この機能はログイン後にしか利用できません');
     }
+    setLoading(false);
   };
 
   const onFinishFailed = () => {
@@ -36,7 +41,11 @@ const Build: VFC = () => {
         チームを作成
       </TitleWithLine>
       <div style={{ width: '60%', margin: '0 auto' }}>
-        <FormBuildTeam onFinish={onFinish} onFinishFailed={onFinishFailed} />
+        <FormBuildTeam
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          loading={loading}
+        />
       </div>
     </>
   );

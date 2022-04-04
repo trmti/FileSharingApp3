@@ -8,7 +8,7 @@ export type text_style_type = {
 
 export type pixel = `${number}px`;
 export type percent = `${number}%`;
-export type publish_range = 'private' | 'public';
+export type publish_range = 'private' | 'public' | 'open';
 
 // サインアップ
 export interface SignUpParams {
@@ -98,10 +98,17 @@ export interface BuildTeamParams {
   file: UploadFile | null;
 }
 
+export interface UpdateTeamParams {
+  name: string | null;
+  description: string | null;
+  publish_range: publish_range | null;
+  file: UploadFile | null;
+}
+
 export type Folder = {
   id: number;
   title: string;
-  description: string;
+  description: string | null;
   team_id: number;
   post_id: number | null;
   created_at?: Date;
@@ -115,20 +122,28 @@ export type FolderWithImage = {
 
 export type BuildFolderParams = {
   title: string;
-  description: string;
+  description: string | null;
   file: UploadFile | null;
 };
 
 export type File = {
-  file: {
-    id: number;
-    title: string;
-    description: string;
-    post_id: number | null;
-    folder_id: number;
-  };
+  id: number;
+  title: string | null;
+  description: string | null;
+  post_id: number | null;
+  folder_id: number;
+};
+
+export type FileWithImage = {
+  file: File;
   image: string | null;
   comment_count: number;
+};
+
+export type BuildFileParams = {
+  title: string | null;
+  description: string | null;
+  file: UploadFile;
 };
 
 export type Comment = {

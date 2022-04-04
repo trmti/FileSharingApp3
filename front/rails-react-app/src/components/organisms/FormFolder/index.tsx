@@ -1,13 +1,5 @@
 import { FC, useState } from 'react';
-import {
-  Form,
-  Button,
-  Space,
-  Input,
-  Typography,
-  Upload,
-  FormProps,
-} from 'antd';
+import { Form, Button, Space, Input, Typography, Upload } from 'antd';
 import { UploadFile } from 'antd/lib/upload/interface';
 import ImgCrop from 'antd-img-crop';
 import { BuildFolderParams } from 'type';
@@ -16,11 +8,18 @@ import { colors, text_style } from 'app_design';
 const { Title } = Typography;
 
 type Props = {
-  onFinish: (data: BuildFolderParams) => Promise<void>;
+  onFinish: (data: BuildFolderParams & { id: number }) => Promise<void>;
   onFinishFailed: () => void;
-} & FormProps;
+  title?: string;
+  description?: string | null;
+};
 
-const FormBuildFolder: FC<Props> = ({ onFinish, onFinishFailed, ...other }) => {
+const FormFolder: FC<Props> = ({
+  onFinish,
+  onFinishFailed,
+  title,
+  description,
+}) => {
   const [file, setFile] = useState<UploadFile | null>(null);
   const props = {
     beforeUpload: () => {
@@ -40,7 +39,7 @@ const FormBuildFolder: FC<Props> = ({ onFinish, onFinishFailed, ...other }) => {
         layout="vertical"
         onFinish={(data) => onFinish({ ...data, file })}
         onFinishFailed={onFinishFailed}
-        {...other}
+        initialValues={{ title: title, description: description }}
       >
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
           <Form.Item
@@ -94,4 +93,4 @@ const FormBuildFolder: FC<Props> = ({ onFinish, onFinishFailed, ...other }) => {
   );
 };
 
-export default FormBuildFolder;
+export default FormFolder;

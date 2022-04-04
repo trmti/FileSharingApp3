@@ -1,17 +1,8 @@
 import { FC, useState } from 'react';
-import {
-  Form,
-  Button,
-  Space,
-  Input,
-  Typography,
-  Select,
-  Upload,
-  FormProps,
-} from 'antd';
+import { Form, Button, Space, Input, Typography, Select, Upload } from 'antd';
 import { UploadFile } from 'antd/lib/upload/interface';
 import ImgCrop from 'antd-img-crop';
-import { BuildTeamParams } from 'type';
+import { BuildTeamParams, publish_range } from 'type';
 import { colors, text_style } from 'app_design';
 
 const { Title } = Typography;
@@ -20,9 +11,20 @@ const { Option } = Select;
 type Props = {
   onFinish: (data: BuildTeamParams) => Promise<void>;
   onFinishFailed: () => void;
-} & FormProps;
+  loading: boolean;
+  teamName?: string;
+  description?: string;
+  authority?: publish_range;
+};
 
-const FormBuildTeam: FC<Props> = ({ onFinish, onFinishFailed, ...other }) => {
+const FormBuildTeam: FC<Props> = ({
+  onFinish,
+  onFinishFailed,
+  loading,
+  teamName,
+  description,
+  authority,
+}) => {
   const [file, setFile] = useState<UploadFile | null>(null);
   const props = {
     beforeUpload: () => {
@@ -42,9 +44,13 @@ const FormBuildTeam: FC<Props> = ({ onFinish, onFinishFailed, ...other }) => {
         layout="vertical"
         onFinish={(data) => onFinish({ ...data, file })}
         onFinishFailed={onFinishFailed}
-        {...other}
+        initialValues={{
+          name: teamName,
+          description: description,
+          publish_range: authority,
+        }}
       >
-        <Space direction="vertical" size="large">
+        <Space direction="vertical" size="large" style={{ width: '100%' }}>
           <Form.Item
             label={<Title>TeamName</Title>}
             name="name"
@@ -52,7 +58,7 @@ const FormBuildTeam: FC<Props> = ({ onFinish, onFinishFailed, ...other }) => {
           >
             <Input
               placeholder="チーム名を入力してください"
-              style={{ width: 500, height: 36 }}
+              style={{ width: '100%', maxWidth: 500, height: 36 }}
             />
           </Form.Item>
           <Form.Item label={<Title>Description</Title>} name="description">
@@ -74,7 +80,8 @@ const FormBuildTeam: FC<Props> = ({ onFinish, onFinishFailed, ...other }) => {
               style={{ width: 250, padding: 10 }}
             >
               <Option value="private">Private</Option>
-              <Option value="public">Public</Option>
+              <Option value="public">Public</Option>{' '}
+              <Option value="open">Open</Option>
             </Select>
           </Form.Item>
           <Form.Item label={<Title>File</Title>}>
@@ -91,6 +98,8 @@ const FormBuildTeam: FC<Props> = ({ onFinish, onFinishFailed, ...other }) => {
             htmlType="submit"
             shape="round"
             size="large"
+            loading={loading}
+            disabled={loading}
             style={{
               width: '180px',
               height: '60px',

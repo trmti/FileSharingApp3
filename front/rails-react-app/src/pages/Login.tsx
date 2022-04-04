@@ -1,4 +1,4 @@
-import { VFC } from 'react';
+import { FC, useState } from 'react';
 import { SignUpParams } from 'type';
 import { message } from 'antd';
 import { useNavigate } from 'react-router-dom';
@@ -8,16 +8,19 @@ import { Link } from 'react-router-dom';
 import TitleWithLine from 'components/atoms/TileWithLine';
 import FormLogin from 'components/organisms/FormLogin';
 
-const Login: VFC = () => {
+const Login: FC = () => {
+  const [loading, setLoading] = useState<boolean>(false);
   const login = useLogin();
   const navigate = useNavigate();
   const onFinish = async (data: SignUpParams) => {
+    setLoading(true);
     try {
       await login({ email: data.email, password: data.password });
       navigate(-1);
     } catch {
       message.error('ユーザーが存在しません。');
     }
+    setLoading(false);
   };
   const onFinishFailed = () => {
     message.error('メールアドレス、もしくはパスワードの形式が正しくありません');
@@ -30,7 +33,11 @@ const Login: VFC = () => {
       size="large"
     >
       <TitleWithLine>ログイン</TitleWithLine>
-      <FormLogin onFinish={onFinish} onFinishFailed={onFinishFailed} />
+      <FormLogin
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        loading={loading}
+      />
       <Typography.Link>
         <Link to="/signup">サインアップページ</Link>
       </Typography.Link>

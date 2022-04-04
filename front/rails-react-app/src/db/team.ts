@@ -1,7 +1,7 @@
-import { AxiosResponse } from 'axios';
 import { createFormData } from 'utils';
 import { client } from './client';
-import { createImage } from './post';
+import { getAction } from './utils';
+import { createOrUpdateImage } from './post';
 import {
   Team,
   TeamWithImage,
@@ -9,87 +9,102 @@ import {
   FetchFailed,
   FetchSuccess,
   BuildTeamParams,
+  UpdateTeamParams,
 } from 'type';
 
 type FetchTeamSuccess = FetchSuccess<Team>;
-type FetchTeamDescriptionSuccess = FetchSuccess<TeamDescription>;
-type FetchTeamsSuccess = FetchSuccess<TeamWithImage[]>;
+type FetchImageFailed = { status: 'continue'; message: string };
 
-export const getTeamById = (
-  teamId: number
-): Promise<FetchTeamDescriptionSuccess | FetchFailed> => {
-  const res = client
-    .get(`/teams/${teamId}`)
-    .then(
-      (prop: AxiosResponse<TeamDescription>): FetchTeamDescriptionSuccess => {
-        return { status: 'success', data: prop.data };
-      }
-    )
-    .catch((): FetchFailed => {
-      return { status: 'error', message: 'チームが見つかりませんでした' };
-    });
+type ids = { ids: number[] };
+type id = { id: number };
 
+// ---- get ----------------------------------------------------------------
+export const getTeamById = (teamId: number) => {
+  const res = getAction<TeamDescription>(
+    `/teams/${teamId}`,
+    'チームID一覧の取得に失敗しました。'
+  );
   return res;
 };
 
-export const createTeam = (
-  params: BuildTeamParams,
-  leader_id: number
-): Promise<FetchTeamSuccess | FetchFailed> => {
-  const { file, ...otherParams } = params;
-  const res = client
-    .post(`/user/create_team/${leader_id}`, { ...otherParams })
-    .then(async (prop: AxiosResponse<Team>): Promise<
-      FetchTeamSuccess | FetchFailed
-    > => {
-      const data = prop.data;
-      if (file) {
-        const image = createFormData('image', file);
-        const res = await createImage(data.id, image, 'teams');
-        if (res.status === 'success') {
-          return { status: 'success', data };
-        } else {
-          return { status: 'error', message: '画像の作成に失敗しました' };
-        }
-      } else {
-        return { status: 'error', message: 'ファイルが選択されていません' };
-      }
-    })
-    .catch((): FetchFailed => {
-      return { status: 'error', message: 'チームの取得に失敗しました' };
-    });
+export const getTeamsRecord = (limit: number, offset: number) => {
+  const res = getAction<TeamWithImage[]>(
+    `/teams/get_teams_record/${limit}/${offset}`,
+    'チームの取得に失敗しました。'
+  );
   return res;
 };
 
-export const getTeamsRecord = (
-  limit: number,
-  offset: number
-): Promise<FetchTeamsSuccess | FetchFailed> => {
-  const res = client
-    .get(`/teams/get_teams_record/${limit}/${offset}`)
-    .then((prop: AxiosResponse<TeamWithImage[]>): FetchTeamsSuccess => {
-      const data = prop.data;
-      return { status: 'success', data };
-    })
-    .catch((): FetchFailed => {
-      return { status: 'error', message: 'チームの取得に失敗しました。' };
-    });
-
+export const searchTeams = (text: string, limit: number) => {
+  const res = getAction<TeamWithImage[]>(
+    `/teams/search_teams/${text}/${limit}`,
+    'チームの取得に失敗しました。'
+  );
   return res;
 };
 
-export const searchTeams = (
-  text: string,
-  limit: number
-): Promise<FetchTeamsSuccess | FetchFailed> => {
-  const res = client
-    .get(`/teams/search_teams/${text}/${limit}`)
-    .then((prop: AxiosResponse<TeamWithImage[]>): FetchTeamsSuccess => {
-      const data = prop.data;
-      return { status: 'success', data };
-    })
-    .catch((): FetchFailed => {
-      return { status: 'error', message: 'チームの取得に失敗しました' };
-    });
+export const getEditorIds = (team_id: number) => {
+  const res = getAction<ids>(
+    `/teams/get_editor_ids/${team_id}`,
+    '管理者リストの取得に失敗しました。'
+  );
   return res;
 };
+
+export const getLeaderId = (teamId: number) => {
+  const res = getAction<id>(
+    `/teams/get_leader_id/${teamId}`,
+    'リーダーIdの取得に失敗しました。'
+  );
+  return res;
+};
+
+// export const createOrUpdateTeam = (
+//   params: BuildTeamParams | UpdateTeamParams,
+//   type: 'update' | 'create',
+//   leader_id?: number,
+//   team_id?: number
+// ): Promise<FetchTeamSuccess | FetchImageFailed | FetchFailed> => {
+//   const { file, ...otherParams } = params;
+//   let action;
+//   if (type === 'create' && leader_id) {
+//     action = client.post<Team>(`/user/create_team/${leader_id}`, {
+//       ...otherParams,
+//     });
+//   } else if (type === 'update' && team_id) {
+//     action = client.patch<Team>(`/teams/${team_id}`, { ...otherParams });
+//   } else {
+//     return new Promise((resolve) => {
+//       resolve({ status: 'error', message: '入力項目に不備があります。' });
+//     });
+//   }
+//   const res = action
+//     .then((props): Promise<
+//       FetchSuccess<Team> | FetchFailed | FetchImageFailed
+//     > => {
+//       if (!file) {
+//         throw new Error();
+//       }
+//       const data = props.data;
+//       const image = createFormData('image', file);
+//       const res = createOrUpdateImage(data.id, image, 'teams', 'create')
+//         .then((props): FetchSuccess<Team> | FetchImageFailed => {
+//           if (props.status === 'success') {
+//             return { status: 'success', data };
+//           } else {
+//             throw new Error();
+//           }
+//         })
+//         .catch((): FetchImageFailed => {
+//           return {
+//             status: 'continue',
+//             message: '画像の作成に失敗しました。',
+//           };
+//         });
+//       return res;
+//     })
+//     .catch((): FetchImageFailed => {
+//       return { status: 'continue', message: 'チームを更新しました。' };
+//     });
+//   return res;
+// };

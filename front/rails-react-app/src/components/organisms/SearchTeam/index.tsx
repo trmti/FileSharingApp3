@@ -29,7 +29,7 @@ const SearchTeam: FC<Props> = ({ searchedTeams, onClickCard }) => {
                 team: { name, description, id },
               }) => {
                 return (
-                  <Col key={id} xxl={6} lg={8} md={12} xs={24}>
+                  <Col key={id} xl={6} md={8} sm={12} xs={24}>
                     <Card
                       cover={
                         <img
@@ -55,7 +55,9 @@ const SearchTeam: FC<Props> = ({ searchedTeams, onClickCard }) => {
                           />
                         }
                         title={name}
-                        description={description}
+                        description={
+                          description ? description : 'No description'
+                        }
                       />
                     </Card>
                   </Col>

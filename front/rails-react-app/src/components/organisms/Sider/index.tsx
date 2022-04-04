@@ -1,4 +1,4 @@
-import React, { VFC } from 'react';
+import React, { VFC, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, Layout } from 'antd';
 import { colors } from 'app_design';
@@ -11,11 +11,18 @@ type Props = {
     text: string;
     to: string;
   }[];
-  setAction: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
   isCollapsed: boolean;
+  small: boolean;
 };
 
-const MySider: VFC<Props> = ({ props, setAction, isCollapsed }) => {
+const MySider: VFC<Props> = ({ props, setIsCollapsed, isCollapsed, small }) => {
+  const handleOnClick = () => {
+    if (isCollapsible) {
+      setIsCollapsed(true);
+    }
+  };
+  const [isCollapsible, setIsCollapsible] = useState<boolean>(false);
   return (
     <Sider
       style={{
@@ -23,13 +30,18 @@ const MySider: VFC<Props> = ({ props, setAction, isCollapsed }) => {
         position: 'fixed',
         zIndex: 2,
         left: 0,
-        top: 80,
+        top: small ? 60 : 80,
         bottom: 0,
       }}
       onCollapse={(collapsed) => {
-        setAction(collapsed);
+        setIsCollapsed(collapsed);
       }}
-      width={300}
+      onBreakpoint={(broken) => {
+        setIsCollapsible(broken);
+        setIsCollapsed(broken);
+      }}
+      collapsed={isCollapsed}
+      width={250}
       breakpoint="lg"
       collapsedWidth="0"
     >
@@ -49,6 +61,7 @@ const MySider: VFC<Props> = ({ props, setAction, isCollapsed }) => {
               >
                 <Link
                   to={prop.to}
+                  onClick={handleOnClick}
                   style={{
                     color: colors.Text.Black,
                     fontSize: 30,
