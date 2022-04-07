@@ -17,10 +17,7 @@ services:
       - ./api:/rails-react-app
       - ./api/vendor/bundle:/rails-react-app/vendor/bundle
     environment:
-      TZ: Asia/Tokyo
       RAILS_ENV: development
-      WDS_SOCKET_HOST: 0.0.0.0
-      WDS_SOCKET_PORT: 443
     ports:
       - 3000:3000
     depends_on:
@@ -32,13 +29,9 @@ services:
     volumes:
       - ./front/rails-react-app:/usr/src/app/rails-react-app
     command: sh -c "npm start"
-    environment:
-      WDS_SOCKET_HOST: 0.0.0.0
-      WDS_SOCKET_PORT: 443
     ports:
       - '8000:3000'
       - '6006:6006'
-      - '443:443'
 volumes:
   postgres-data:
     driver: local

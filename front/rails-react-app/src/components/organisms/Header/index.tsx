@@ -1,10 +1,11 @@
 import { FC, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Avatar, Layout } from 'antd';
+import UserDropdown from 'components/molecules/UserDropdown';
 import styles from './style.module.css';
-import { colors, text_style } from 'app_design';
+import { colors } from 'app_design';
 import { getPostByUserId } from 'db/post';
-import { useAuthUser } from 'auth/AuthUserContext';
+import { useAuthUser, useLogout } from 'auth/AuthUserContext';
 
 const { Header } = Layout;
 
@@ -14,6 +15,8 @@ type Props = {
 
 const MyHeader: FC<Props> = ({ small }) => {
   const authUser = useAuthUser();
+  const logout = useLogout();
+  const navigate = useNavigate();
   const [avatarUrl, setAvatarUrl] = useState<string>(
     process.env.PUBLIC_URL + '/logo192.png'
   );
@@ -24,6 +27,13 @@ const MyHeader: FC<Props> = ({ small }) => {
         setAvatarUrl(userImage.data.image.url);
       }
     }
+  };
+  const onClickProfile = () => {
+    navigate('/user/profile');
+  };
+  const onClickLogout = async () => {
+    await logout();
+    navigate('/login');
   };
   useEffect(() => {
     handleGetImage();
@@ -42,7 +52,7 @@ const MyHeader: FC<Props> = ({ small }) => {
         bottom: 0,
       }}
     >
-      <Link to="/">
+      <Link to="/user/home">
         <p className={small ? styles.TitleSmall : styles.Title}>Share-Kosen</p>
       </Link>
       <div style={{ display: 'flex' }}>
@@ -55,11 +65,16 @@ const MyHeader: FC<Props> = ({ small }) => {
         >
           {authUser ? authUser.name : '未ログイン'}
         </p>
-        <Avatar
-          size={small ? 'small' : 'large'}
-          src={avatarUrl}
-          style={{ marginTop: small ? '20px' : '15px' }}
-        />
+        <UserDropdown
+          onClickProfile={onClickProfile}
+          onClickLogout={onClickLogout}
+        >
+          <Avatar
+            size={small ? 'small' : 'large'}
+            src={avatarUrl}
+            style={{ marginTop: small ? '20px' : '15px' }}
+          />
+        </UserDropdown>
       </div>
     </Header>
   );
