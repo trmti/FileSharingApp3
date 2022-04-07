@@ -13,6 +13,7 @@ type Props = {
   fileId?: number;
   fileName?: string | null;
   description?: string | null;
+  useUpdate?: boolean;
 };
 
 const FormFile: FC<Props> = ({
@@ -21,6 +22,7 @@ const FormFile: FC<Props> = ({
   fileId,
   fileName,
   description,
+  useUpdate = false,
 }) => {
   const [file, setFile] = useState<UploadFile | null>(null);
   const props = {
@@ -59,13 +61,17 @@ const FormFile: FC<Props> = ({
               autoSize
             />
           </Form.Item>
-          <Form.Item label={<Title>Image</Title>}>
-            <ImgCrop aspect={5 / 3} rotate>
-              <Upload {...props} accept=".png, .jpg, .jpeg">
-                <Button>select File</Button>
-              </Upload>
-            </ImgCrop>
-          </Form.Item>
+          {useUpdate ? (
+            <></>
+          ) : (
+            <Form.Item label={<Title>Image</Title>}>
+              <ImgCrop aspect={5 / 3} rotate>
+                <Upload {...props} accept=".png, .jpg, .jpeg">
+                  <Button>select File</Button>
+                </Upload>
+              </ImgCrop>
+            </Form.Item>
+          )}
         </Space>
         <Form.Item>
           <Button

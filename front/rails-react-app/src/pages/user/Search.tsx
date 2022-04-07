@@ -1,37 +1,41 @@
-import { VFC, useState } from 'react';
+import { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
 import SearchTemp from 'components/templates/Search';
 import { searchTeams } from 'db/team';
 import { TeamWithImage } from 'type';
 
-const Search: VFC = () => {
+type stateProps = {
+  searchedTeams: TeamWithImage[] | null;
+  loading: boolean;
+};
+
+const Search: FC = () => {
+  const [state, setState] = useState<stateProps>({
+    searchedTeams: null,
+    loading: false,
+  });
   const navigate = useNavigate();
-  const [searchedTeams, setSearchedTeams] =
-    useState<TeamWithImage[] | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
   const onClick = (id: number) => {
     navigate(`../team/${id}`);
   };
   const onPressEnter = async (e: any) => {
-    setLoading(true);
-    setSearchedTeams(null);
+    setState((prevState) => ({ ...prevState, loading: true }));
     const text = e.target.value;
     const res = await searchTeams(text, 10);
     if (res.status === 'success') {
-      setSearchedTeams(res.data);
+      setState((prevState) => ({ ...prevState, searchedTeams: res.data }));
     } else {
       message.error(res.message);
     }
-    setLoading(false);
+    setState((prevState) => ({ ...prevState, loading: false }));
   };
   return (
     <>
       <SearchTemp
-        searchedTeams={searchedTeams}
         onClickCard={onClick}
         onPressEnter={onPressEnter}
-        loading={loading}
+        {...state}
       />
     </>
   );

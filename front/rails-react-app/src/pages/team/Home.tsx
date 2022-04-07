@@ -21,31 +21,39 @@ import HomeTemp from 'components/templates/TeamHome';
 
 type FetchTeamDescriptionSuccess = FetchSuccess<TeamDescription>;
 
+type stateProps = {
+  teamProp: TeamDescription | null;
+  folders: FolderWithImage[] | null;
+  loadingTeam: boolean;
+  loadingFolders: boolean;
+};
+
 const setNewFolders = async (
-  setFolders: React.Dispatch<React.SetStateAction<FolderWithImage[] | null>>,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  setState: React.Dispatch<React.SetStateAction<stateProps>>,
   teamId: number
 ) => {
-  setLoading(true);
+  setState((prevState) => ({ ...prevState, loadingFolders: true }));
   const folders = await getFoldersByTeamId(Number(teamId));
   if (folders.status === 'success') {
-    setFolders(folders.data);
+    setState((prevState) => ({ ...prevState, folders: folders.data }));
   } else {
-    setFolders(null);
+    setState((prevState) => ({ ...prevState, folders: null }));
   }
-  setLoading(false);
+  setState((prevState) => ({ ...prevState, loadingFolders: false }));
 };
 
 const Home: FC = () => {
-  const [teamProp, setTeamProp] = useState<TeamDescription | null>(null);
-  const [folders, setFolders] = useState<FolderWithImage[] | null>(null);
-  const [isLeader, setIsLeader] = useState<boolean>(false);
-  const [isEditor, setIsEditor] = useState<boolean>(false);
+  const [state, setState] = useState<stateProps>({
+    teamProp: null,
+    folders: null,
+    loadingTeam: false,
+    loadingFolders: false,
+  });
   const [isCreateModalVisible, setIsCreateModalVisible] =
     useState<boolean>(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false);
-  const [loadingTeam, setLoadingTeam] = useState<boolean>(false);
-  const [loadingFolders, setLoadingFolders] = useState<boolean>(false);
+  const [isLeader, setIsLeader] = useState<boolean>(false);
+  const [isEditor, setIsEditor] = useState<boolean>(false);
   const authUser = useAuthUser();
   let { teamId } = useParams();
   const navigate = useNavigate();
@@ -64,11 +72,11 @@ const Home: FC = () => {
       if (res.status === 'success') {
         setIsCreateModalVisible(false);
         message.success('フォルダを作成しました');
-        await setNewFolders(setFolders, setLoadingFolders, Number(teamId));
+        await setNewFolders(setState, Number(teamId));
       } else if (res.status === 'continue') {
         setIsCreateModalVisible(false);
         message.info(res.message);
-        await setNewFolders(setFolders, setLoadingFolders, Number(teamId));
+        await setNewFolders(setState, Number(teamId));
       } else {
         message.error(
           'フォルダの作成に失敗しました。時間をおいて再度お試しください。'
@@ -87,7 +95,10 @@ const Home: FC = () => {
         setIsEditModalVisible(false);
         const teamReload = await getTeamById(Number(teamId));
         if (teamReload.status === 'success') {
-          setTeamProp(teamReload.data);
+          setState((prevState) => ({
+            ...prevState,
+            teamProp: teamReload.data,
+          }));
         } else {
           message.error('チームが見つかりませんでした');
           navigate('..');
@@ -110,19 +121,19 @@ const Home: FC = () => {
     }
   };
   useEffect(() => {
-    setLoadingTeam(true);
+    setState((prevState) => ({ ...prevState, loadingTeam: true }));
     if (!teamId) {
       message.error('パラメータが正しくありません');
       return;
     }
     (async () => {
-      res = await getTeamById(Number(teamId));
+      const res = await getTeamById(Number(teamId));
       if (res.status === 'success') {
-        setTeamProp(res.data);
-        await setNewFolders(setFolders, setLoadingFolders, Number(teamId));
-        setLoadingTeam(false);
+        setState((prevState) => ({ ...prevState, teamProp: res.data }));
+        await setNewFolders(setState, Number(teamId));
+        setState((prevState) => ({ ...prevState, loadingTeam: false }));
       } else {
-        setTeamProp(null);
+        setState((prevState) => ({ ...prevState, teamProp: null }));
         message.error('チームが存在しません');
         navigate('..');
       }
@@ -138,7 +149,7 @@ const Home: FC = () => {
   }, [authUser, teamId]);
   return (
     <>
-      {loadingTeam ? (
+      {state.loadingTeam ? (
         <Spin
           indicator={
             <LoadingOutlined style={{ marginTop: '10vh', fontSize: 300 }} />
@@ -147,21 +158,19 @@ const Home: FC = () => {
         />
       ) : (
         <HomeTemp
-          team={teamProp}
-          folders={folders}
+          {...state}
+          isLeader={isLeader}
+          isEditor={isEditor}
+          setIsCreateModalVisible={setIsCreateModalVisible}
+          setIsEditModalVisible={setIsEditModalVisible}
+          isCreateModalVisible={isCreateModalVisible}
+          isEditModalVisible={isEditModalVisible}
           onClickCard={onClickCard}
           CreateFolder={CreateFolder}
           CreateFolderFailed={CreateFolderFailed}
           UpdateTeam={UpdateTeam}
           UpdateTeamFailed={UpdateTeamFailed}
           onDelete={onDelete}
-          isCreateModalVisible={isCreateModalVisible}
-          setIsCreateModalVisible={setIsCreateModalVisible}
-          isEditModalVisible={isEditModalVisible}
-          setIsEditModalVisible={setIsEditModalVisible}
-          isLeader={isLeader}
-          isEditor={isEditor}
-          loading={loadingFolders}
         />
       )}
     </>

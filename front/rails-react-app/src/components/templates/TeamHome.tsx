@@ -17,7 +17,7 @@ import {
 import { colors } from 'app_design';
 
 type Props = {
-  team: TeamDescription | null;
+  teamProp: TeamDescription | null;
   folders: FolderWithImage[] | null;
   onClickCard: (id: number) => void;
   CreateFolder: (data: BuildFolderParams) => Promise<void>;
@@ -31,11 +31,11 @@ type Props = {
   setIsEditModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
   isLeader: boolean;
   isEditor: boolean;
-  loading: boolean;
+  loadingFolders: boolean;
 };
 
 const Home: FC<Props> = ({
-  team,
+  teamProp,
   folders,
   onClickCard,
   CreateFolder,
@@ -49,7 +49,7 @@ const Home: FC<Props> = ({
   setIsEditModalVisible,
   isLeader,
   isEditor,
-  loading,
+  loadingFolders,
 }) => {
   const navigate = useNavigate();
   const onClickNewFolder = () => {
@@ -67,7 +67,7 @@ const Home: FC<Props> = ({
           }}
           style={{ marginBottom: 30 }}
         />
-        {team !== null && team?.team.id && isLeader ? (
+        {teamProp !== null && teamProp?.team.id && isLeader ? (
           <DescriptionDropdown
             onDelete={onDelete}
             style={{ marginRight: 50 }}
@@ -77,10 +77,10 @@ const Home: FC<Props> = ({
               <FormUpdateTeam
                 onFinish={UpdateTeam}
                 onFinishFailed={UpdateTeamFailed}
-                loading={loading}
-                teamName={team.team.name}
-                description={team.team.description}
-                authority={team.team.publish_range}
+                loading={loadingFolders}
+                teamName={teamProp.team.name}
+                description={teamProp.team.description}
+                authority={teamProp.team.publish_range}
               />
             }
           />
@@ -88,16 +88,16 @@ const Home: FC<Props> = ({
           <></>
         )}
       </div>
-      <TeamHeader team={team} />
+      <TeamHeader team={teamProp} />
       <Divider style={{ borderTop: `3px solid ${colors.Border}` }} />
-      {loading ? (
+      {loadingFolders ? (
         <Spin indicator={<LoadingOutlined style={{ fontSize: 30 }} />} />
       ) : (
         <Folders
           folders={folders}
           onClick={onClickCard}
           onClickNewFolder={onClickNewFolder}
-          publish_range={team?.team.publish_range}
+          publish_range={teamProp?.team.publish_range}
           isEditor={isEditor}
         />
       )}
