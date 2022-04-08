@@ -21,6 +21,11 @@ services:
       - ./api/vendor/bundle:/rails-react-app/vendor/bundle
     environment:
       RAILS_ENV: development
+      ALLOW_HOST: localhost:8000 (フロントのホスト名)
+      IS_HTTPS: 'false' (SSL通信するかどうか)
+      CERT_PATH: /etc/fullchain.pem (let's encrypt で作ったファイルのパス / オプション)
+      KEY_PATH: /etc/privkey.pem (let's encrypt で作ったファイルのパス / オプション)
+      PORT: 3001 (立ち上げるポート。デフォルトは3000 / オプション)
     ports:
       - 3000:3000
     depends_on:
