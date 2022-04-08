@@ -6,6 +6,7 @@ import styles from './style.module.css';
 import { colors } from 'app_design';
 import { getPostByUserId } from 'db/post';
 import { useAuthUser, useLogout } from 'auth/AuthUserContext';
+import { defaultCoverImage } from 'utils';
 
 const { Header } = Layout;
 
@@ -71,7 +72,7 @@ const MyHeader: FC<Props> = ({ small }) => {
         >
           <Avatar
             size={small ? 'small' : 'large'}
-            src={avatarUrl}
+            src={avatarUrl ? avatarUrl : defaultCoverImage}
             style={{ marginTop: small ? '20px' : '15px' }}
           />
         </UserDropdown>
