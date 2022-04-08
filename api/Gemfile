@@ -5,6 +5,7 @@ ruby '2.5.9'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.6', '>= 5.2.6.2'
+gem 'dotenv-rails', require: 'dotenv/rails-now'
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
@@ -31,7 +32,6 @@ gem 'rack-cors'
 gem 'devise'
 gem 'devise_token_auth'
 gem "carrierwave"
-gem "dotenv-rails"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
