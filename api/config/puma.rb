@@ -37,7 +37,7 @@ pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }
 plugin :tmp_restart
 is_https = "true"
 if is_https == "true"
-  ssl_bind "0.0.0.0", 3000, cert:ENV.fetch("CERT_PATH") { "/etc/fullchain.pem" }, key:ENV.fetch("KEY_PATH") { "/etc/privkey.pem" }
+  ssl_bind "0.0.0.0", ENV.fetch("PORT") { 3000 }, cert:ENV.fetch("CERT_PATH") { "/etc/fullchain.pem" }, key:ENV.fetch("KEY_PATH") { "/etc/privkey.pem" }
 else
   port        ENV.fetch("PORT") { 3000 }
 end
