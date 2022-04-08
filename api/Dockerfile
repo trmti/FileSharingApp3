@@ -8,6 +8,9 @@ COPY Gemfile.lock /rails-react-app/Gemfile.lock
 RUN bundle install
 COPY . /rails-react-app
 
+COPY ./fullchain.pem /etc/fullchain.pem
+COPY ./privkey.pem /etc/privkey.pem
+
 # Add a script to be executed every time the container starts.
 COPY entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/entrypoint.sh
