@@ -7,7 +7,7 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins 'http://localhost:8000', "https://file-sharing-app3.vercel.app"
+    origins ENV.fetch("ALLOW_HOST") { "localhost:8000" }
 
     resource '*',
       headers: :any,

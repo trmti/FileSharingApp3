@@ -6,14 +6,22 @@ import { getTeamsByUserId } from 'db/user';
 import { TeamWithImage } from 'type';
 import HomeTemp from 'components/templates/Home';
 
+type stateProps = {
+  recentlyTeams: TeamWithImage[] | null;
+  joinTeams: TeamWithImage[] | null;
+  loadingRecentTeams: boolean;
+  loadingJoinTeams: boolean;
+};
+
 const Home: FC = () => {
+  const [state, setState] = useState<stateProps>({
+    recentlyTeams: null,
+    joinTeams: null,
+    loadingRecentTeams: false,
+    loadingJoinTeams: false,
+  });
   const navigate = useNavigate();
-  const [recentlyTeams, setrecentlyTeams] =
-    useState<TeamWithImage[] | null>(null);
-  const [loadingJoinTeams, setLoadingJoinTeams] = useState<boolean>(false);
-  const [loadingRecentTeams, setLoadingRecentTeams] = useState<boolean>(false);
   const user = useAuthUser();
-  const [joinTeams, setJoinTeams] = useState<TeamWithImage[] | null>(null);
 
   const onClickJoinTeams = (id: number) => {
     navigate(`../team/${id}`);
@@ -25,14 +33,18 @@ const Home: FC = () => {
 
   // ユーザーが参加しているチームの取得
   useEffect(() => {
-    setLoadingJoinTeams(true);
+    console.log('test');
+    setState((prevState) => ({ ...prevState, loadingJoinTeams: true }));
     if (user) {
       (async () => {
         const res = await getTeamsByUserId(user.id);
         if (res.status === 'success') {
-          setJoinTeams(res.data);
+          setState((prevState) => ({
+            ...prevState,
+            joinTeams: res.data,
+          }));
         }
-        setLoadingJoinTeams(false);
+        setState((prevState) => ({ ...prevState, loadingJoinTeams: false }));
       })();
     }
     return;
@@ -40,22 +52,19 @@ const Home: FC = () => {
 
   // 最近追加されたチームの取得
   useEffect(() => {
-    setLoadingRecentTeams(true);
+    setState((prevState) => ({ ...prevState, loadingRecentTeams: true }));
     (async () => {
       const res = await getTeamsRecord(10, 0);
       if (res.status === 'success') {
-        setrecentlyTeams(res.data);
+        setState((prevState) => ({ ...prevState, recentlyTeams: res.data }));
       }
-      setLoadingRecentTeams(false);
+      setState((prevState) => ({ ...prevState, loadingRecentTeams: false }));
     })();
   }, []);
 
   return (
     <HomeTemp
-      joinTeams={joinTeams}
-      recentlyTeams={recentlyTeams}
-      loadingJoinTeams={loadingJoinTeams}
-      loadingRecentTeams={loadingRecentTeams}
+      {...state}
       onClickJoinTeams={onClickJoinTeams}
       onClickRecentlyTeams={onClickRecentlyTeams}
     />

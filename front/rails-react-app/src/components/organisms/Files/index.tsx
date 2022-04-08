@@ -75,6 +75,7 @@ const Files: FC<Props> = ({
                                     fileId={id}
                                     fileName={title}
                                     description={description}
+                                    useUpdate
                                   />
                                 }
                               />
