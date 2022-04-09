@@ -14,7 +14,7 @@ const Signup: VFC = () => {
   const onFinish = async (data: SignUpParams) => {
     try {
       await signup(data);
-      navigate('../user');
+      navigate('/user/home');
     } catch (err) {
       message.error(
         'ユーザーの作成に失敗しました。時間をおいて再度お試しください'

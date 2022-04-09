@@ -42,6 +42,10 @@ const Folder: FC = () => {
     console.log(value);
   };
   const BuildFile = async (data: BuildFileParams) => {
+    if (!data.file) {
+      message.error('画像を選択してください');
+      return;
+    }
     const res = folderId
       ? await createSome('folders', 'file_content', data, Number(folderId))
       : null;
