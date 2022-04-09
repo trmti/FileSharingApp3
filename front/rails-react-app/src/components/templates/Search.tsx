@@ -34,7 +34,7 @@ const Search: FC<Props> = ({
           prefix={
             <img
               alt=""
-              src={'http://localhost:8000/icon/Search.png'}
+              src={`${process.env.PUBLIC_URL}/icon/Search.png`}
               width={35}
               height={35}
             />
