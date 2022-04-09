@@ -30,8 +30,8 @@ export const App: FC = () => {
       <AuthUserProvider>
         <BrowserRouter>
           <Routes>
+            <Route path="/" element={<Pages.TopPage />} />
             <Route path="/" element={<UnloginRoute />}>
-              <Route path="/" element={<Pages.TopPage />} />
               <Route path="/signup" element={<Pages.Signup />} />
               <Route path="/login" element={<Pages.Login />} />
               <Route path="/logout" element={<Pages.Logout />} />
