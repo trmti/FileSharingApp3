@@ -3,29 +3,37 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { message, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import {
+  User,
   Folder,
   TeamDescription,
   FolderWithImage,
   BuildFolderParams,
-  FetchFailed,
-  FetchSuccess,
   UpdateTeamParams,
+  TeamJoinStates,
 } from 'type';
 import { useAuthUser } from 'auth/AuthUserContext';
 import { createSome, updateSome } from 'db/utils';
-import { getTeamById } from 'db/team';
-import { setInLeader, setInEditor } from 'utils';
+import {
+  getTeamById,
+  addWaitingUser,
+  addNewEditor,
+  removeEditor,
+  rejectNewEditor,
+  getTeamJoinStatus,
+  getWaitingUsers,
+} from 'db/team';
 import { deleteSome } from 'db/utils';
 import { getFoldersByTeamId } from 'db/folders';
+import { isInLeader, isInEditor } from 'utils';
 import HomeTemp from 'components/templates/TeamHome';
-
-type FetchTeamDescriptionSuccess = FetchSuccess<TeamDescription>;
 
 type stateProps = {
   teamProp: TeamDescription | null;
   folders: FolderWithImage[] | null;
   loadingTeam: boolean;
   loadingFolders: boolean;
+  joinState: TeamJoinStates;
+  requests: User[];
 };
 
 const setNewFolders = async (
@@ -48,6 +56,8 @@ const Home: FC = () => {
     folders: null,
     loadingTeam: false,
     loadingFolders: false,
+    joinState: null,
+    requests: [],
   });
   const [isCreateModalVisible, setIsCreateModalVisible] =
     useState<boolean>(false);
@@ -57,10 +67,10 @@ const Home: FC = () => {
   const authUser = useAuthUser();
   let { teamId } = useParams();
   const navigate = useNavigate();
-  let res: FetchTeamDescriptionSuccess | FetchFailed;
   const onClickCard = (id: number) => {
     navigate(`folder/${id}`);
   };
+
   const CreateFolder = async (data: BuildFolderParams) => {
     if (teamId) {
       const res = await createSome<Folder>(
@@ -87,6 +97,7 @@ const Home: FC = () => {
   const CreateFolderFailed = () => {
     message.error('入力されていない項目があります。');
   };
+
   const UpdateTeam = async (data: UpdateTeamParams) => {
     if (teamId) {
       const res = await updateSome('teams', data, Number(teamId));
@@ -111,6 +122,47 @@ const Home: FC = () => {
   const UpdateTeamFailed = () => {
     message.error('チームの更新に失敗しました');
   };
+
+  const JoinTeam = async () => {
+    if (teamId && authUser?.id) {
+      let res;
+      if (state.teamProp?.team.publish_range === 'public') {
+        res = await addNewEditor(Number(teamId), authUser.id);
+      } else {
+        res = await addWaitingUser(Number(teamId), authUser.id);
+      }
+      if (res.status === 'success') {
+        message.success('参加申請を送りました。');
+        if (state.teamProp?.team.publish_range === 'public') {
+          setState((prevState) => ({
+            ...prevState,
+            joinState: 'join',
+          }));
+        }
+        setState((prevState) => ({ ...prevState, joinState: 'waitingJoin' }));
+      } else {
+        message.error(res.message);
+      }
+    }
+  };
+
+  const RemoveTeam = async () => {
+    if (teamId && authUser?.id && !isLeader) {
+      const res = await removeEditor(Number(teamId), authUser.id);
+      if (res.status === 'success') {
+        setState((prevState) => ({
+          ...prevState,
+          joinState: 'unJoin',
+        }));
+        message.success('チームを抜けました。');
+      } else {
+        message.error('チームの脱退に失敗しました。');
+      }
+    } else {
+      message.error('リーダーはチームを抜けられません。');
+    }
+  };
+
   const onDelete = async () => {
     const res = await deleteSome(Number(teamId), 'teams');
     if (res.status === 'success') {
@@ -120,6 +172,35 @@ const Home: FC = () => {
       message.error(res.message);
     }
   };
+
+  const addEditor = async (id: number) => {
+    const res = await addNewEditor(Number(teamId), id);
+    if (res.status === 'success') {
+      setState((prevState) => ({
+        ...prevState,
+        requests: prevState.requests.filter((request) => {
+          return request.id !== id;
+        }),
+      }));
+    } else {
+      message.error('編集者の追加に失敗しました。');
+    }
+  };
+
+  const rejectEditor = async (id: number) => {
+    const res = await rejectNewEditor(Number(teamId), id);
+    if (res.status === 'success') {
+      setState((prevState) => ({
+        ...prevState,
+        requests: prevState.requests.filter((request) => {
+          return request.id !== id;
+        }),
+      }));
+    } else {
+      message.error('編集者の拒否に失敗しました。');
+    }
+  };
+
   useEffect(() => {
     setState((prevState) => ({ ...prevState, loadingTeam: true }));
     if (!teamId) {
@@ -139,14 +220,26 @@ const Home: FC = () => {
       }
     })();
   }, [teamId]);
+
   useEffect(() => {
     (async () => {
       if (authUser) {
-        await setInLeader(setIsLeader, Number(teamId), authUser.id);
-        await setInEditor(setIsEditor, Number(teamId), authUser.id);
+        const isLeader = await isInLeader(Number(teamId), authUser.id);
+        setIsLeader(isLeader);
+        setIsEditor(await isInEditor(Number(teamId), authUser.id));
+        const joinState = await getTeamJoinStatus(Number(teamId), authUser.id);
+        setState((prevState) => ({ ...prevState, joinState }));
+        if (isLeader) {
+          const res = await getWaitingUsers(Number(teamId));
+          if (res.status === 'success') {
+            const requests = res.data;
+            setState((prevState) => ({ ...prevState, requests }));
+          }
+        }
       }
     })();
   }, [authUser, teamId]);
+
   return (
     <>
       {state.loadingTeam ? (
@@ -170,7 +263,11 @@ const Home: FC = () => {
           CreateFolderFailed={CreateFolderFailed}
           UpdateTeam={UpdateTeam}
           UpdateTeamFailed={UpdateTeamFailed}
+          JoinTeam={JoinTeam}
+          RemoveTeam={RemoveTeam}
           onDelete={onDelete}
+          AddEditor={addEditor}
+          RejectEditor={rejectEditor}
         />
       )}
     </>

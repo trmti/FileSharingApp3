@@ -17,10 +17,10 @@ const Build: FC = () => {
       const res = await createSome('user', 'team', data, user.id);
       if (res.status === 'success') {
         message.success('チームを作成しました。');
-        navigate('..');
+        navigate('/user/home');
       } else if (res.status === 'continue') {
         message.info(res.message);
-        navigate('..');
+        navigate('/user/home');
       } else {
         message.error(res.message);
       }

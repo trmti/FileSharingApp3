@@ -4,6 +4,7 @@ export const colors = {
   BG: '#F9FCFF',
   IconBlue: '#69D2E7',
   IconOrange: '#F28530',
+  IconGray: '#696969',
   Border: '#D3D3D3',
   Card: '#C4C4C4',
   Text: {

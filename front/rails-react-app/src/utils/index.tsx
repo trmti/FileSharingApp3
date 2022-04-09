@@ -8,28 +8,20 @@ export const createFormData = (formName: string, data: any): FormData => {
   return formData;
 };
 
-export const setInLeader = async (
-  setIsLeader: React.Dispatch<React.SetStateAction<boolean>>,
-  teamId: number,
-  userId: number
-) => {
+export const isInLeader = async (teamId: number, userId: number) => {
   const res = await getLeaderId(teamId);
   if (res.status === 'success' && res.data.id === userId) {
-    setIsLeader(true);
+    return true;
   } else {
-    setIsLeader(false);
+    return false;
   }
 };
 
-export const setInEditor = async (
-  setIsEditor: React.Dispatch<React.SetStateAction<boolean>>,
-  teamId: number,
-  userId: number
-) => {
+export const isInEditor = async (teamId: number, userId: number) => {
   const res = await getEditorIds(teamId);
   if (res.status === 'success' && res.data.ids.includes(userId)) {
-    setIsEditor(true);
+    return true;
   } else {
-    setIsEditor(false);
+    return false;
   }
 };

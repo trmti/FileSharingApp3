@@ -18,6 +18,7 @@ export const App: FC = () => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const [isSmall, setIsSmall] = useState<boolean>(window.innerWidth < 480);
   useEffect(() => {
+    setIsSmall(window.innerWidth < 480);
     const onResize = () => {
       setIsSmall(window.innerWidth < 480);
     };
@@ -28,32 +29,28 @@ export const App: FC = () => {
     <>
       <AuthUserProvider>
         <BrowserRouter>
-          {!isCollapsed && window.innerWidth < 480 ? (
-            <></>
-          ) : (
-            <Routes>
-              <Route path="/" element={<UnloginRoute />}>
-                <Route path="/" element={<Pages.TopPage />} />
-                <Route path="/signup" element={<Pages.Signup />} />
-                <Route path="/login" element={<Pages.Login />} />
-                <Route path="/logout" element={<Pages.Logout />} />
-              </Route>
-              <Route
-                path="user"
-                element={
-                  <PrivateRoute
-                    setIsCollapsed={setIsCollapsed}
-                    isCollapsed={isCollapsed}
-                    isSmall={isSmall}
-                  />
-                }
-              >
-                <Route path="*" element={<User />} />
-              </Route>
+          <Routes>
+            <Route path="/" element={<Pages.TopPage />} />
+            <Route path="/" element={<UnloginRoute />}>
+              <Route path="/signup" element={<Pages.Signup />} />
+              <Route path="/login" element={<Pages.Login />} />
+              <Route path="/logout" element={<Pages.Logout />} />
+            </Route>
+            <Route
+              path="user"
+              element={
+                <PrivateRoute
+                  setIsCollapsed={setIsCollapsed}
+                  isCollapsed={isCollapsed}
+                  isSmall={isSmall}
+                />
+              }
+            >
+              <Route path="*" element={<User />} />
+            </Route>
 
-              <Route path="*" element={<Pages.Login />} />
-            </Routes>
-          )}
+            <Route path="*" element={<Pages.Login />} />
+          </Routes>
         </BrowserRouter>
         <GlobalStyles />
       </AuthUserProvider>

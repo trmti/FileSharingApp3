@@ -24,21 +24,6 @@ export interface SignInParams {
   password: string;
 }
 
-// ユーザー
-export interface User {
-  id: number;
-  uid: string;
-  provider: string;
-  email: string;
-  name: string;
-  nickname?: string;
-  image?: string;
-  post_id?: number;
-  allowPasswordChange: boolean;
-  created_at?: Date;
-  updated_at?: Date;
-}
-
 export type FetchFailed = {
   status: 'error';
   message: string;
@@ -48,6 +33,27 @@ export type FetchSuccess<T> = {
   status: 'success';
   data: T;
 };
+
+export interface UserImageAndName {
+  image: string | null;
+  name: string;
+}
+
+// ユーザー
+export interface User {
+  id: number;
+  uid: string;
+  provider: string;
+  email: string;
+  name: string;
+  message?: string;
+  nickname?: string;
+  image?: string;
+  post_id?: number;
+  allowPasswordChange: boolean;
+  created_at?: Date;
+  updated_at?: Date;
+}
 
 export interface Post {
   id: string;
@@ -62,11 +68,7 @@ export interface PostApiJson {
   posts: Post[];
 }
 
-export interface UserImageAndName {
-  image: string | null;
-  name: string;
-}
-
+// ----- Team --------------------------------
 export interface Team {
   id: number;
   name: string;
@@ -105,6 +107,9 @@ export interface UpdateTeamParams {
   file: UploadFile | null;
 }
 
+export type TeamJoinStates = null | 'unJoin' | 'join' | 'waitingJoin';
+
+// ----- Folder ------------------------------
 export type Folder = {
   id: number;
   title: string;
@@ -126,6 +131,7 @@ export type BuildFolderParams = {
   file: UploadFile | null;
 };
 
+// ----- File ------------------------------
 export type File = {
   id: number;
   title: string | null;
@@ -146,6 +152,7 @@ export type BuildFileParams = {
   file: UploadFile;
 };
 
+// ----- Comment ------------------------------
 export type Comment = {
   text: string;
   user_id: number;

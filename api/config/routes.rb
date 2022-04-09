@@ -1,10 +1,11 @@
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
-      resources :user, only: %i[index show]
+      resources :user, only: %i[index show update]
       get "user/get_image/:id", to: "user#get_image"
       get "user/get_join_teams/:id", to: "user#get_join_teams"
       post "user/create_team/:id", to: "user#create_team"
+      post "user/update_image/:id", to: "user#update_image"
       
       resources :teams, only: %i[index show update destroy]
       get "teams/get_folders/:id", to: "teams#get_folders"
@@ -12,6 +13,12 @@ Rails.application.routes.draw do
       get "teams/search_teams/:text/:limit", to: "teams#search_teams"
       get "teams/get_editor_ids/:id", to: "teams#get_editor_ids"
       get "teams/get_leader_id/:id", to: "teams#get_leader_id"
+      get "teams/get_waiting_users/:id", to: "teams#get_waiting_users"
+      get "teams/get_waiting_user_ids/:id", to: "teams#get_waiting_user_ids"
+      post "teams/add_editor/:id", to: "teams#add_editor"
+      post "teams/remove_editor/:id", to: "teams#remove_editor"
+      post "teams/reject_editor/:id", to: "teams#reject_waiting_user"
+      post "teams/add_waiting_user/:id", to: "teams#add_waiting_user"
       post "teams/create_folder/:id", to: "teams#create_folder"
       post "teams/create_image/:id", to: "teams#create_image"
       post "team/update_image/:id", to: "team#update_image"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_16_120007) do
+ActiveRecord::Schema.define(version: 2022_04_08_093051) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -73,13 +73,6 @@ ActiveRecord::Schema.define(version: 2022_03_16_120007) do
     t.index ["post_id"], name: "index_teams_on_post_id"
   end
 
-  create_table "teams_users", id: false, force: :cascade do |t|
-    t.bigint "user_id"
-    t.bigint "team_id"
-    t.index ["team_id"], name: "index_teams_users_on_team_id"
-    t.index ["user_id"], name: "index_teams_users_on_user_id"
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "provider", default: "email", null: false
     t.string "uid", default: "", null: false
@@ -93,6 +86,7 @@ ActiveRecord::Schema.define(version: 2022_03_16_120007) do
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
     t.string "name", null: false
+    t.string "message"
     t.string "nickname"
     t.string "email", null: false
     t.bigint "post_id"
@@ -104,6 +98,13 @@ ActiveRecord::Schema.define(version: 2022_03_16_120007) do
     t.index ["post_id"], name: "index_users_on_post_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
+  end
+
+  create_table "waiting_users", id: false, force: :cascade do |t|
+    t.bigint "team_id"
+    t.bigint "user_id"
+    t.index ["team_id"], name: "index_waiting_users_on_team_id"
+    t.index ["user_id"], name: "index_waiting_users_on_user_id"
   end
 
   add_foreign_key "teams", "users", column: "leader_id"

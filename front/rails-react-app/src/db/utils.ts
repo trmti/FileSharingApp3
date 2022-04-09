@@ -91,7 +91,7 @@ export const createSome = <T extends User | Team | Folder | File>(
 };
 
 export const updateSome = <T extends User | Team | Folder | File>(
-  master: 'teams' | 'folders' | 'file_contents',
+  master: 'user' | 'teams' | 'folders' | 'file_contents',
   params: any,
   master_id: number
 ): Promise<FetchFailed | FetchSuccess<T> | FetchPostFailed> => {

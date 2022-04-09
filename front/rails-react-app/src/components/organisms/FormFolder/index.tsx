@@ -43,7 +43,7 @@ const FormFolder: FC<Props> = ({
       >
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
           <Form.Item
-            label={<Title>TeamName</Title>}
+            label={<Title>FolderName</Title>}
             name="title"
             rules={[
               { required: true, message: 'フォルダ名を入力してください' },

@@ -1,6 +1,6 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Divider, Modal, Spin } from 'antd';
+import { Divider, Modal, Spin, Button, Affix, Menu } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import TeamHeader from 'components/organisms/TeamHeader';
 import FormUpdateTeam from 'components/organisms/FormTeam';
@@ -8,13 +8,41 @@ import Folders from 'components/organisms/Folders';
 import FormBuildFolder from 'components/organisms/FormFolder';
 import BackButton from 'components/molecules/BackButton';
 import DescriptionDropdown from 'components/molecules/DescriptionDropdown';
+import JoinRequets from 'components/organisms/JoinRequets';
+import NumberCircle from 'components/atoms/NumberCircle';
 import {
+  User,
   TeamDescription,
   FolderWithImage,
   BuildFolderParams,
   UpdateTeamParams,
+  TeamJoinStates,
 } from 'type';
-import { colors } from 'app_design';
+import { colors, text_style } from 'app_design';
+
+const buttonParam = {
+  unJoin: {
+    color: colors.Theme.Main,
+    text: '参加',
+    disabled: false,
+    text_color: 'black',
+    message: '参加申請を送りますか？',
+  },
+  waitingJoin: {
+    color: colors.IconGray,
+    text: '参加申請中',
+    disabled: true,
+    text_color: 'white',
+    message: '',
+  },
+  join: {
+    color: colors.Theme.Sub_Light,
+    text: '参加中',
+    disabled: false,
+    text_color: 'white',
+    message: 'チームを抜けますか？',
+  },
+};
 
 type Props = {
   teamProp: TeamDescription | null;
@@ -24,6 +52,8 @@ type Props = {
   CreateFolderFailed: () => void;
   UpdateTeam: (data: UpdateTeamParams) => Promise<void>;
   UpdateTeamFailed: () => void;
+  JoinTeam: () => void;
+  RemoveTeam: () => void;
   onDelete: () => Promise<void>;
   isCreateModalVisible: boolean;
   setIsCreateModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
@@ -32,6 +62,10 @@ type Props = {
   isLeader: boolean;
   isEditor: boolean;
   loadingFolders: boolean;
+  joinState: TeamJoinStates;
+  requests: User[];
+  AddEditor: (id: number) => void;
+  RejectEditor: (id: number) => void;
 };
 
 const Home: FC<Props> = ({
@@ -42,6 +76,8 @@ const Home: FC<Props> = ({
   CreateFolderFailed,
   UpdateTeam,
   UpdateTeamFailed,
+  JoinTeam,
+  RemoveTeam,
   onDelete,
   isCreateModalVisible,
   setIsCreateModalVisible,
@@ -50,14 +86,24 @@ const Home: FC<Props> = ({
   isLeader,
   isEditor,
   loadingFolders,
+  joinState,
+  requests,
+  AddEditor,
+  RejectEditor,
 }) => {
+  const [isJoinModalVisible, setIsJoinModalVisible] = useState<boolean>(false);
+  const [isRequestsModalVisible, setIsRequestsModalVisible] =
+    useState<boolean>(false);
   const navigate = useNavigate();
   const onClickNewFolder = () => {
     setIsCreateModalVisible(true);
   };
   const handleCancel = () => {
     setIsCreateModalVisible(false);
+    setIsJoinModalVisible(false);
+    setIsRequestsModalVisible(false);
   };
+  const joinParams = joinState ? buttonParam[joinState] : null;
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -68,22 +114,46 @@ const Home: FC<Props> = ({
           style={{ marginBottom: 30 }}
         />
         {teamProp !== null && teamProp?.team.id && isLeader ? (
-          <DescriptionDropdown
-            onDelete={onDelete}
-            style={{ marginRight: 50 }}
-            isEditModalVisible={isEditModalVisible}
-            setIsEditModalVisible={setIsEditModalVisible}
-            FormUpdate={
-              <FormUpdateTeam
-                onFinish={UpdateTeam}
-                onFinishFailed={UpdateTeamFailed}
-                loading={loadingFolders}
-                teamName={teamProp.team.name}
-                description={teamProp.team.description}
-                authority={teamProp.team.publish_range}
-              />
-            }
-          />
+          <div style={{ position: 'relative' }}>
+            <DescriptionDropdown
+              onDelete={onDelete}
+              style={{ marginRight: 50 }}
+              isEditModalVisible={isEditModalVisible}
+              setIsEditModalVisible={setIsEditModalVisible}
+              optionalItem={
+                <Menu.Item key={2}>
+                  <a
+                    onClick={() => {
+                      setIsRequestsModalVisible(true);
+                    }}
+                  >
+                    申請
+                  </a>
+                </Menu.Item>
+              }
+              FormUpdate={
+                <FormUpdateTeam
+                  onFinish={UpdateTeam}
+                  onFinishFailed={UpdateTeamFailed}
+                  loading={loadingFolders}
+                  teamName={teamProp.team.name}
+                  description={teamProp.team.description}
+                  authority={teamProp.team.publish_range}
+                />
+              }
+            />
+            {requests.length > 0 ? (
+              <div style={{ position: 'absolute', top: -20, right: 20 }}>
+                <NumberCircle
+                  number={requests.length}
+                  size={30}
+                  color={colors.IconOrange}
+                />
+              </div>
+            ) : (
+              <></>
+            )}
+          </div>
         ) : (
           <></>
         )}
@@ -112,6 +182,58 @@ const Home: FC<Props> = ({
           onFinishFailed={CreateFolderFailed}
         />
       </Modal>
+      <Modal
+        title="参加申請一覧"
+        visible={isRequestsModalVisible}
+        onCancel={handleCancel}
+        footer={null}
+      >
+        <JoinRequets
+          requests={requests}
+          AddEditor={AddEditor}
+          RejectEditor={RejectEditor}
+        />
+      </Modal>
+      {joinParams ? (
+        <>
+          <Affix offsetBottom={30} style={{ position: 'absolute', right: 30 }}>
+            <Button
+              disabled={joinParams.disabled}
+              style={{
+                width: 200,
+                height: 80,
+                borderRadius: 80,
+                backgroundColor: joinParams.color,
+                color: joinParams.text_color,
+                opacity: 0.8,
+                ...text_style.Button,
+              }}
+              onClick={() => {
+                setIsJoinModalVisible(true);
+              }}
+            >
+              {joinParams.text}
+            </Button>
+          </Affix>
+          <Modal
+            title="参加申請"
+            visible={isJoinModalVisible}
+            onCancel={handleCancel}
+            onOk={() => {
+              if (joinState === 'join') {
+                RemoveTeam();
+              } else if (joinState === 'unJoin') {
+                JoinTeam();
+              }
+              setIsJoinModalVisible(false);
+            }}
+          >
+            {joinParams.message}
+          </Modal>
+        </>
+      ) : (
+        <></>
+      )}
     </>
   );
 };

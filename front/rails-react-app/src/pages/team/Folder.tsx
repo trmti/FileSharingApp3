@@ -5,7 +5,7 @@ import { useAuthUser } from 'auth/AuthUserContext';
 import { showFolder } from 'db/folders';
 import { getFilesByFolderId } from 'db/file';
 import { deleteSome, updateSome, createSome } from 'db/utils';
-import { setInEditor } from 'utils';
+import { isInEditor } from 'utils';
 import {
   Folder as FolderType,
   FileWithImage,
@@ -117,7 +117,7 @@ const Folder: FC = () => {
       setLoadingFolder(true);
       (async () => {
         await setNewFiles();
-        await setInEditor(setIsEditor, Number(teamId), authUser.id);
+        setIsEditor(await isInEditor(Number(teamId), authUser.id));
         const folder = folderId ? await showFolder(Number(folderId)) : null;
         if (folder?.status === 'success') {
           setFolder(folder.data);

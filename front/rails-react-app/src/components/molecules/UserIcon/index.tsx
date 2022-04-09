@@ -6,17 +6,18 @@ type Props = {
   src: string | null;
   name: string;
   BG: string;
-  style?: {};
+  style?: React.CSSProperties;
+  small?: boolean;
 };
 
-const UserIcon: FC<Props> = ({ src, name, BG, style }) => {
+const UserIcon: FC<Props> = ({ src, name, BG, style, small }) => {
   const bodyM = text_style.Body_M;
   return (
     <div
       style={{
-        width: 120,
-        height: 40,
-        borderRadius: 40,
+        width: small ? 80 : 120,
+        height: small ? 30 : 40,
+        borderRadius: small ? 30 : 40,
         backgroundColor: BG,
         display: 'inline-block',
         ...style,
@@ -25,11 +26,12 @@ const UserIcon: FC<Props> = ({ src, name, BG, style }) => {
       <Avatar
         src={src}
         style={{ marginLeft: 10, marginTop: 3, display: 'inline-block' }}
+        size={small ? 'small' : 'default'}
       />
       <p
         style={{
           margin: 0,
-          marginLeft: 15,
+          marginLeft: small ? 5 : 15,
           verticalAlign: 'middle',
           display: 'inline-block',
           color: colors.Text.Gray,
