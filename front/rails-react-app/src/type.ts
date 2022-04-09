@@ -46,6 +46,7 @@ export interface User {
   provider: string;
   email: string;
   name: string;
+  message?: string;
   nickname?: string;
   image?: string;
   post_id?: number;

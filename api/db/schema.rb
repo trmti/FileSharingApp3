@@ -73,13 +73,6 @@ ActiveRecord::Schema.define(version: 2022_04_08_093051) do
     t.index ["post_id"], name: "index_teams_on_post_id"
   end
 
-  create_table "teams_users", id: false, force: :cascade do |t|
-    t.bigint "user_id"
-    t.bigint "team_id"
-    t.index ["team_id"], name: "index_teams_users_on_team_id"
-    t.index ["user_id"], name: "index_teams_users_on_user_id"
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "provider", default: "email", null: false
     t.string "uid", default: "", null: false
@@ -93,6 +86,7 @@ ActiveRecord::Schema.define(version: 2022_04_08_093051) do
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
     t.string "name", null: false
+    t.string "message"
     t.string "nickname"
     t.string "email", null: false
     t.bigint "post_id"

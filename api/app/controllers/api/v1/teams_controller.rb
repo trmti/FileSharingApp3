@@ -116,6 +116,10 @@ class Api::V1::TeamsController < ApplicationController
       render json: @editor, status: :accepted
     end
   end
+
+  def remove_editor
+    @team.editors.destroy(params[:user_id])
+  end
   
   def reject_editor
     @team.waiting_users.destroy(params[:user_id])

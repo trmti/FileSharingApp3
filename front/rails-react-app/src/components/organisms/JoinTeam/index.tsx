@@ -35,8 +35,11 @@ const JoinTeam: VFC<Props> = ({ joinTeams, onClick }) => {
                         <img
                           alt="team"
                           src={cover_image ? cover_image : defaultCoverImage}
-                          width="auto"
                           height={250}
+                          width="auto"
+                          style={{
+                            objectFit: 'cover',
+                          }}
                         />
                       }
                       onClick={() => onClick(id)}

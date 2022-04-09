@@ -30,6 +30,7 @@ class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[5.2]
 
       ## User Info
       t.string :name, null: false
+      t.string :message
       t.string :nickname
       t.string :email, null: false
       t.belongs_to :post

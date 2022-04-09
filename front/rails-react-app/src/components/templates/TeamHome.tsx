@@ -26,18 +26,21 @@ const buttonParam = {
     text: '参加',
     disabled: false,
     text_color: 'black',
+    message: '参加申請を送りますか？',
   },
   waitingJoin: {
     color: colors.IconGray,
     text: '参加申請中',
     disabled: true,
     text_color: 'white',
+    message: '',
   },
   join: {
     color: colors.Theme.Sub_Light,
     text: '参加中',
-    disabled: true,
+    disabled: false,
     text_color: 'white',
+    message: 'チームを抜けますか？',
   },
 };
 
@@ -50,6 +53,7 @@ type Props = {
   UpdateTeam: (data: UpdateTeamParams) => Promise<void>;
   UpdateTeamFailed: () => void;
   JoinTeam: () => void;
+  RemoveTeam: () => void;
   onDelete: () => Promise<void>;
   isCreateModalVisible: boolean;
   setIsCreateModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
@@ -73,6 +77,7 @@ const Home: FC<Props> = ({
   UpdateTeam,
   UpdateTeamFailed,
   JoinTeam,
+  RemoveTeam,
   onDelete,
   isCreateModalVisible,
   setIsCreateModalVisible,
@@ -178,17 +183,6 @@ const Home: FC<Props> = ({
         />
       </Modal>
       <Modal
-        title="参加申請"
-        visible={isJoinModalVisible}
-        onCancel={handleCancel}
-        onOk={() => {
-          JoinTeam();
-          setIsJoinModalVisible(false);
-        }}
-      >
-        参加申請を送りますか？
-      </Modal>
-      <Modal
         title="参加申請一覧"
         visible={isRequestsModalVisible}
         onCancel={handleCancel}
@@ -201,25 +195,42 @@ const Home: FC<Props> = ({
         />
       </Modal>
       {joinParams ? (
-        <Affix offsetBottom={30} style={{ position: 'absolute', right: 30 }}>
-          <Button
-            disabled={joinParams.disabled}
-            style={{
-              width: 200,
-              height: 80,
-              borderRadius: 80,
-              backgroundColor: joinParams.color,
-              color: joinParams.text_color,
-              opacity: 0.8,
-              ...text_style.Button,
-            }}
-            onClick={() => {
-              setIsJoinModalVisible(true);
+        <>
+          <Affix offsetBottom={30} style={{ position: 'absolute', right: 30 }}>
+            <Button
+              disabled={joinParams.disabled}
+              style={{
+                width: 200,
+                height: 80,
+                borderRadius: 80,
+                backgroundColor: joinParams.color,
+                color: joinParams.text_color,
+                opacity: 0.8,
+                ...text_style.Button,
+              }}
+              onClick={() => {
+                setIsJoinModalVisible(true);
+              }}
+            >
+              {joinParams.text}
+            </Button>
+          </Affix>
+          <Modal
+            title="参加申請"
+            visible={isJoinModalVisible}
+            onCancel={handleCancel}
+            onOk={() => {
+              if (joinState === 'join') {
+                RemoveTeam();
+              } else if (joinState === 'unJoin') {
+                JoinTeam();
+              }
+              setIsJoinModalVisible(false);
             }}
           >
-            {joinParams.text}
-          </Button>
-        </Affix>
+            {joinParams.message}
+          </Modal>
+        </>
       ) : (
         <></>
       )}

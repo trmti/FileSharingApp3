@@ -27,7 +27,7 @@ export const getPostByUserId = (userId: number) => {
 export const createOrUpdateImage = (
   id: number,
   image: FormData,
-  master: 'teams' | 'folders' | 'file_contents',
+  master: 'user' | 'teams' | 'folders' | 'file_contents',
   action: 'create' | 'update'
 ) => {
   const res = postAction<Post>(

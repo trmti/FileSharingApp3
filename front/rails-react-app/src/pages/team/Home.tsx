@@ -17,6 +17,7 @@ import {
   getTeamById,
   addWaitingUser,
   addNewEditor,
+  removeEditor,
   rejectNewEditor,
   getTeamJoinStatus,
   getWaitingUsers,
@@ -145,6 +146,23 @@ const Home: FC = () => {
     }
   };
 
+  const RemoveTeam = async () => {
+    if (teamId && authUser?.id && !isLeader) {
+      const res = await removeEditor(Number(teamId), authUser.id);
+      if (res.status === 'success') {
+        setState((prevState) => ({
+          ...prevState,
+          joinState: 'unJoin',
+        }));
+        message.success('チームを抜けました。');
+      } else {
+        message.error('チームの脱退に失敗しました。');
+      }
+    } else {
+      message.error('リーダーはチームを抜けられません。');
+    }
+  };
+
   const onDelete = async () => {
     const res = await deleteSome(Number(teamId), 'teams');
     if (res.status === 'success') {
@@ -157,7 +175,6 @@ const Home: FC = () => {
 
   const addEditor = async (id: number) => {
     const res = await addNewEditor(Number(teamId), id);
-    console.log(res);
     if (res.status === 'success') {
       setState((prevState) => ({
         ...prevState,
@@ -247,6 +264,7 @@ const Home: FC = () => {
           UpdateTeam={UpdateTeam}
           UpdateTeamFailed={UpdateTeamFailed}
           JoinTeam={JoinTeam}
+          RemoveTeam={RemoveTeam}
           onDelete={onDelete}
           AddEditor={addEditor}
           RejectEditor={rejectEditor}

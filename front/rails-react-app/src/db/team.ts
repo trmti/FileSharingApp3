@@ -115,3 +115,12 @@ export const rejectNewEditor = (teamId: number, userId: number) => {
   );
   return res;
 };
+
+export const removeEditor = (teamId: number, userId: number) => {
+  const res = postAction(
+    `/teams/remove_editor/${teamId}`,
+    { user_id: userId },
+    '削除に失敗しました。'
+  );
+  return res;
+};
