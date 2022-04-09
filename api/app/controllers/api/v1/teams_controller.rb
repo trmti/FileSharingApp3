@@ -87,6 +87,39 @@ class Api::V1::TeamsController < ApplicationController
     render json: {id: @team.leader_id}, status: :ok
   end
 
+  def get_waiting_users
+    render json: @team.waiting_users, status: :ok
+  end
+
+  def get_waiting_user_ids
+    render json: {ids: @team.waiting_user_ids}, status: :ok
+  end
+
+  def add_waiting_user
+    if @team.waiting_users.exists?(params[:user_id]) || @team.editors.exists?(params[:user_id])
+      render json: {}, status: :accepted
+    else
+      @user = User.find(params[:user_id])
+      @team.waiting_users << @user
+      render json: @user, status: :accepted
+    end
+  end
+
+  
+  def add_editor
+    if @team.editors.exists?(params[:user_id])
+      render json: {}, status: :not_modified
+    else
+      @editor = User.find(params[:user_id])
+      @team.waiting_users.destroy(@editor)
+      @team.editors << @editor
+      render json: @editor, status: :accepted
+    end
+  end
+  
+  def reject_editor
+    @team.waiting_users.destroy(params[:user_id])
+  end
   # ------ team ------------------------
   def get_teams_record
     @teams = Team.order(created_at: :desc).limit(params[:limit]).offset(params[:offset])
@@ -115,7 +148,7 @@ class Api::V1::TeamsController < ApplicationController
       @team = Team.find(params[:id])
     end
     def team_params
-      params.require(:team).permit(:image, :name, :description, :publish_range, :leader_id)
+      params.require(:team).permit(:image, :name, :description, :publish_range, :leader_id, :user_id)
     end
     def post_params
       params.require(:post).permit(:image)

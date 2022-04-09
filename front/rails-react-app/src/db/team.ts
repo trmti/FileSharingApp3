@@ -1,19 +1,5 @@
-import { createFormData } from 'utils';
-import { client } from './client';
-import { getAction } from './utils';
-import { createOrUpdateImage } from './post';
-import {
-  Team,
-  TeamWithImage,
-  TeamDescription,
-  FetchFailed,
-  FetchSuccess,
-  BuildTeamParams,
-  UpdateTeamParams,
-} from 'type';
-
-type FetchTeamSuccess = FetchSuccess<Team>;
-type FetchImageFailed = { status: 'continue'; message: string };
+import { getAction, postAction } from './utils';
+import { TeamWithImage, TeamDescription, User } from 'type';
 
 type ids = { ids: number[] };
 type id = { id: number };
@@ -59,52 +45,73 @@ export const getLeaderId = (teamId: number) => {
   return res;
 };
 
-// export const createOrUpdateTeam = (
-//   params: BuildTeamParams | UpdateTeamParams,
-//   type: 'update' | 'create',
-//   leader_id?: number,
-//   team_id?: number
-// ): Promise<FetchTeamSuccess | FetchImageFailed | FetchFailed> => {
-//   const { file, ...otherParams } = params;
-//   let action;
-//   if (type === 'create' && leader_id) {
-//     action = client.post<Team>(`/user/create_team/${leader_id}`, {
-//       ...otherParams,
-//     });
-//   } else if (type === 'update' && team_id) {
-//     action = client.patch<Team>(`/teams/${team_id}`, { ...otherParams });
-//   } else {
-//     return new Promise((resolve) => {
-//       resolve({ status: 'error', message: '入力項目に不備があります。' });
-//     });
-//   }
-//   const res = action
-//     .then((props): Promise<
-//       FetchSuccess<Team> | FetchFailed | FetchImageFailed
-//     > => {
-//       if (!file) {
-//         throw new Error();
-//       }
-//       const data = props.data;
-//       const image = createFormData('image', file);
-//       const res = createOrUpdateImage(data.id, image, 'teams', 'create')
-//         .then((props): FetchSuccess<Team> | FetchImageFailed => {
-//           if (props.status === 'success') {
-//             return { status: 'success', data };
-//           } else {
-//             throw new Error();
-//           }
-//         })
-//         .catch((): FetchImageFailed => {
-//           return {
-//             status: 'continue',
-//             message: '画像の作成に失敗しました。',
-//           };
-//         });
-//       return res;
-//     })
-//     .catch((): FetchImageFailed => {
-//       return { status: 'continue', message: 'チームを更新しました。' };
-//     });
-//   return res;
-// };
+export const getWaitingUsers = (teamId: number) => {
+  const res = getAction<User[]>(
+    `/teams/get_waiting_users/${teamId}`,
+    '参加申請中のユーザー一覧の取得に失敗しました。'
+  );
+  return res;
+};
+
+export const getTeamJoinStatus = (teamId: number, userId: number) => {
+  const res = getAction<ids>(
+    `/teams/get_editor_ids/${teamId}`,
+    '参加中のユーザー一覧の取得に失敗しました。'
+  )
+    .then((props) => {
+      if (props.status === 'success') {
+        if (props.data.ids.includes(userId)) {
+          return 'join';
+        } else {
+          throw new Error();
+        }
+      } else {
+        return null;
+      }
+    })
+    .catch(async () => {
+      const res = await getAction<ids>(
+        `/teams/get_waiting_user_ids/${teamId}`,
+        '参加申請中のユーザー一覧の取得に失敗しました。'
+      );
+      if (res.status === 'success') {
+        if (res.data.ids.includes(userId)) {
+          return 'waitingJoin';
+        } else {
+          return 'unJoin';
+        }
+      } else {
+        return null;
+      }
+    });
+  return res;
+};
+
+// ----- post --------------------------------
+
+export const addWaitingUser = (teamId: number, userId: number) => {
+  const res = postAction(
+    `/teams/add_waiting_user/${teamId}`,
+    { user_id: userId },
+    '参加申請に失敗しました。'
+  );
+  return res;
+};
+
+export const addNewEditor = (teamId: number, userId: number) => {
+  const res = postAction(
+    `/teams/add_editor/${teamId}`,
+    { user_id: userId },
+    '参加申請に失敗しました。'
+  );
+  return res;
+};
+
+export const rejectNewEditor = (teamId: number, userId: number) => {
+  const res = postAction(
+    `/teams/reject_editor/${teamId}`,
+    { user_id: userId },
+    'リジェクトに失敗しました。'
+  );
+  return res;
+};

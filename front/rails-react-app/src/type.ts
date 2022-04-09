@@ -24,6 +24,21 @@ export interface SignInParams {
   password: string;
 }
 
+export type FetchFailed = {
+  status: 'error';
+  message: string;
+};
+
+export type FetchSuccess<T> = {
+  status: 'success';
+  data: T;
+};
+
+export interface UserImageAndName {
+  image: string | null;
+  name: string;
+}
+
 // ユーザー
 export interface User {
   id: number;
@@ -39,16 +54,6 @@ export interface User {
   updated_at?: Date;
 }
 
-export type FetchFailed = {
-  status: 'error';
-  message: string;
-};
-
-export type FetchSuccess<T> = {
-  status: 'success';
-  data: T;
-};
-
 export interface Post {
   id: string;
   image: {
@@ -62,11 +67,7 @@ export interface PostApiJson {
   posts: Post[];
 }
 
-export interface UserImageAndName {
-  image: string | null;
-  name: string;
-}
-
+// ----- Team --------------------------------
 export interface Team {
   id: number;
   name: string;
@@ -105,6 +106,9 @@ export interface UpdateTeamParams {
   file: UploadFile | null;
 }
 
+export type TeamJoinStates = null | 'unJoin' | 'join' | 'waitingJoin';
+
+// ----- Folder ------------------------------
 export type Folder = {
   id: number;
   title: string;
@@ -126,6 +130,7 @@ export type BuildFolderParams = {
   file: UploadFile | null;
 };
 
+// ----- File ------------------------------
 export type File = {
   id: number;
   title: string | null;
@@ -146,6 +151,7 @@ export type BuildFileParams = {
   file: UploadFile;
 };
 
+// ----- Comment ------------------------------
 export type Comment = {
   text: string;
   user_id: number;

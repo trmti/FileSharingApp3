@@ -33,7 +33,6 @@ const Home: FC = () => {
 
   // ユーザーが参加しているチームの取得
   useEffect(() => {
-    console.log('test');
     setState((prevState) => ({ ...prevState, loadingJoinTeams: true }));
     if (user) {
       (async () => {

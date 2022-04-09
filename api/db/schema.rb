@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_16_120007) do
+ActiveRecord::Schema.define(version: 2022_04_08_093051) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -104,6 +104,13 @@ ActiveRecord::Schema.define(version: 2022_03_16_120007) do
     t.index ["post_id"], name: "index_users_on_post_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
+  end
+
+  create_table "waiting_users", id: false, force: :cascade do |t|
+    t.bigint "team_id"
+    t.bigint "user_id"
+    t.index ["team_id"], name: "index_waiting_users_on_team_id"
+    t.index ["user_id"], name: "index_waiting_users_on_user_id"
   end
 
   add_foreign_key "teams", "users", column: "leader_id"

@@ -7,6 +7,7 @@ type Props = {
   FormUpdate: React.ReactChild;
   isEditModalVisible: boolean;
   setIsEditModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  optionalItem?: React.ReactNode;
   style?: React.CSSProperties;
   small?: boolean;
 };
@@ -16,6 +17,7 @@ type OtherProps = {
   FormUpdate: React.ReactChild;
   isEditModalVisible: boolean;
   setIsEditModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  optionalItem?: React.ReactNode;
 };
 
 const MenuDropdown: FC<OtherProps> = ({
@@ -23,6 +25,7 @@ const MenuDropdown: FC<OtherProps> = ({
   FormUpdate,
   isEditModalVisible,
   setIsEditModalVisible,
+  optionalItem,
 }) => {
   const [isDeleteModalVisible, setIsDeleteModalVisible] =
     useState<boolean>(false);
@@ -42,7 +45,8 @@ const MenuDropdown: FC<OtherProps> = ({
             編集
           </a>
         </Menu.Item>
-        <Menu.Item key={2}>
+        {optionalItem}
+        <Menu.Item key={10}>
           <a
             style={{ color: 'red' }}
             onClick={() => {
@@ -79,6 +83,7 @@ const DescriptionDropdown: FC<Props> = ({
   FormUpdate,
   isEditModalVisible,
   setIsEditModalVisible,
+  optionalItem,
   small = false,
 }) => {
   return (
@@ -90,6 +95,7 @@ const DescriptionDropdown: FC<Props> = ({
             FormUpdate={FormUpdate}
             isEditModalVisible={isEditModalVisible}
             setIsEditModalVisible={setIsEditModalVisible}
+            optionalItem={optionalItem}
           />
         }
         trigger={['click']}
