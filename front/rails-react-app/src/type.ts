@@ -107,7 +107,7 @@ export interface UpdateTeamParams {
   file: UploadFile | null;
 }
 
-export type TeamJoinStates = null | 'unJoin' | 'join' | 'waitingJoin';
+export type TeamJoinStates = 'unJoin' | 'join' | 'waitingJoin';
 
 // ----- Folder ------------------------------
 export type Folder = {

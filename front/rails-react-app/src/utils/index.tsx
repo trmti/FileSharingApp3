@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { getLeaderId, getEditorIds } from 'db/team';
 
 export const defaultCoverImage: string = `${process.env.PUBLIC_URL}/logo192.png`;
@@ -25,3 +26,12 @@ export const isInEditor = async (teamId: number, userId: number) => {
     return false;
   }
 };
+
+export const useAsyncCallback = (
+  callback: (...args: any[]) => any,
+  deps: any[]
+) =>
+  useCallback((...args) => {
+    const f = async () => callback(...args);
+    return f();
+  }, deps);

@@ -15,9 +15,6 @@ publish_range = ["public", "private", "open"]
   puts "create user!"
   5.times do |o|
     team = user.editable_teams.create({name: "team#{o}", description: "seed", leader_id: n+1, publish_range: publish_range[n % 3]})
-    if n == 0
-      team.editors << user
-    end
     5.times do |p|
       folder = team.folders.create({title: "folder#{p + 1}", description: "seed"})
       5.times do |q|

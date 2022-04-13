@@ -8,7 +8,7 @@ import { TeamDescription } from 'type';
 const { Title, Paragraph } = Typography;
 
 type Props = {
-  team: TeamDescription | null;
+  team: TeamDescription | undefined;
 };
 
 const TeamHeader: FC<Props> = ({ team }) => {

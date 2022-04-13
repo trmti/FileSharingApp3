@@ -6,7 +6,7 @@ import styles from './style.module.css';
 import { colors } from 'app_design';
 import { getPostByUserId } from 'db/post';
 import { useAuthUser, useLogout } from 'auth/AuthUserContext';
-import { defaultCoverImage } from 'utils';
+import { defaultCoverImage, useAsyncCallback } from 'utils';
 
 const { Header } = Layout;
 
@@ -21,14 +21,14 @@ const MyHeader: FC<Props> = ({ small }) => {
   const [avatarUrl, setAvatarUrl] = useState<string>(
     process.env.PUBLIC_URL + '/logo192.png'
   );
-  const handleGetImage = async () => {
+  const handleGetImage = useAsyncCallback(async () => {
     if (authUser !== null && authUser.post_id) {
       const userImage = await getPostByUserId(authUser.id);
       if (userImage.status === 'success') {
         setAvatarUrl(userImage.data.image.url);
       }
     }
-  };
+  }, [authUser]);
   const onClickProfile = () => {
     navigate('/user/profile');
   };

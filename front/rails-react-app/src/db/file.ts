@@ -1,17 +1,5 @@
-import { AxiosResponse } from 'axios';
 import { getAction } from './utils';
-import { createOrUpdateImage } from './post';
-import { client } from './client';
-import { createFormData } from 'utils';
-import {
-  FileWithImage,
-  File,
-  BuildFileParams,
-  FetchSuccess,
-  FetchFailed,
-} from 'type';
-
-type FetchFileSuccess = FetchSuccess<File>;
+import { FileWithImage } from 'type';
 
 export const getFilesByFolderId = (id: number) => {
   const res = getAction<FileWithImage[]>(
