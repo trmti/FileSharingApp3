@@ -13,6 +13,14 @@ export const getTeamById = (teamId: number) => {
   return res;
 };
 
+export const getTeamsByUserId = (userId: number) => {
+  const res = getAction<TeamWithImage[]>(
+    `user/get_join_teams/${userId}`,
+    'チームの取得に失敗しました'
+  );
+  return res;
+};
+
 export const getTeamsRecord = (limit: number, offset: number) => {
   const res = getAction<TeamWithImage[]>(
     `/teams/get_teams_record/${limit}/${offset}`,

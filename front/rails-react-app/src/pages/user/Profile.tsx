@@ -21,17 +21,29 @@ import { colors, text_style } from 'app_design';
 
 const { Title } = Typography;
 
+type stateProps = {
+  user: User | null;
+  isModalVisible: boolean;
+  coverImage: string | undefined;
+  file: FormData | undefined;
+};
+
 const Profile: FC = () => {
   const authUser = useAuthUser();
-  const [user, setUser] = useState<User | null>(authUser);
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [coverImage, setCoverImage] = useState<string>();
-  const [file, setFile] = useState<FormData>();
+  const [state, setState] = useState<stateProps>({
+    user: authUser,
+    isModalVisible: false,
+    coverImage: undefined,
+    file: undefined,
+  });
   const handleGetImage = async () => {
     if (authUser !== null && authUser.post_id) {
       const userImage = await getPostByUserId(authUser.id);
       if (userImage.status === 'success') {
-        setCoverImage(userImage.data.image.url);
+        setState((prevState) => ({
+          ...prevState,
+          coverImage: userImage.data.image.url,
+        }));
       }
     }
   };
@@ -41,7 +53,10 @@ const Profile: FC = () => {
     },
     onChange: (data: any) => {
       const form = createFormData('image', data.file);
-      setFile(form);
+      setState((prevState) => ({
+        ...prevState,
+        file: form,
+      }));
       return false;
     },
     maxCount: 1,
@@ -49,13 +64,13 @@ const Profile: FC = () => {
   useEffect(() => {
     handleGetImage();
   }, [authUser]);
-  if (user) {
+  if (state.user) {
     return (
       <>
         <Row justify="center" style={{ width: '90%' }}>
           <Col span={22}>
             <Image
-              src={coverImage ? coverImage : defaultCoverImage}
+              src={state.coverImage ? state.coverImage : defaultCoverImage}
               width={'80%'}
               height={'auto'}
               style={{ maxWidth: 600, aspectRatio: '5/3' }}
@@ -64,7 +79,7 @@ const Profile: FC = () => {
           <Col
             span={2}
             onClick={() => {
-              setIsModalVisible(true);
+              setState((prevState) => ({ ...prevState, isModalVisible: true }));
             }}
           >
             <UploadOutlined style={{ fontSize: 50 }} />
@@ -79,18 +94,23 @@ const Profile: FC = () => {
               style={{ color: colors.Text.Gray }}
               editable={{
                 onChange: async (name) => {
-                  const res = await updateSome<User>(
-                    'user',
-                    { name: name },
-                    user.id
-                  );
-                  if (res.status !== 'error') {
-                    setUser({ ...user, name });
+                  if (state.user) {
+                    const res = await updateSome<User>(
+                      'user',
+                      { name: name },
+                      state.user.id
+                    );
+                    if (res.status !== 'error') {
+                      setState((prevState) => ({
+                        ...prevState,
+                        user: prevState.user,
+                      }));
+                    }
                   }
                 },
               }}
             >
-              {user?.name}
+              {state.user?.name}
             </Title>
           </Col>
         </Row>
@@ -103,40 +123,48 @@ const Profile: FC = () => {
               style={{ color: colors.Text.Gray }}
               editable={{
                 onChange: async (message) => {
-                  const res = await updateSome<User>(
-                    'user',
-                    { message: message },
-                    user.id
-                  );
-                  if (res.status !== 'error') {
-                    setUser({ ...user, message });
+                  if (state.user) {
+                    const res = await updateSome<User>(
+                      'user',
+                      { message: message },
+                      state.user.id
+                    );
+                    if (res.status !== 'error') {
+                      setState((prevState) => ({
+                        ...prevState,
+                        user: prevState.user,
+                      }));
+                    }
                   }
                 },
               }}
             >
-              {user?.message}
+              {state.user?.message}
             </Title>
           </Col>
         </Row>
         <Modal
           title="画像を変更"
-          visible={isModalVisible}
+          visible={state.isModalVisible}
           onCancel={() => {
-            setIsModalVisible(false);
+            setState((prevState) => ({ ...prevState, isModalVisible: false }));
           }}
           footer={null}
         >
           <Form
             onFinish={async () => {
-              if (file) {
+              if (state.file && state.user) {
                 const res = await createOrUpdateImage(
-                  user?.id,
-                  file,
+                  state.user?.id,
+                  state.file,
                   'user',
                   'update'
                 );
                 if (res.status === 'success') {
-                  setIsModalVisible(false);
+                  setState((prevState) => ({
+                    ...prevState,
+                    isModalVisible: false,
+                  }));
                   await handleGetImage();
                   message.success('プロフィール画像を変更しました。');
                 } else {

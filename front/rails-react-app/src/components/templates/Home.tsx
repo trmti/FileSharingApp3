@@ -1,28 +1,21 @@
 import { FC } from 'react';
 import { Typography, Divider, Spin } from 'antd';
+import { useAuthUser } from 'auth/AuthUserContext';
 import { LoadingOutlined } from '@ant-design/icons';
+import useHome from 'Hooks/user/Home';
 import JoinTeam from 'components/organisms/JoinTeam';
 import RecentlyTeam from 'components/organisms/RecentlyTeam';
-import { TeamWithImage } from 'type';
 import { colors } from 'app_design';
 
 type Props = {
-  joinTeams: TeamWithImage[] | null;
-  recentlyTeams: TeamWithImage[] | null;
-  loadingJoinTeams: boolean;
-  loadingRecentTeams: boolean;
   onClickJoinTeams: (id: number) => void;
   onClickRecentlyTeams: (id: number) => void;
 };
 
-const Home: FC<Props> = ({
-  joinTeams,
-  recentlyTeams,
-  loadingJoinTeams,
-  loadingRecentTeams,
-  onClickJoinTeams,
-  onClickRecentlyTeams,
-}) => {
+const Home: FC<Props> = ({ onClickJoinTeams, onClickRecentlyTeams }) => {
+  const authUser = useAuthUser();
+  const [{ loadingJoinTeams, joinTeams, loadingRecentTeams, recentlyTeams }] =
+    useHome(authUser);
   return (
     <>
       <Typography.Title>所属チーム</Typography.Title>
