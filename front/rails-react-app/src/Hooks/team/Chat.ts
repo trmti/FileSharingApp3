@@ -35,7 +35,7 @@ const useChat = (authUser: User | null, fileId: number) => {
       await createComment(newComment, authUser.id, fileId);
     }
   };
-  const cable = createConsumer(`ws://localhost:3001/cable`);
+  const cable = createConsumer(process.env.WS_HOST);
   const createSubscription = () => {
     cable.subscriptions.create(
       {

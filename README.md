@@ -37,6 +37,9 @@ services:
     volumes:
       - ./front/rails-react-app:/usr/src/app/rails-react-app
     command: sh -c "npm start"
+    environment:
+      REACT_APP_API_HOST: http://localhost:3001 (apiのホスト名)
+      WS_HOST: ws://localhost:3001 (webSocketサーバーのホスト名)
     ports:
       - '8000:3000'
       - '6006:6006'
