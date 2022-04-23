@@ -1,4 +1,5 @@
 import { AxiosResponse, AxiosInstance } from 'axios';
+import { message } from 'antd';
 import { FetchSuccess, FetchFailed, User, Team, Folder, File } from 'type';
 import { createFormData } from 'utils';
 import { createOrUpdateImage } from './post';
@@ -16,6 +17,7 @@ export const getAction = <T>(path: string, errmes: string) => {
       return { status: 'success', data: props.data };
     })
     .catch((): FetchFailed => {
+      message.error(errmes);
       return { status: 'error', message: errmes };
     });
   return res;
@@ -34,6 +36,7 @@ export const postAction = <T>(
       return { status: 'success', data: props.data };
     })
     .catch((): FetchFailed => {
+      message.error(errmes);
       return { status: 'error', message: errmes };
     });
   return res;

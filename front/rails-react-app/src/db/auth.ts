@@ -88,7 +88,9 @@ export const getCurrentUser = () => {
       status: 'error',
       message: 'ユーザーの取得に失敗しました',
     };
-    return res;
+    return new Promise<FetchFailed>(() => {
+      return res;
+    });
   }
   const res = axios
     .get(`${api_url}/auth/sessions`, {
@@ -106,11 +108,7 @@ export const getCurrentUser = () => {
         };
         return res;
       } else {
-        const res: FetchFailed = {
-          status: 'error',
-          message: 'ユーザーが存在しません',
-        };
-        return res;
+        throw new Error();
       }
     })
     .catch((): FetchFailed => {

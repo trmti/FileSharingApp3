@@ -6,11 +6,11 @@ const Home: FC = () => {
   const navigate = useNavigate();
 
   const onClickJoinTeams = (id: number) => {
-    navigate(`../team/${id}`);
+    navigate(`../team/${id}/home`);
   };
 
   const onClickRecentlyTeams = (id: number) => {
-    navigate(`../team/${id}`);
+    navigate(`../team/${id}/home`);
   };
 
   return (

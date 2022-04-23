@@ -3,8 +3,8 @@ import { useAuthUser } from 'auth/AuthUserContext';
 import useFolder from 'Hooks/team/Folder';
 import { Typography, Button, Select, Affix, Modal, Row, Col, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { BuildFileParams } from 'type';
 import Files from 'components/organisms/Files';
 import BackButton from 'components/molecules/BackButton';
 import DescriptionDropdown from 'components/molecules/DescriptionDropdown';
@@ -36,7 +36,7 @@ const Folder: FC = () => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
   const onClickFile = (id: number) => {
-    console.log(id);
+    navigate(`chat/${id}`);
   };
 
   const navigate = useNavigate();
@@ -57,7 +57,7 @@ const Folder: FC = () => {
     );
   } else {
     return (
-      <>
+      <div>
         <Row>
           <Col sm={4} xs={24}>
             <BackButton
@@ -161,11 +161,18 @@ const Folder: FC = () => {
           onCancel={handleCancel}
         >
           <FormBuildFile
-            onFinish={BuildFile}
+            onFinish={async (
+              data: BuildFileParams & {
+                fileId: number;
+              }
+            ) => {
+              await BuildFile(data);
+              setIsModalVisible(false);
+            }}
             onFinishFailed={BuildFileFailed}
           />
         </Modal>
-      </>
+      </div>
     );
   }
 };

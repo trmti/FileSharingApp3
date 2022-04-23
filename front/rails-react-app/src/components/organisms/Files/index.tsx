@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 import { Row, Col, Card, Typography, Button, Image, Popconfirm } from 'antd';
-import { FileWithImage, BuildFileParams } from 'type';
+import { FileWithImageAndComment, BuildFileParams } from 'type';
 import { defaultCoverImage } from 'utils';
 import FormUpdateFile from 'components/organisms/FormFile';
 import DescriptionDropdown from 'components/molecules/DescriptionDropdown';
@@ -9,7 +9,7 @@ import { colors, text_style } from 'app_design';
 const { Meta } = Card;
 
 type Props = {
-  files: FileWithImage[] | null;
+  files: FileWithImageAndComment[] | null;
   onClick: (id: number) => void;
   isEditor: boolean;
   onDelete: (id: number) => Promise<void>;
@@ -47,6 +47,9 @@ const Files: FC<Props> = ({
                         <Image
                           alt="team"
                           src={image ? image : defaultCoverImage}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                          }}
                           style={{ aspectRatio: '1/1', objectFit: 'cover' }}
                         />
                       }
@@ -70,7 +73,14 @@ const Files: FC<Props> = ({
                                 setIsEditModalVisible={setIsEditModalVisible}
                                 FormUpdate={
                                   <FormUpdateFile
-                                    onFinish={UpdateFile}
+                                    onFinish={async (
+                                      data: BuildFileParams & {
+                                        fileId: number;
+                                      }
+                                    ) => {
+                                      await UpdateFile(data);
+                                      setIsEditModalVisible(false);
+                                    }}
                                     onFinishFailed={UpdateFileFailed}
                                     fileId={id}
                                     fileName={title}

@@ -69,7 +69,7 @@ docker-compose exec front sh -c "cd rails-react-app && npm run storybook"
 ### front 側
 
 node.js v17
-React.js v17
+React.js v18
 Atomic Design に基づくファイル構成
 
 ### api 側

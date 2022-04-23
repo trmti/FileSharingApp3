@@ -21,8 +21,6 @@ const Build: FC = () => {
       } else if (res.status === 'continue') {
         message.info(res.message);
         navigate('/user/home');
-      } else {
-        message.error(res.message);
       }
     } else {
       message.error('この機能はログイン後にしか利用できません');

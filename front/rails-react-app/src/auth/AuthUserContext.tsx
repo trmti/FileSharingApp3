@@ -13,7 +13,11 @@ const AuthUserContext = createContext(
   }
 );
 
-const AuthUserProvider: React.FC = ({ children }) => {
+type Props = {
+  children: React.ReactNode;
+};
+
+const AuthUserProvider: React.FC<Props> = ({ children }) => {
   const [authUser, setAuthUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -23,12 +27,10 @@ const AuthUserProvider: React.FC = ({ children }) => {
     if (res.status === 'success') {
       const data = res.data;
       setAuthUser(data);
-      setLoading(false);
     } else {
       console.error(res.message);
-      setLoading(false);
-      throw new Error();
     }
+    setLoading(false);
   };
 
   const logout = async () => {
@@ -36,11 +38,8 @@ const AuthUserProvider: React.FC = ({ children }) => {
     const res = await logOutUser();
     if (res) {
       setAuthUser(null);
-      setLoading(false);
-    } else {
-      setLoading(false);
-      throw new Error();
     }
+    setLoading(false);
   };
 
   const signup = async (data: SignUpParams) => {
@@ -56,12 +55,10 @@ const AuthUserProvider: React.FC = ({ children }) => {
       } else {
         console.error(loginRes.message);
       }
-      setLoading(false);
     } else {
       console.error(signupRes.message);
-      setLoading(false);
-      throw new Error();
     }
+    setLoading(false);
   };
 
   const updateUser = async () => {
@@ -69,13 +66,11 @@ const AuthUserProvider: React.FC = ({ children }) => {
     const res = await getCurrentUser();
     if (res.status === 'success') {
       setAuthUser(res.data);
-      setLoading(false);
     } else {
       console.error(res.message);
       setAuthUser(null);
-      setLoading(false);
-      throw new Error();
     }
+    setLoading(false);
   };
 
   return (

@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from 'react';
+import { FC } from 'react';
 import { Typography, Button, Layout, Row, Col } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -14,37 +14,36 @@ const Logo = styled.p`
 `;
 
 type headerProps = {
-  small: boolean;
+  small: number;
 };
 
 const CustomHeader = styled(Header)<headerProps>`
   background-color: ${colors.BG};
-  width: ${(props) => (props.small ? '70%' : '90%')};
+  width: ${({ small }) => (small ? '70%' : '90%')};
   height: 160px;
-  margin-top: 50px;
-  margin-left: 80px;
+  margin: 50px 0 0 80px;
   padding: 0;
 `;
 
 type divProps = {
   color: string;
-  small: boolean;
+  small: number;
 };
 
 const CustomDiv = styled.div<divProps>`
-  border: 20px solid ${(props) => props.color};
+  border: 20px solid ${({ color }) => color};
   text-align: center;
   width: 100%;
   height: auto;
-  aspect-ratio: ${(props) => (props.small ? '5/2' : '4/5')};
+  aspect-ratio: ${({ small }) => (small ? '5/2' : '4/5')};
 `;
 
 type imgProps = {
-  small: boolean;
+  small: number;
 };
 
 const CustomImg = styled.img<imgProps>`
-  width: ${(props) => (props.small ? '100%' : '60%')};
+  width: ${({ small }) => (small ? '100%' : '60%')};
   height: auto;
   max-width: 800px;
   margin: 0 auto;
@@ -52,9 +51,8 @@ const CustomImg = styled.img<imgProps>`
 
 const TitleText = styled(Title)`
   color: ${colors.Text.Gray};
-  margin-top: 80px;
+  margin: 80px 0 0 0;
   position: relative;
-  margin-bottom: 5px;
   ::before {
     content: '';
     position: absolute;
@@ -72,8 +70,7 @@ const TitleText = styled(Title)`
 
 const DescriptionText = styled(Title)`
   width: 80%;
-  margin: 0 auto;
-  margin-top: 40px;
+  margin: 40px auto 0 auto;
   font-size: ${text_style.Title_M.fontSize};
   letter-spacing: ${text_style.Title_M.letterSpacing};
 `;
@@ -84,7 +81,6 @@ const StartButton = styled(Button)`
   width: 300px;
   height: 80px;
   border-radius: 80px;
-  margin: 0 auto;
   margin: 80px auto;
   font-size: ${text_style.Title_M.fontSize};
   letter-spacing: ${text_style.Title_M.letterSpacing};
@@ -104,27 +100,22 @@ const Description: FC<DescriptionProps> = ({
   small,
 }) => {
   return (
-    <CustomDiv color={color} small={small}>
+    <CustomDiv color={color} small={+small}>
       <TitleText>{title}</TitleText>
       <DescriptionText>{description}</DescriptionText>
     </CustomDiv>
   );
 };
 
-const TopPage: FC = () => {
+type Props = {
+  isSmall: boolean;
+};
+
+const TopPage: FC<Props> = ({ isSmall }) => {
   const navigate = useNavigate();
-  const [isSmall, setIsSmall] = useState<boolean>(window.innerWidth < 480);
-  useEffect(() => {
-    setIsSmall(window.innerWidth < 769);
-    const onResize = () => {
-      setIsSmall(window.innerWidth < 769);
-    };
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
   return (
     <>
-      <CustomHeader small={isSmall}>
+      <CustomHeader small={+isSmall}>
         <Row style={{ width: '90%' }}>
           <Col span={22}>
             <Link to="/user/home">
@@ -148,7 +139,7 @@ const TopPage: FC = () => {
       <Row style={{ width: '100%', marginBottom: 100 }}>
         <CustomImg
           src={`${process.env.PUBLIC_URL}/TopMes.png`}
-          small={isSmall}
+          small={+isSmall}
         />
       </Row>
       <Row gutter={[50, 50]} style={{ width: '90%', margin: '0 auto' }}>

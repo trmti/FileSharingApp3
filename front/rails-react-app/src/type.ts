@@ -143,6 +143,11 @@ export type File = {
 export type FileWithImage = {
   file: File;
   image: string | null;
+};
+
+export type FileWithImageAndComment = {
+  file: File;
+  image: string | null;
   comment_count: number;
 };
 
@@ -154,7 +159,15 @@ export type BuildFileParams = {
 
 // ----- Comment ------------------------------
 export type Comment = {
+  id: number;
   text: string;
   user_id: number;
   file_content_id: number;
+  created_at?: number;
+  updated_at?: number;
+};
+
+export type CommentWithImage = {
+  comment: Comment;
+  user_image: string;
 };
