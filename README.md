@@ -62,11 +62,7 @@ docker-compose up
 
 # react アプリにライブラリを追加
 
-docker-compose run front sh -c "cd rails-react-app && npm i ${some-library}"
-
-# storybook サーバーの立ち上げ
-
-docker-compose exec front sh -c "cd rails-react-app && npm run storybook"
+docker-compose run front sh -c "npm i ${some-library}"
 
 # 環境
 
