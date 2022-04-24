@@ -31,7 +31,7 @@ export const useAsyncCallback = (
   callback: (...args: any[]) => any,
   deps: any[]
 ) =>
-  useCallback((...args) => {
+  useCallback((...args: any) => {
     const f = async () => callback(...args);
     return f();
   }, deps);

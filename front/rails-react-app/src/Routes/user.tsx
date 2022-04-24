@@ -9,12 +9,6 @@ const User: FC = () => {
       <Route path="/search" element={<Pages.UserSearch />} />
       <Route path="/build" element={<Pages.UserBuild />} />
       <Route path="/profile" element={<Pages.Profile />} />
-
-      <Route path="/team/:teamId" element={<Pages.TeamHome />} />
-      <Route
-        path="/team/:teamId/folder/:folderId"
-        element={<Pages.TeamFolder />}
-      />
     </Routes>
   );
 };

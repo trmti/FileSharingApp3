@@ -37,42 +37,52 @@ type NewRouteProps = {
   setIsCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
   isCollapsed: boolean;
   isSmall: boolean;
+  hasSider: boolean;
 };
 
-export const PrivateRoute: FC<RouteProps & NewRouteProps> = ({
+export const HeaderAndSiderRoute: FC<RouteProps & NewRouteProps> = ({
   setIsCollapsed,
   isCollapsed,
   isSmall,
+  hasSider = true,
 }) => {
-  const updateUser = useUpdateUser();
-  const loading = useLoading();
-  const user = useAuthUser();
-  useEffect(() => {
-    updateUser();
-  }, []);
-  if (!loading) {
-    return user !== null ? (
-      <>
+  return (
+    <>
+      {hasSider ? (
         <Sider
           props={siderProps}
           setIsCollapsed={setIsCollapsed}
           small={isSmall}
           isCollapsed={isCollapsed}
         />
-        <Header small={isSmall} />
-        <Content
-          style={{
-            marginTop: '110px',
-            marginLeft: isCollapsed ? 50 : 300,
-            backgroundColor: colors.BG,
-          }}
-        >
-          <Outlet />
-        </Content>
-      </>
-    ) : (
-      <Navigate to="/login" />
-    );
+      ) : (
+        <></>
+      )}
+      <Header small={isSmall} />
+      <Content
+        style={{
+          paddingTop: '110px',
+          paddingLeft: isCollapsed || !hasSider ? 50 : 300,
+          backgroundColor: colors.BG,
+        }}
+      >
+        <Outlet />
+      </Content>
+    </>
+  );
+};
+
+export const PrivateRoute: FC<RouteProps> = ({}) => {
+  const updateUser = useUpdateUser();
+  const loading = useLoading();
+  const user = useAuthUser();
+  useEffect(() => {
+    (async () => {
+      await updateUser();
+    })();
+  }, []);
+  if (!loading) {
+    return user !== null ? <Outlet /> : <Navigate to="/login" />;
   } else {
     return (
       <Spin
@@ -80,25 +90,5 @@ export const PrivateRoute: FC<RouteProps & NewRouteProps> = ({
         style={{ width: '100%' }}
       />
     );
-  }
-};
-
-export const UnloginRoute: FC<RouteProps> = () => {
-  const updateUser = useUpdateUser();
-  const loading = useLoading();
-  const user = useAuthUser();
-  useEffect(() => {
-    updateUser();
-  }, []);
-  if (!loading) {
-    return user == null ? (
-      <>
-        <Outlet />
-      </>
-    ) : (
-      <Navigate to="/user/home" />
-    );
-  } else {
-    return <></>;
   }
 };

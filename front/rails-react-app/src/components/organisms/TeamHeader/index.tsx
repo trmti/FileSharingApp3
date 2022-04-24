@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Row, Col, Typography, Image, Avatar, Affix } from 'antd';
+import { Row, Col, Typography, Image, Avatar } from 'antd';
 import UserIcon from 'components/molecules/UserIcon';
 import { colors, text_style } from 'app_design';
 import { defaultCoverImage } from 'utils';
@@ -94,11 +94,8 @@ const TeamHeader: FC<Props> = ({ team }) => {
                     Authors
                   </Title>
                 </Col>
-                <Col span={24}>
-                  <Avatar.Group
-                    maxCount={5}
-                    style={{ overflow: 'scroll', marginLeft: 30 }}
-                  >
+                <Col span={24} style={{ overflowX: 'scroll' }}>
+                  <Avatar.Group maxCount={5} style={{ marginLeft: 30 }}>
                     {authors.map((author, index) => (
                       <UserIcon
                         key={index}

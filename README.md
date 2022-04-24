@@ -21,7 +21,8 @@ services:
       - ./api/vendor/bundle:/rails-react-app/vendor/bundle
     environment:
       RAILS_ENV: development
-      ALLOW_HOST: localhost:8000 (フロントのホスト名)
+      ALLOW_HOST: localhost:3000 (フロントのホスト名)
+      MY_HOST: localhost:3001 (自分のホスト名 / オプション)
       IS_HTTPS: 'false' (SSL通信するかどうか)
       CERT_PATH: /etc/fullchain.pem (let's encrypt で作ったファイルのパス / オプション)
       KEY_PATH: /etc/privkey.pem (let's encrypt で作ったファイルのパス / オプション)
@@ -37,6 +38,9 @@ services:
     volumes:
       - ./front/rails-react-app:/usr/src/app/rails-react-app
     command: sh -c "npm start"
+    environment:
+      REACT_APP_API_HOST: http://localhost:3001 (apiのホスト名)
+      REACT_APP_MY_WS_HOST: ws://localhost:3001 (webSocketサーバーのホスト名)
     ports:
       - '8000:3000'
       - '6006:6006'
@@ -58,18 +62,14 @@ docker-compose up
 
 # react アプリにライブラリを追加
 
-docker-compose run front sh -c "cd rails-react-app && npm i ${some-library}"
-
-# storybook サーバーの立ち上げ
-
-docker-compose exec front sh -c "cd rails-react-app && npm run storybook"
+docker-compose run front sh -c "npm i ${some-library}"
 
 # 環境
 
 ### front 側
 
 node.js v17
-React.js v17
+React.js v18
 Atomic Design に基づくファイル構成
 
 ### api 側

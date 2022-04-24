@@ -18,6 +18,7 @@ const UserIcon: FC<Props> = ({ src, name, BG, style, small }) => {
         width: small ? 80 : 120,
         height: small ? 30 : 40,
         borderRadius: small ? 30 : 40,
+        marginRight: 10,
         backgroundColor: BG,
         display: 'inline-block',
         ...style,

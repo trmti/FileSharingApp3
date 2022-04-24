@@ -5,6 +5,7 @@ import useHome from 'Hooks/team/Home';
 import { useParams } from 'react-router-dom';
 import { Divider, Modal, Spin, Button, Affix, Menu } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
+import { BuildTeamParams, BuildFolderParams } from 'type';
 import TeamHeader from 'components/organisms/TeamHeader';
 import FormUpdateTeam from 'components/organisms/FormTeam';
 import Folders from 'components/organisms/Folders';
@@ -72,7 +73,7 @@ const Home: FC = () => {
     },
   ] = useHome(Number(teamId), authUser);
   const onClickCard = (id: number) => {
-    navigate(`folder/${id}`);
+    navigate(`../folder/${id}`);
   };
   const navigate = useNavigate();
   const onClickNewFolder = () => {
@@ -114,7 +115,10 @@ const Home: FC = () => {
                 }
                 FormUpdate={
                   <FormUpdateTeam
-                    onFinish={UpdateTeam}
+                    onFinish={async (data: BuildTeamParams) => {
+                      await UpdateTeam(data);
+                      setIsEditModalVisible(false);
+                    }}
                     onFinishFailed={UpdateTeamFailed}
                     loading={loadingFolders}
                     teamName={teamProp.team.name}
@@ -159,7 +163,14 @@ const Home: FC = () => {
           onCancel={handleCancel}
         >
           <FormBuildFolder
-            onFinish={CreateFolder}
+            onFinish={async (
+              data: BuildFolderParams & {
+                id: number;
+              }
+            ) => {
+              await CreateFolder(data);
+              setIsCreateModalVisible(false);
+            }}
             onFinishFailed={CreateFolderFailed}
           />
         </Modal>

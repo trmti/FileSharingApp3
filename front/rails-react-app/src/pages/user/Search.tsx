@@ -1,6 +1,5 @@
 import { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { message } from 'antd';
 import SearchTemp from 'components/templates/Search';
 import { searchTeams } from 'db/team';
 import { TeamWithImage } from 'type';
@@ -17,7 +16,7 @@ const Search: FC = () => {
   });
   const navigate = useNavigate();
   const onClick = (id: number) => {
-    navigate(`../team/${id}`);
+    navigate(`../team/${id}/home`);
   };
   const onPressEnter = async (e: any) => {
     setState((prevState) => ({ ...prevState, loading: true }));
@@ -25,8 +24,6 @@ const Search: FC = () => {
     const res = await searchTeams(text, 10);
     if (res.status === 'success') {
       setState((prevState) => ({ ...prevState, searchedTeams: res.data }));
-    } else {
-      message.error(res.message);
     }
     setState((prevState) => ({ ...prevState, loading: false }));
   };

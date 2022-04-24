@@ -167,8 +167,6 @@ const Profile: FC = () => {
                   }));
                   await handleGetImage();
                   message.success('プロフィール画像を変更しました。');
-                } else {
-                  message.error(res.message);
                 }
               } else {
                 message.error('画像を選択してください。');

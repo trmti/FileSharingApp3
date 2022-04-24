@@ -17,8 +17,7 @@ const SearchTeam: FC<Props> = ({ searchedTeams, onClickCard }) => {
       <>
         <div
           style={{
-            overflowX: 'hidden',
-            overflowY: 'hidden',
+            overflow: 'hidden',
           }}
         >
           <Row gutter={[50, 100]}>

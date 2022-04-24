@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   Folder,
   BuildFolderParams,
-  FileWithImage,
+  FileWithImageAndComment,
   BuildFileParams,
   User,
 } from 'type';
@@ -17,7 +17,7 @@ type folderProps = {
   folder: Folder | null;
   isEditor: boolean;
   loadingFolder: boolean;
-  files: FileWithImage[];
+  files: FileWithImageAndComment[];
 };
 
 const useFolder = (folderId: number, teamId: number, authUser: User | null) => {
@@ -47,8 +47,6 @@ const useFolder = (folderId: number, teamId: number, authUser: User | null) => {
       if (res.status !== 'error') {
         message.success('ファイルの情報を更新しました。');
         await setNewFiles();
-      } else {
-        message.error('ファイルの更新に失敗しました。');
       }
     },
     []
@@ -68,8 +66,6 @@ const useFolder = (folderId: number, teamId: number, authUser: User | null) => {
       if (res?.status === 'success') {
         message.success('ファイルの作成に成功しました');
         await setNewFiles();
-      } else {
-        message.error(res?.message);
       }
     },
     [folderId]
@@ -82,8 +78,6 @@ const useFolder = (folderId: number, teamId: number, authUser: User | null) => {
     if (res.status === 'success') {
       await setNewFiles();
       message.success(res.data.message);
-    } else {
-      message.error(res.message);
     }
   }, []);
 
@@ -124,8 +118,6 @@ const useFolder = (folderId: number, teamId: number, authUser: User | null) => {
           message.error('フォルダーが存在しません');
           navigate('..');
         }
-      } else {
-        message.error(res?.message);
       }
       setState((prevState) => ({
         ...prevState,
@@ -142,8 +134,6 @@ const useFolder = (folderId: number, teamId: number, authUser: User | null) => {
     if (res.status === 'success') {
       message.success(res.data.message);
       navigate(`/user/team/${teamId}`);
-    } else {
-      message.error(res.message);
     }
   }, [folderId]);
 

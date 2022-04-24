@@ -30,4 +30,3 @@ privkey.pem
 !.env.template
 
 /config/database.yml
-/config/credentials.yml.enc

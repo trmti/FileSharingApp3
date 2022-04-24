@@ -72,11 +72,8 @@ const useHome = (teamId: number, authUser: User | null) => {
               teamProp: teamReload.data,
             }));
           } else {
-            message.error('チームが見つかりませんでした');
             navigate('..');
           }
-        } else {
-          message.error(res.message);
         }
       }
     },
@@ -102,8 +99,6 @@ const useHome = (teamId: number, authUser: User | null) => {
           }));
         }
         setState((prevState) => ({ ...prevState, joinState: 'waitingJoin' }));
-      } else {
-        message.error(res.message);
       }
     }
   };
@@ -116,11 +111,7 @@ const useHome = (teamId: number, authUser: User | null) => {
           joinState: 'unJoin',
         }));
         message.success('チームを抜けました。');
-      } else {
-        message.error('チームの脱退に失敗しました。');
       }
-    } else {
-      message.error('リーダーはチームを抜けられません。');
     }
   };
   const DeleteTeam = useAsyncCallback(async () => {
@@ -128,8 +119,6 @@ const useHome = (teamId: number, authUser: User | null) => {
     if (res.status === 'success') {
       message.success(res.data.message);
       navigate('..');
-    } else {
-      message.error(res.message);
     }
   }, [teamId]);
 
@@ -144,8 +133,6 @@ const useHome = (teamId: number, authUser: User | null) => {
             return request.id !== id;
           }),
         }));
-      } else {
-        message.error('編集者の追加に失敗しました。');
       }
     },
     [teamId]
@@ -160,8 +147,6 @@ const useHome = (teamId: number, authUser: User | null) => {
             return request.id !== id;
           }),
         }));
-      } else {
-        message.error('編集者の拒否に失敗しました。');
       }
     },
     [teamId]
@@ -184,10 +169,6 @@ const useHome = (teamId: number, authUser: User | null) => {
       if (res.status !== 'error') {
         message.success('フォルダを作成しました');
         await setNewFolders();
-      } else {
-        message.error(
-          'フォルダの作成に失敗しました。時間をおいて再度お試しください。'
-        );
       }
     },
     [teamId]

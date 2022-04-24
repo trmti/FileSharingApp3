@@ -3,7 +3,7 @@ import { SignUpParams } from 'type';
 import { message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useLogin } from 'auth/AuthUserContext';
-import { Typography, Space } from 'antd';
+import { Space } from 'antd';
 import { Link } from 'react-router-dom';
 import TitleWithLine from 'components/atoms/TileWithLine';
 import FormLogin from 'components/organisms/FormLogin';
@@ -16,7 +16,7 @@ const Login: FC = () => {
     setLoading(true);
     try {
       await login({ email: data.email, password: data.password });
-      navigate(-1);
+      navigate('/user/home');
     } catch {
       message.error('ユーザーが存在しません。');
     }
@@ -38,9 +38,7 @@ const Login: FC = () => {
         onFinishFailed={onFinishFailed}
         loading={loading}
       />
-      <Typography.Link>
-        <Link to="/signup">サインアップページ</Link>
-      </Typography.Link>
+      <Link to="/signup">サインアップページ</Link>
     </Space>
   );
 };
