@@ -66,4 +66,6 @@ Rails.application.configure do
   # config.action_cable.disable_request_forgery_protection = true
   config.log_level = :debug
   config.logger = Logger.new(STDOUT)
+  config.hosts << ENV["MY_HOST"].split(/\/|:/)[-2]
+  config.action_cable.allowed_request_origins = ENV["ALLOW_HOST"]
 end
