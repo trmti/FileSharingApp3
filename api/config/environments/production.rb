@@ -112,4 +112,6 @@ Rails.application.configure do
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
   is_https = ENV["IS_HTTPS"] { "false" }
   config.force_ssl = is_https == "true"
+  config.hosts << ENV["MY_HOST"].split(/\/|:/)[-2]
+  config.action_cable.allowed_request_origins = ENV["ALLOW_HOST"]
 end
