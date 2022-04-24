@@ -35,7 +35,7 @@ const useChat = (authUser: User | null, fileId: number) => {
       await createComment(newComment, authUser.id, fileId);
     }
   };
-  const cable = createConsumer(process.env.WS_HOST);
+  const cable = createConsumer(process.env.REACT_APP_MY_WS_HOST);
   const createSubscription = () => {
     cable.subscriptions.create(
       {
