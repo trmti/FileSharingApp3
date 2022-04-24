@@ -101,7 +101,13 @@ const DescriptionDropdown: FC<Props> = ({
         trigger={['click']}
         arrow
       >
-        <MoreOutlined style={small ? { fontSize: 15 } : { fontSize: 30 }} />
+        <span
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <MoreOutlined style={small ? { fontSize: 15 } : { fontSize: 30 }} />
+        </span>
       </Dropdown>
     </div>
   );
